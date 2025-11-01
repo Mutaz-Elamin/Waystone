@@ -70,3 +70,16 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Ignore the development scenes
+/Assets/Scenes/MutazDevelopmentScene.unity
+/Assets/Scenes/MutazDevelopmentScene.unity.meta
+
+/Assets/Scenes/DawidDevelopmentScene.unity
+/Assets/Scenes/DawidDevelopmentScene.unity.meta
+
+/Assets/Scenes/MahdiDevelopmentScene.unity
+/Assets/Scenes/MahdiDevelopmentScene.unity.meta
+
+/Assets/Scenes/ArdiDevelopmentScene.unity
+/Assets/Scenes/ArdiDevelopmentScene.unity.meta
