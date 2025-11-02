@@ -12,6 +12,6 @@ public class testScript : MonoBehaviour
     [ContextMenu("Test Passive TakeDamage")]
     private void TestTakeDamage()
     {
-        passiveNPC.TakeDamage(5);
+        passiveNPC.TakeDamage(5, DamageCause.PlayerAttack);
     }
 }

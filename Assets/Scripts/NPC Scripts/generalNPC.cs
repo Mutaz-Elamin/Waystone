@@ -2,18 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum npcType
+public enum NpcType
 {
     Passive,
     Neutral,
     Enemy
 }
 
+public enum DamageCause
+{
+    PlayerAttack,
+    EnemyAttack,
+    Environment,
+    Other
+}
+
 public class GeneralNPC : MonoBehaviour
 {
     // Health and speed of the NPC will likely to be set in scene
-    [SerializeField] private int health;
+    [SerializeField] private int startHealth;
+    protected int StartHealth { get { return startHealth; } }
     [SerializeField] protected float speed;
+    private int health;
+    protected int Health { get { return health; } }
+
+
+
+
+    // Awake is called when the script instance is being loaded
+    private void Awake()
+    {
+        health = startHealth;
+    }
 
 
 
@@ -27,7 +47,7 @@ public class GeneralNPC : MonoBehaviour
 
 
     // Method to apply damage to NPCs based off attacks or other things
-    public virtual void TakeDamage(int damage) {
+    public virtual void TakeDamage(int damage, DamageCause cause) {
         health -= damage;
         Debug.Log("NPC took " + damage + " damage, remaining health: " + health);
 
