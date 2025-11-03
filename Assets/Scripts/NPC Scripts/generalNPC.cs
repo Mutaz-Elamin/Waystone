@@ -30,9 +30,10 @@ public class GeneralNPC : MonoBehaviour
 
 
     // Awake is called when the script instance is being loaded
-    private void Awake()
+    protected virtual void Awake()
     {
         health = startHealth;
+        Debug.Log("NPC created with health: " + health);
     }
 
 

@@ -62,8 +62,9 @@ public class PassiveNPC : GeneralNPC
 
 
     // Method called upon creation of the npc
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
         agent.acceleration = 2f * speed;

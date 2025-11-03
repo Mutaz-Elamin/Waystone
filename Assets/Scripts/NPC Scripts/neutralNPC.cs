@@ -15,6 +15,8 @@ public class NeutralNPC : GeneralNPC
     [SerializeField] private GameObject player;
     [SerializeField] private float stopChaseRange;
     [SerializeField] private NpcAttack[] attacks;
+    private NpcAttack currentAttack;
+    private float currentAttackRange;
     private float[] attackRanges;
     private float maxAttackRange;
 
@@ -58,7 +60,7 @@ public class NeutralNPC : GeneralNPC
                 WanderMovementScript();
                 break;
             case Mode.Escaping:
-                GetComponent<Renderer>().material.color = Color.white;
+                GetComponent<Renderer>().material.color = Color.yellow;
                 EscapeMovementScript();
                 break;
             case Mode.Chasing:
@@ -66,7 +68,7 @@ public class NeutralNPC : GeneralNPC
                 ChasingMovementScript();
                 break;
             case Mode.Attacking:
-                GetComponent<Renderer>().material.color = Color.yellow;
+                GetComponent<Renderer>().material.color = Color.red;
                 AttackingMovementScript();
                 break;
             default:
@@ -81,8 +83,9 @@ public class NeutralNPC : GeneralNPC
 
 
     // Method called upon creation of the npc
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
         agent.acceleration = 2f * speed;
@@ -90,9 +93,17 @@ public class NeutralNPC : GeneralNPC
         for (int i = 0; i < attacks.Length; i++)
         {
             attackRanges = new float[attacks.Length];
-            attackRanges[i] = attacks[i].AttackRange;
+            attackRanges[i] = attacks[i].attackRange;
         }
-        maxAttackRange = attackRanges.Max();
+        if (attackRanges.Length > 0)
+        {
+            maxAttackRange = attackRanges.Max();
+        }
+        else
+        {
+            maxAttackRange = 3f;
+        }
+        currentAttack = attacks[0];
     }
 
 
@@ -234,12 +245,18 @@ public class NeutralNPC : GeneralNPC
 
         agent.SetDestination(player.transform.position);
 
-        if (attackRanges.Length == 0) return;
-        float attackRange = attackRanges[Random.Range(0, attackRanges.Length)];
-        inRange = Physics.CheckSphere(transform.position, attackRange, playerLayer);
+        inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
         if (inRange)
         {
             currentMode = Mode.Attacking;
+        }
+
+        if (!escapeInitiated)
+        {
+            if (CheckEscapeCondition())
+            {
+                currentAttack.StopAttack();
+            }
         }
     }
 
@@ -247,24 +264,49 @@ public class NeutralNPC : GeneralNPC
     // Method to run the attacking logic of the npcs - does not attack but handles choosing attacks and switching back to chase mode
     private void AttackingMovementScript()
     {
+        agent.SetDestination(transform.position);
         bool inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
         if (!inRange)
         {
             currentMode = Mode.Chasing;
+            if (currentAttack != null)
+            {
+                currentAttack.StopAttack();
+            }
             return;
         }
-        float attackRange = attackRanges[Random.Range(0, attackRanges.Length)];
-        inRange = Physics.CheckSphere(transform.position, attackRange, playerLayer);
-        if (inRange)
+        if (attackRanges.Length == 0) return;
+        if (!currentAttack.attackActive)
         {
-            NpcAttack chosenAttack = attacks[Random.Range(0, attacks.Length)];
-            chosenAttack.TriggerAttack();
+            SelectAttack();
+        }
+        inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
+        if (inRange && !currentAttack.attackActive)
+        {
+            if (Time.time - currentAttack.lastAttackTime > currentAttack.attackCooldown)
+            {
+                currentAttack.lastAttackTime = Time.time;
+                currentAttack.TriggerAttack(agent, player);
+            }
         }
 
         if (!escapeInitiated)
         {
-            CheckEscapeCondition();
+            if (CheckEscapeCondition()){
+                currentAttack.StopAttack();
+            }
         }
+    }
+
+
+    // Select attack
+    private void SelectAttack()
+    {
+        int attackIndex = Random.Range(0, attackRanges.Length);
+
+        currentAttack = attacks[attackIndex];
+        currentAttackRange = attackRanges[attackIndex];
+
     }
 
 
@@ -274,7 +316,7 @@ public class NeutralNPC : GeneralNPC
         base.TakeDamage(damage, cause);
         if (cause == DamageCause.PlayerAttack)
         {
-            if (!isEscaping)
+            if (!(isEscaping || currentMode == Mode.Attacking))
             {
                 currentMode = Mode.Chasing;
             }
@@ -283,11 +325,13 @@ public class NeutralNPC : GeneralNPC
 
 
     // Method to check if escape condition is met (health below 40% by default)
-    protected virtual void CheckEscapeCondition()
+    protected virtual bool CheckEscapeCondition()
     {
-        if (Health / StartHealth < 0.4)
+        if ((double)Health / (double)StartHealth < 0.4)
         {
             currentMode = Mode.Escaping;
+            return true;
         }
+        return false;
     }
 }
