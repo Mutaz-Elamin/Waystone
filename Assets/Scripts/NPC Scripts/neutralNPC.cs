@@ -19,6 +19,7 @@ public class NeutralNPC : GeneralNPC
     private float currentAttackRange;
     private float[] attackRanges;
     private float maxAttackRange;
+    [SerializeField] private float escapeThreshold;
 
     // Navmesh fields
     private NavMeshAgent agent;
@@ -328,7 +329,9 @@ public class NeutralNPC : GeneralNPC
     // Method to check if escape condition is met (health below 40% by default)
     protected virtual bool CheckEscapeCondition()
     {
-        if ((double)Health / (double)StartHealth < 0.4)
+        if (escapeThreshold <= 0f || escapeThreshold >= 1f) return false;
+
+        if ((double)Health / (double)StartHealth < escapeThreshold)
         {
             currentMode = Mode.Escaping;
             return true;

@@ -837,6 +837,7 @@ MonoBehaviour:
   stopChaseRange: 15
   attacks:
   - {fileID: 939872498}
+  escapeThreshold: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 1048576
