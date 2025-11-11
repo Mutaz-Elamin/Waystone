@@ -14,7 +14,7 @@ public class PassiveNPC : GeneralNPC
     private NavMeshAgent agent;
     public LayerMask groundLayer;
     private Vector3 desPoint;
-    private bool desPointSet = false;
+    protected bool desPointSet = false;
     public float desPointMin;
     public float desPointMax;
     [SerializeField] private float walkInterval;
@@ -23,7 +23,7 @@ public class PassiveNPC : GeneralNPC
     [SerializeField] private float escapeTimeout;
     private bool isEscaping = false;
     private float startEscapeTime = -Mathf.Infinity;
-    [SerializeField] private float escapeMoveModifier = 2f;
+    [SerializeField] protected float escapeMoveModifier = 2f;
 
     // Fields used in the state machine
     private enum Mode
@@ -43,16 +43,16 @@ public class PassiveNPC : GeneralNPC
         {
             case Mode.Wandering:
 
-                GetComponent<Renderer>().material.color = Color.cyan;
+                //GetComponent<Renderer>().material.color = Color.cyan;
                 WanderMovementScript();
                 break;
             case Mode.Escaping:
-                GetComponent<Renderer>().material.color = Color.yellow;
+                //GetComponent<Renderer>().material.color = Color.yellow;
                 EscapeMovementScript();
                 break;
             default:
                 WanderMovementScript();
-                GetComponent<Renderer>().material.color = Color.blue;
+                //GetComponent<Renderer>().material.color = Color.blue;
                 Debug.LogWarning("Unknown movement mode, defaulting to wandering.");
                 break;
         }
@@ -80,7 +80,7 @@ public class PassiveNPC : GeneralNPC
 
 
     // Method for when the npc is wandering around
-    private void WanderMovementScript()
+    protected virtual void WanderMovementScript()
     {
         if (!desPointSet)
         {
@@ -95,7 +95,7 @@ public class PassiveNPC : GeneralNPC
             Vector3 distanceToDesPoint = transform.position - desPoint;
             distanceToDesPoint.y = 0;
 
-            if (distanceToDesPoint.magnitude < 3f)
+            if (distanceToDesPoint.magnitude < 1f)
             {
                 desPointSet = false;
                 lastWalkTime = Time.time;
@@ -148,7 +148,7 @@ public class PassiveNPC : GeneralNPC
     }
 
     // Method for when the npc is wandering around
-    private void EscapeMovementScript()
+    protected virtual void EscapeMovementScript()
     {
         EscapeTimeout();
         if (!desPointSet)
