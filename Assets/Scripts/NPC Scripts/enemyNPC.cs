@@ -15,6 +15,7 @@ public class EnemyNPC : GeneralNPC
     private GameObject player;
     [SerializeField] private float startChaseRange;
     [SerializeField] private float stopChaseRange;
+    [SerializeField] private float chaseSpeedModifier = 1.5f;
     [SerializeField] private NpcAttack[] attacks;
     private NpcAttack currentAttack;
     private float currentAttackRange;
@@ -25,7 +26,7 @@ public class EnemyNPC : GeneralNPC
     private NavMeshAgent agent;
     public LayerMask groundLayer, playerLayer;
     private Vector3 desPoint;
-    private bool desPointSet = false;
+    protected bool desPointSet = false;
     public float desPointMin;
     public float desPointMax;
     [SerializeField] private float walkInterval;
@@ -50,20 +51,16 @@ public class EnemyNPC : GeneralNPC
         {
             case Mode.Wandering:
 
-                GetComponent<Renderer>().material.color = Color.cyan;
                 WanderMovementScript();
                 break;
             case Mode.Chasing:
-                GetComponent<Renderer>().material.color = Color.magenta;
                 ChasingMovementScript();
                 break;
             case Mode.Attacking:
-                GetComponent<Renderer>().material.color = Color.red;
                 AttackingMovementScript();
                 break;
             default:
                 WanderMovementScript();
-                GetComponent<Renderer>().material.color = Color.blue;
                 Debug.LogWarning("Unknown movement mode, defaulting to wandering.");
                 break;
         }
@@ -106,7 +103,7 @@ public class EnemyNPC : GeneralNPC
 
 
     // Method for when the npc is wandering around
-    private void WanderMovementScript()
+    protected virtual void WanderMovementScript()
     {
         bool inRange = Physics.CheckSphere(transform.position, startChaseRange, playerLayer);
         if (inRange)
@@ -160,26 +157,31 @@ public class EnemyNPC : GeneralNPC
 
 
     // Method for when the npc is chasing after the player
-    private void ChasingMovementScript()
+    protected virtual void ChasingMovementScript()
     {
         bool inRange = Physics.CheckSphere(transform.position, stopChaseRange, playerLayer);
         if (!inRange)
         {
             currentMode = Mode.Wandering;
+            agent.speed = speed;
+            return;
         }
 
+        agent.speed = speed * chaseSpeedModifier;
         agent.SetDestination(player.transform.position);
 
         inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
         if (inRange)
         {
             currentMode = Mode.Attacking;
+            agent.speed = speed;
+            return;
         }
     }
 
 
     // Method to run the attacking logic of the npcs - does not attack but handles choosing attacks and switching back to chase mode
-    private void AttackingMovementScript()
+    protected virtual void AttackingMovementScript()
     {
         agent.SetDestination(transform.position);
         bool inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
