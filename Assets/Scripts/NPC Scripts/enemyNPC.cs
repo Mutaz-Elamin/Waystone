@@ -76,7 +76,7 @@ public class EnemyNPC : GeneralNPC
         player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
-        agent.acceleration = 2f * speed;
+        agent.acceleration = 10f * speed;
         agent.angularSpeed = 135f * speed;
         for (int i = 0; i < attacks.Length; i++)
         {
@@ -125,7 +125,7 @@ public class EnemyNPC : GeneralNPC
             Vector3 distanceToDesPoint = transform.position - desPoint;
             distanceToDesPoint.y = 0;
 
-            if (distanceToDesPoint.magnitude < 3f)
+            if (distanceToDesPoint.magnitude < 1f)
             {
                 desPointSet = false;
                 lastWalkTime = Time.time;

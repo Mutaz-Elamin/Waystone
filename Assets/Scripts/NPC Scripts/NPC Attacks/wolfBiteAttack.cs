@@ -3,26 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-// Basic test NPC attack used for basic testing of NPC scripts making use of attacks
-// This version works very similar to the version in the prototype and is likely to work different for the actual thing with usage of animations etc.
-public class TestNPCAttack : NpcAttack
+// Basic wolf NPC attack which is the primitive bite attack for the wolf NPC
+// This attack largely exists to test how animations/attacks will work in the NPC system as well as for an NPC with more than one attack and how well this works
+public class WolfBiteAttack : NpcAttack
 {
     // Basic override of attack stats
-    public override float attackTime => 0.3f;
-    public override float attackCooldown => 3f;
-    public override float attackRange => 2f;
-    private BoxCollider attackCollider;
+    public override float attackTime => 0.6f;
+    public override float attackCooldown => 1.2f;
+    public override float attackRange => 1.7f;
 
+
+    private BoxCollider attackCollider;
 
     // Attack fields necessary for this version of the attack logic
     private Coroutine attackRoutine;
-    private GeneralNPC thisNPC;
+    private Animator wolfAnimator;
 
     //  Attack logic setup to start when the script begins
     private void Awake()
     {
         attackCollider = GetComponentInChildren<BoxCollider>();
-        
+        wolfAnimator = transform.root.GetComponent<Animator>();
+
         // Ignore collisions between the attack hitbox and all colliders on the same NPC
         var ownerCols = transform.root.GetComponentsInChildren<Collider>(true);
         foreach (var c in ownerCols)
@@ -35,18 +37,11 @@ public class TestNPCAttack : NpcAttack
     // Method to trigger the attack - override of abstract method in parent class
     public override void TriggerAttack(NavMeshAgent agent, GameObject player)
     {
-        //Debug.Log("Test NPC Attack Triggered!");
-        // Implement attack logic here
-
-        if (player != null)
-        {
-            transform.parent.LookAt(player.transform);
-        }
 
         if (attackRoutine == null)
         {
             attackActive = true;
-            attackRoutine = StartCoroutine(AttackCycle(attackTime, attackCooldown));
+            attackRoutine = StartCoroutine(AttackCycle(player, attackTime));
         }
     }
 
@@ -64,28 +59,37 @@ public class TestNPCAttack : NpcAttack
             attackCollider.enabled = false;
         }
         attackActive = false;
+        wolfAnimator.SetBool("Bite", false);
     }
 
     // Attack cycle coroutine to handle the timing of the attack
-    private IEnumerator AttackCycle(float activeDuration, float interval)
+    private IEnumerator AttackCycle(GameObject player, float activeDuration)
     {
-        float offDuration = Mathf.Max(0f, interval - activeDuration);
-        
-        if (attackCollider != null)
+        if (player != null)
         {
-            attackCollider.enabled = true;
+            transform.root.LookAt(player.transform);
         }
-        
+
+        wolfAnimator.SetBool("Bite", true);
         if (activeDuration > 0f)
-            yield return new WaitForSeconds(activeDuration);
+            yield return new WaitForSeconds(activeDuration * 0.7f);
         else
             yield return null;
-        
+        if (attackCollider != null)
+        {
+            wolfAnimator.SetBool("Bite", true);
+            attackCollider.enabled = true;
+        }
+
+        if (activeDuration > 0f)
+            yield return new WaitForSeconds(activeDuration * 0.3f);
+        else
+            yield return null;
+
         if (attackCollider != null)
         {
             attackCollider.enabled = false;
         }
-
         StopAttack();
     }
 

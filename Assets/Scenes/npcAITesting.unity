@@ -227,6 +227,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &294572541 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4560908922280820315, guid: ac9f242dca7d8964795fdb6210622977, type: 3}
+  m_PrefabInstance: {fileID: 1841442926}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &409750239
 GameObject:
   m_ObjectHideFlags: 0
@@ -610,28 +615,14 @@ GameObject:
   m_Component:
   - component: {fileID: 944625850}
   - component: {fileID: 944625849}
-  - component: {fileID: 944625848}
+  - component: {fileID: 944625851}
   m_Layer: 0
-  m_Name: Wolf Attack
+  m_Name: Wolf Bite Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &944625848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944625847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c08d745bfbde25f4b832c0c0fa3523ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackActive: 0
-  lastAttackTime: -Infinity
 --- !u!54 &944625849
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -667,14 +658,28 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944625847}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.72331434, y: 0.057203773, z: -0.006495053, w: 0.68811476}
+  m_LocalPosition: {x: -0.00015427142, y: -0.012235554, z: 0.011070755}
+  m_LocalScale: {x: 0.010000002, y: 0.009999872, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1192581249}
-  m_Father: {fileID: 1875800509}
+  m_Father: {fileID: 294572541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &944625851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944625847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d431a5a33ecb23645843883ddbfa7e25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackActive: 0
+  lastAttackTime: -Infinity
 --- !u!1 &1029092687
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,8 +759,8 @@ Transform:
   m_GameObject: {fileID: 1192581248}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.2, z: 1.5}
-  m_LocalScale: {x: 1, y: 1, z: 1.5}
+  m_LocalPosition: {x: 0, y: 1.2, z: 1.6}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 944625850}
@@ -1375,7 +1380,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: ac9f242dca7d8964795fdb6210622977, type: 3}
+    - targetCorrespondingSourceObject: {fileID: -4560908922280820315, guid: ac9f242dca7d8964795fdb6210622977, type: 3}
       insertIndex: -1
       addedObject: {fileID: 944625850}
     m_AddedComponents:
@@ -1394,11 +1399,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ac9f242dca7d8964795fdb6210622977, type: 3}
   m_PrefabInstance: {fileID: 1841442926}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1875800509 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ac9f242dca7d8964795fdb6210622977, type: 3}
-  m_PrefabInstance: {fileID: 1841442926}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1875800510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1414,10 +1414,10 @@ MonoBehaviour:
   startHealth: 10
   speed: 3
   startChaseRange: 5
-  stopChaseRange: 15
+  stopChaseRange: 50
   chaseSpeedModifier: 3
   attacks:
-  - {fileID: 944625848}
+  - {fileID: 944625851}
   groundLayer:
     serializedVersion: 2
     m_Bits: 1048576
