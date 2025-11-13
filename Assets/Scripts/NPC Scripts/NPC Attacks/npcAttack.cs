@@ -16,6 +16,7 @@ public abstract class NpcAttack : MonoBehaviour
     public virtual float attackTime => 1f;
     public virtual float attackCooldown => 3f;
     public virtual float attackRange => 2f;
+    public virtual float attackRangeMin => 0f;
 
 
     // Method to trigger the attack - abstract as all npc attacks will be different and will need to implement their own logic

@@ -40,4 +40,19 @@ public class WolfNPC : EnemyNPC
         WolfAnimator.SetBool("Attacking", true);
         base.AttackingMovementScript();
     }
+
+    protected override void SelectAttack()
+    {
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        if (dist > attacks[1].attackRangeMin && (Time.time - attacks[1].lastAttackTime > attacks[1].attackCooldown))
+        {
+            currentAttack = attacks[1];
+            currentAttackRange = attackRanges[1];
+        }
+        else
+        {
+            currentAttack = attacks[0];
+            currentAttackRange = attackRanges[0];
+        }
+    }
 }

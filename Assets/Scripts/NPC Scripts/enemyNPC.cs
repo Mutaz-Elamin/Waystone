@@ -12,15 +12,15 @@ public class EnemyNPC : GeneralNPC
     public NpcType Type { get { return type; } }
 
     // Fields used for chasing/attacking behavior
-    private GameObject player;
-    [SerializeField] private float startChaseRange;
-    [SerializeField] private float stopChaseRange;
-    [SerializeField] private float chaseSpeedModifier = 1.5f;
-    [SerializeField] private NpcAttack[] attacks;
-    private NpcAttack currentAttack;
-    private float currentAttackRange;
-    private float[] attackRanges;
-    private float maxAttackRange;
+    protected GameObject player;
+    [SerializeField] protected float startChaseRange;
+    [SerializeField] protected float stopChaseRange;
+    [SerializeField] protected float chaseSpeedModifier = 1.5f;
+    [SerializeField] protected NpcAttack[] attacks;
+    protected NpcAttack currentAttack;
+    protected float currentAttackRange;
+    protected float[] attackRanges;
+    protected float maxAttackRange;
 
     // Navmesh fields
     private NavMeshAgent agent;
@@ -77,10 +77,10 @@ public class EnemyNPC : GeneralNPC
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
         agent.acceleration = 10f * speed;
-        agent.angularSpeed = 135f * speed;
+        agent.angularSpeed = 540f * speed;
+        attackRanges = new float[attacks.Length];
         for (int i = 0; i < attacks.Length; i++)
         {
-            attackRanges = new float[attacks.Length];
             attackRanges[i] = attacks[i].attackRange;
         }
         if (attackRanges.Length > 0)
@@ -92,6 +92,7 @@ public class EnemyNPC : GeneralNPC
             maxAttackRange = 3f;
         }
         currentAttack = attacks[0];
+        currentAttackRange = attackRanges[0];
     }
 
 
@@ -159,6 +160,7 @@ public class EnemyNPC : GeneralNPC
     // Method for when the npc is chasing after the player
     protected virtual void ChasingMovementScript()
     {
+        SelectAttack();
         bool inRange = Physics.CheckSphere(transform.position, stopChaseRange, playerLayer);
         if (!inRange)
         {
@@ -170,7 +172,7 @@ public class EnemyNPC : GeneralNPC
         agent.speed = speed * chaseSpeedModifier;
         agent.SetDestination(player.transform.position);
 
-        inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
+        inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
         if (inRange)
         {
             currentMode = Mode.Attacking;
@@ -184,7 +186,7 @@ public class EnemyNPC : GeneralNPC
     protected virtual void AttackingMovementScript()
     {
         agent.SetDestination(transform.position);
-        bool inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
+        bool inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
         if (!inRange)
         {
             currentMode = Mode.Chasing;
@@ -195,24 +197,26 @@ public class EnemyNPC : GeneralNPC
             return;
         }
         if (attackRanges.Length == 0) return;
-        if (!currentAttack.attackActive)
-        {
-            SelectAttack();
-        }
         inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
-        if (inRange && !currentAttack.attackActive)
+        bool inMinRange = Physics.CheckSphere(transform.position, currentAttack.attackRangeMin, playerLayer);
+        if (inRange && !currentAttack.attackActive && !inMinRange)
         {
             if (Time.time - currentAttack.lastAttackTime > currentAttack.attackCooldown)
             {
                 currentAttack.lastAttackTime = Time.time;
+                currentAttack.attackActive = true;
                 currentAttack.TriggerAttack(agent, player);
+            }
+            else
+            {
+                SelectAttack();
             }
         }
     }
 
 
     // Select attack
-    private void SelectAttack()
+    protected virtual void SelectAttack()
     {
         int attackIndex = Random.Range(0, attackRanges.Length);
 

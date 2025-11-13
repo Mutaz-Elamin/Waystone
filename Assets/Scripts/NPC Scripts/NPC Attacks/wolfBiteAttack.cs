@@ -10,7 +10,8 @@ public class WolfBiteAttack : NpcAttack
     // Basic override of attack stats
     public override float attackTime => 0.6f;
     public override float attackCooldown => 1.2f;
-    public override float attackRange => 1.7f;
+    //public override float attackRange => 1.7f;
+    public override float attackRange => 2.2f;
 
 
     private BoxCollider attackCollider;
@@ -77,7 +78,6 @@ public class WolfBiteAttack : NpcAttack
             yield return null;
         if (attackCollider != null)
         {
-            wolfAnimator.SetBool("Bite", true);
             attackCollider.enabled = true;
         }
 
