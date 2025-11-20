@@ -43,6 +43,8 @@ public class RandomTerrain : MonoBehaviour
 
         float[,] noiseMap = GenerateNoiseMap(heightmapWidth, heightmapHeight, passedNoiseScale, passedSeed);
 
+        ColourTerrain(noiseMap);
+
         for (int y = 0; y < heightmapHeight; y++)
         {
             for (int x = 0; x < heightmapWidth; x++)
@@ -84,5 +86,36 @@ public class RandomTerrain : MonoBehaviour
             }
         }
         return noiseMap;
+    }
+
+    // Method to colour the terrain
+    protected void ColourTerrain(float[,] noiseMap)
+    {
+        int height = noiseMap.GetLength(0);
+        int width = noiseMap.GetLength(1);
+
+        Texture2D texture = new(width, height);
+        Color[] colourMap = new Color[width * height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                colourMap[y * width + x] = Color.Lerp(Color.black, Color.white, noiseMap[y, x]);
+            }
+        }
+
+        texture.SetPixels(colourMap);
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.Apply();
+
+        TerrainLayer terrainLayer = new();
+
+        var layers = terrainData.terrainLayers;
+        terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
+
+        terrainLayer.diffuseTexture = texture;
+        terrainLayer.tileSize = new Vector2(terrainData.size.x, terrainData.size.z);
+        terrainLayer.tileOffset = Vector2.zero;
     }
 }
