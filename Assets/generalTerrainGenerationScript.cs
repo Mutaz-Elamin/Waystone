@@ -4,13 +4,13 @@ using UnityEngine;
 public class RandomTerrain : MonoBehaviour
 {
     // Fields used to control terrain generation - for final version these shouldnt be serialized but set in code per biome
-    [SerializeField] private float noiseScale = 10f;
-    [SerializeField] private float heightMultiplier = 0.03f;
-    [SerializeField] private int seed = 0;
+    [SerializeField] protected float noiseScale = 10f;
+    [SerializeField] protected float heightMultiplier = 0.03f;
+    [SerializeField] protected int seed = 0;
 
     // References to Terrain and TerrainData components data
-    private Terrain terrain;
-    private TerrainData terrainData;
+    protected Terrain terrain;
+    protected TerrainData terrainData;
 
     // Initialize terrain generation on Awake
     private void Awake()
@@ -19,7 +19,7 @@ public class RandomTerrain : MonoBehaviour
         terrainData = terrain.terrainData;
 
         // Call terrain generation method
-        GenerateTerrain();
+        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 
     // Method to regenerate terrain on key press for testing purposes - can be removed in final version
@@ -29,19 +29,19 @@ public class RandomTerrain : MonoBehaviour
         {
             // Regenerate terrain with a new random seed for testing random seed quickly - commented out during most use
             //seed = Random.Range(0, 1000);
-            GenerateTerrain();
+            GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
         }
     }
 
     // Main terrain generation method using Perlin noise
-    private void GenerateTerrain()
+    private void GenerateTerrain(Terrain passedTerrain, TerrainData passedTerrainData, float passedNoiseScale, float passedHeightMultiplier, int passedSeed)
     {
-        int heightmapWidth = terrainData.heightmapResolution;
-        int heightmapHeight = terrainData.heightmapResolution;
+        int heightmapWidth = passedTerrainData.heightmapResolution;
+        int heightmapHeight = passedTerrainData.heightmapResolution;
 
         float[,] heights = new float[heightmapHeight, heightmapWidth];
 
-        Random.InitState(seed);
+        Random.InitState(passedSeed);
         Vector2 randomOffset = new(Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
 
         for (int y = 0; y < heightmapHeight; y++)
@@ -56,13 +56,13 @@ public class RandomTerrain : MonoBehaviour
                 heights[y, x] = sample * heightMultiplier;
             }
         }
-        terrainData.SetHeights(0, 0, heights);
+        passedTerrainData.SetHeights(0, 0, heights);
     }
 
     // Optional: Method to set seeds externally
     public void SetSeed(int newSeed)
     {
         seed = newSeed;
-        GenerateTerrain();
+        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 }
