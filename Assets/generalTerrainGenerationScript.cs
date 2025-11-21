@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Terrain))]
@@ -7,10 +8,14 @@ public class RandomTerrain : MonoBehaviour
     // Fields used to control terrain generation - for final version these shouldnt be serialized but set in code per biome
     [SerializeField] protected float noiseScale = 10f;
     [SerializeField] protected float heightMultiplier = 0.03f;
+    [SerializeField] protected AnimationCurve meshHeightCurve;
     [SerializeField] protected int seed = 0;
     [SerializeField] protected int octaves = 4;
     [SerializeField] protected float persistance = 0.5f;
     [SerializeField] protected float lacunarity = 2f;
+
+    // Fields for terrain types and colours - can be expanded for biomes
+    public TerrainType[] regions;
 
     // References to Terrain and TerrainData components data
     protected Terrain terrain;
@@ -52,7 +57,7 @@ public class RandomTerrain : MonoBehaviour
         {
             for (int x = 0; x < heightmapWidth; x++)
             {
-                noiseMap[y, x] *= passedHeightMultiplier;
+                noiseMap[y, x] *= passedHeightMultiplier * meshHeightCurve.Evaluate(noiseMap[y,x]);
             }
         }
 
@@ -147,7 +152,15 @@ public class RandomTerrain : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                colourMap[y * width + x] = Color.Lerp(Color.black, Color.white, noiseMap[y, x]);
+                float currentHeight = noiseMap[y, x];
+                for (int i = 0; i < regions.Length; i++)
+                {
+                    if (currentHeight <= regions[i].height)
+                    {
+                        colourMap[y * width + x] = regions[i].colour;
+                        break;
+                    }
+                }
             }
         }
 
@@ -164,4 +177,12 @@ public class RandomTerrain : MonoBehaviour
         terrainLayer.tileSize = new Vector2(terrainData.size.x, terrainData.size.z);
         terrainLayer.tileOffset = Vector2.zero;
     }
+}
+
+[Serializable]
+public struct TerrainType
+{
+    public string name;
+    public float height;
+    public Color colour;
 }
