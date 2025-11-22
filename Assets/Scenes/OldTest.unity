@@ -138,8 +138,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravity: -9.8
-  speed: 5
+  speed: 2
   jumpHeight: 1.5
+  crouchTimer: 0
+  slideSpeed: 6
+  slideDuration: 0.6
+  slideHeight: 0.5
+  normalHeight: 2
+  slideControlRed: 0.5
+  dodgeDuration: 0.3
+  dodgeSpeed: 12
+  doubleTapThreshold: 0.25
 --- !u!114 &197717049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,16 +176,20 @@ MonoBehaviour:
   cam: {fileID: 1897959524}
   xSensitivity: 30
   ySensitivity: 30
-  sprintOffset: 2.2
-  sprintSmooth: 5
-  isSprinting: 0
   normalFOV: 60
   sprintFOV: 70
   fovSmooth: 5
-  sprintBobAmount: 1
-  sprintBobSpeed: 10
-  shakeAmount: 0.03
-  shakeDuration: 0.1
+  bobAmount: 0.05
+  bobSpeed: 12
+  slideTilt: 15
+  tiltSmooth: 6
+  dodgePullBack: 0.5
+  dodgeTiltAmount: 8
+  dodgeSmooth: 10
+  isSliding: 0
+  isDodging: 0
+  dodgeDirection: {x: 0, y: 0, z: 0}
+  isSprinting: 0
 --- !u!1 &276028573
 GameObject:
   m_ObjectHideFlags: 0
