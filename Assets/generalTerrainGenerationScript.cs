@@ -235,9 +235,13 @@ public class RandomTerrain : MonoBehaviour
                 {
                     if (x % assetPrefabs[i].assetStep != 0)
                         continue;
+                    if (y % assetPrefabs[i].assetStep != 0)
+                        continue;
                     if (spawnRate < assetPrefabs[i].assetSpawnThreshhold)
                         continue;
                     if (assetPrefabs[i].minHeight > currentHeight || assetPrefabs[i].maxHeight < currentHeight)
+                        continue;
+                    if (UnityEngine.Random.Range(0f, 1f) > assetPrefabs[i].randomSpawnChance)
                         continue;
 
                     // Normalized coordinates across the terrain (0..1)
@@ -283,4 +287,5 @@ public struct TerrainAsset
     public float minHeight;
     public float maxHeight;
     public int assetStep;
+    public float randomSpawnChance;
 }

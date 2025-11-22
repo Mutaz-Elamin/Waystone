@@ -190,7 +190,8 @@ MonoBehaviour:
     minHeight: 0.3
     maxHeight: 0.7
     assetStep: 4
-  assetNoiseScale: 100
+    randomSpawnChance: 0.5
+  assetNoiseScale: 1
   regions:
   - name: Water
     height: 0.2
