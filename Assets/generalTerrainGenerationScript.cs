@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [RequireComponent(typeof(Terrain))]
 public class RandomTerrain : MonoBehaviour
@@ -14,8 +16,17 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected float persistance = 0.5f;
     [SerializeField] protected float lacunarity = 2f;
 
+    // Fields used for spawning assets
+    [Header("Asset Spawning")]
+    [SerializeField] protected int spawnSeed = 0;
+    [SerializeField] protected TerrainAsset[] assetPrefabs;
+    [SerializeField] protected float assetNoiseScale = 20f;
+
+    private readonly System.Collections.Generic.List<GameObject> spawnedAssets = new();
+
     // Fields for terrain types and colours - can be expanded for biomes
-    public TerrainType[] regions;
+    [Header("Terrain Regions")]
+    [SerializeField] protected TerrainType[] regions;
 
     // References to Terrain and TerrainData components data
     protected Terrain terrain;
@@ -27,6 +38,8 @@ public class RandomTerrain : MonoBehaviour
         terrain = GetComponent<Terrain>();
         terrainData = terrain.terrainData;
 
+        spawnSeed = seed * 100;
+
         // Call terrain generation method
         GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
@@ -37,38 +50,24 @@ public class RandomTerrain : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             // Regenerate terrain with a new random seed for testing random seed quickly - commented out during most use
-            //seed = Random.Range(0, 1000);
+            seed = UnityEngine.Random.Range(0, 1000);
             GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
         }
-        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
-    }
-
-    // Main terrain generation method using Perlin noise
-    private void GenerateTerrain(Terrain passedTerrain, TerrainData passedTerrainData, float passedNoiseScale, float passedHeightMultiplier, int passedSeed)
-    {
-        int heightmapWidth = passedTerrainData.heightmapResolution;
-        int heightmapHeight = passedTerrainData.heightmapResolution;
-
-        float[,] noiseMap = GenerateNoiseMap(heightmapWidth, heightmapHeight, passedNoiseScale, octaves, persistance, lacunarity, passedSeed);
-
-        ColourTerrain(noiseMap);
-
-        for (int y = 0; y < heightmapHeight; y++)
-        {
-            for (int x = 0; x < heightmapWidth; x++)
-            {
-                noiseMap[y, x] *= passedHeightMultiplier * meshHeightCurve.Evaluate(noiseMap[y,x]);
-            }
-        }
-
-        passedTerrainData.SetHeights(0, 0, noiseMap);
+        //GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 
     // Optional: Method to set seeds externally
     public void SetSeed(int newSeed)
     {
         seed = newSeed;
+        spawnSeed = newSeed * 100;
         GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+    }
+
+    // Method to get the current seed
+    public int GetSeed()
+    {
+        return seed;
     }
 
     // Method to generate a noise map - can be used for heightmaps or other procedural generation needs
@@ -93,9 +92,6 @@ public class RandomTerrain : MonoBehaviour
             float offsetY = random.Next(-100000, 100000);
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
-
-        //Random.InitState(mapSeed);
-        //Vector2 randomOffset = new(Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
 
         for (int y = 0; y < mapHeight; y++)
         {
@@ -139,6 +135,32 @@ public class RandomTerrain : MonoBehaviour
         return noiseMap;
     }
 
+    // Main terrain generation method using Perlin noise
+    private void GenerateTerrain(Terrain passedTerrain, TerrainData passedTerrainData, float passedNoiseScale, float passedHeightMultiplier, int passedSeed)
+    {
+        int heightmapHeight = passedTerrainData.heightmapResolution;
+        int heightmapWidth = passedTerrainData.heightmapResolution;
+
+        float[,] noiseMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, passedNoiseScale, octaves, persistance, lacunarity, passedSeed);
+
+        float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
+
+        ColourTerrain(noiseMap);
+
+        float[,] heightMap = new float[heightmapHeight, heightmapWidth];
+        for (int y = 0; y < heightmapHeight; y++)
+        {
+            for (int x = 0; x < heightmapWidth; x++)
+            {
+                heightMap[y, x] = noiseMap[y, x] * passedHeightMultiplier * meshHeightCurve.Evaluate(noiseMap[y, x]);
+            }
+        }
+
+        passedTerrainData.SetHeights(0, 0, heightMap);
+
+        GenerateTerrainAssets(spawnMap, noiseMap);
+    }
+
     // Method to colour the terrain
     protected void ColourTerrain(float[,] noiseMap)
     {
@@ -177,6 +199,71 @@ public class RandomTerrain : MonoBehaviour
         terrainLayer.tileSize = new Vector2(terrainData.size.x, terrainData.size.z);
         terrainLayer.tileOffset = Vector2.zero;
     }
+
+    // Method to randomly spawn assets across the terrain
+    private void GenerateTerrainAssets(float[,] spawnMap, float[,] heightMap)
+    {
+        foreach (var asset in spawnedAssets)
+        {
+            if (asset != null)
+            {
+                Destroy(asset);
+            }
+        }
+        spawnedAssets.Clear();
+
+        if (assetPrefabs == null || assetPrefabs.Length == 0)
+        {
+            Debug.LogWarning("No asset prefabs assigned for terrain asset spawning.");
+            return;
+        }
+
+        int height = spawnMap.GetLength(0);
+        int width = spawnMap.GetLength(1);
+
+        Vector3 terrainPos = terrain.transform.position;
+        Vector3 terrainSize = terrainData.size;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                float spawnRate = spawnMap[y, x]; // 0..1
+                float currentHeight = heightMap[y, x];
+
+                for (int i = 0; i < assetPrefabs.Length; i++)
+                {
+                    if (x % assetPrefabs[i].assetStep != 0)
+                        continue;
+                    if (spawnRate < assetPrefabs[i].assetSpawnThreshhold)
+                        continue;
+                    if (assetPrefabs[i].minHeight > currentHeight || assetPrefabs[i].maxHeight < currentHeight)
+                        continue;
+
+                    // Normalized coordinates across the terrain (0..1)
+                    float xNorm = (float)x / (width - 1);
+                    float zNorm = (float)y / (height - 1);
+
+                    // Convert to world position
+                    float worldX = terrainPos.x + xNorm * terrainSize.x;
+                    float worldZ = terrainPos.z + zNorm * terrainSize.z;
+
+                    // Sample terrain height at this position
+                    float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
+
+                    Vector3 spawnPos = new(worldX, worldY, worldZ);
+
+                    // With the following lines:
+                    GameObject prefab = assetPrefabs[i].assetPrefab;
+                    Quaternion rot = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+
+                    GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
+                    spawnedAssets.Add(instance);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 [Serializable]
@@ -185,4 +272,15 @@ public struct TerrainType
     public string name;
     public float height;
     public Color colour;
+}
+
+[Serializable]
+public struct TerrainAsset
+{
+    public string assetName;
+    public GameObject assetPrefab;
+    public float assetSpawnThreshhold;
+    public float minHeight;
+    public float maxHeight;
+    public int assetStep;
 }
