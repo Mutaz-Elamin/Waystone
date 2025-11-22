@@ -52,7 +52,7 @@ public class RandomTerrain : MonoBehaviour
             spawnSeed = seed * 100;
             GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
         }
-        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+        //GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 
     // Optional: Method to set seeds externally
