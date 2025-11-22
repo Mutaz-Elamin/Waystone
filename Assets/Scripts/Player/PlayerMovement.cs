@@ -1,42 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-
     private CharacterController controller;
     private Vector3 playerVelocity;
 
     private bool isGrounded;
     public float gravity = -9.8f;
-    public float speed = 2f;
+    public float speed = 5f;
+    public float targetSpeed;
     public float jumpHeight = 1.5f;
-    CameraLook camMove;
+    public CameraLook camMove;
 
-    //Crouch Related Variables
+    // Crouch
     private bool lerpCrouch;
     private bool crouching = false;
     public float crouchTimer = 0;
+    private float crouchVisualOffset = 0.5f;
+    private Vector3 camStartPos;
+    public float crouchLerpSpeed = 6f; // smoother interpolation
 
-    //Slide Related Vars
+    // Slide
     private bool isSliding = false;
     public float slideSpeed = 6f;
     public float slideDuration = 0.6f;
     private float slideTimer = 0f;
     public float slideHeight = 0.5f;
     public float normalHeight = 2f;
-    public float slideControlRed = 0.5f;
 
-
+    // Dodge
     private bool isDodging = false;
     private float dodgeTimer = 0f;
     public float dodgeDuration = 0.3f;
     public float dodgeSpeed = 12f;
     private Vector3 dodgeDirection = Vector3.zero;
 
+    // Double-tap dodge
     private float lastTapTimeForward = -1f;
     private float lastTapTimeBackward = -1f;
     private float lastTapTimeLeft = -1f;
@@ -44,60 +45,61 @@ public class PlayerMovement : MonoBehaviour
     public float doubleTapThreshold = 0.25f;
     private Vector2 lastInput = Vector2.zero;
 
-
     void Start()
     {
+        targetSpeed = speed;
         controller = GetComponent<CharacterController>();
         camMove = GetComponent<CameraLook>();
+        camStartPos = camMove.cam.transform.localPosition;
     }
 
-    // Update is called once per frame
     void Update()
     {
         isGrounded = controller.isGrounded;
+
+
         if (lerpCrouch)
         {
             crouchTimer += Time.deltaTime;
-            float p = crouchTimer / 1;
-            p *= p;
-            if (crouching)
-            {
-                controller.height = Mathf.Lerp(controller.height, 1, p);
-                speed = 1.7f;
-            }
-            else
-            {
-                controller.height = Mathf.Lerp(controller.height, 2, p);
-                speed = 2;
-            }
+            float p = Mathf.Clamp01(crouchTimer);
 
-            if (p > 1)
+            Vector3 targetCamPos = crouching
+                ? camStartPos - new Vector3(0, crouchVisualOffset, 0)
+                : camStartPos;
+
+            camMove.cam.transform.localPosition = Vector3.Lerp(camMove.cam.transform.localPosition, targetCamPos, Time.deltaTime * crouchLerpSpeed);
+
+            float targetHeight = crouching ? slideHeight : normalHeight;
+            controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * crouchLerpSpeed);
+
+            if (Vector3.Distance(camMove.cam.transform.localPosition, targetCamPos) < 0.01f &&
+                Mathf.Abs(controller.height - targetHeight) < 0.01f)
             {
                 lerpCrouch = false;
                 crouchTimer = 0f;
-
             }
-
         }
-
+        playerVelocity.y += gravity * Time.deltaTime;
+        if (playerVelocity.y < 0)
+        {
+            playerVelocity.y += gravity * (1.5f - 1f) * Time.deltaTime; 
+        }
     }
 
     public void Move(Vector2 input)
     {
-        // --- 0. Double-tap dodge detection ---
+        Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+        bool isMoving = moveDir.sqrMagnitude > 0.01f;
 
+        // --- Double-tap dodge ---
         if (!isSliding && !isDodging)
         {
-            // Right
-
             if (input.x > 0.5f && lastInput.x <= 0.5f)
             {
                 if (Time.time - lastTapTimeRight < doubleTapThreshold)
                     Dodge(transform.right);
                 lastTapTimeRight = Time.time;
             }
-
-            // Left
             else if (input.x < -0.5f && lastInput.x >= -0.5f)
             {
                 if (Time.time - lastTapTimeLeft < doubleTapThreshold)
@@ -105,15 +107,12 @@ public class PlayerMovement : MonoBehaviour
                 lastTapTimeLeft = Time.time;
             }
 
-            // Forward
             if (input.y > 0.5f && lastInput.y <= 0.5f)
             {
                 if (Time.time - lastTapTimeForward < doubleTapThreshold)
                     Dodge(transform.forward);
                 lastTapTimeForward = Time.time;
             }
-
-            // Backward
             else if (input.y < -0.5f && lastInput.y >= -0.5f)
             {
                 if (Time.time - lastTapTimeBackward < doubleTapThreshold)
@@ -121,16 +120,14 @@ public class PlayerMovement : MonoBehaviour
                 lastTapTimeBackward = Time.time;
             }
 
-            lastInput = input; 
+            lastInput = input;
         }
 
-        // --- 1. Slide ---
+        // --- Slide ---
         if (isSliding)
         {
             slideTimer -= Time.deltaTime;
-
             controller.Move(playerVelocity * Time.deltaTime);
-
             playerVelocity.y += gravity * Time.deltaTime;
             controller.Move(Vector3.up * playerVelocity.y * Time.deltaTime);
 
@@ -141,17 +138,14 @@ public class PlayerMovement : MonoBehaviour
                 playerVelocity = Vector3.zero;
                 camMove.isSliding = false;
             }
-
-            return; // skip normal movement while sliding
+            return;
         }
 
-        // --- 2. Dodge ---
+        // --- Dodge ---
         if (isDodging)
         {
             dodgeTimer -= Time.deltaTime;
-
             controller.Move(dodgeDirection * Time.deltaTime);
-
             playerVelocity.y += gravity * Time.deltaTime;
             controller.Move(Vector3.up * playerVelocity.y * Time.deltaTime);
 
@@ -159,102 +153,94 @@ public class PlayerMovement : MonoBehaviour
             {
                 isDodging = false;
                 dodgeDirection = Vector3.zero;
-
                 camMove.isDodging = false;
                 camMove.dodgeDirection = Vector3.zero;
             }
-
-            return; 
+            return;
         }
 
-        // --- 3. Normal movement ---
-        Vector3 moveDir = new Vector3(input.x, 0f, input.y);
+        // --- Normal movement ---
+        speed = Mathf.Lerp(speed, targetSpeed, Time.deltaTime * 5f);
         controller.Move(transform.TransformDirection(moveDir) * speed * Time.deltaTime);
 
         // Gravity
         playerVelocity.y += gravity * Time.deltaTime;
         if (isGrounded && playerVelocity.y < 0)
             playerVelocity.y = -2f;
-
         controller.Move(Vector3.up * playerVelocity.y * Time.deltaTime);
-    }
 
+        camMove.isMoving = isMoving;
+    }
 
     public void Jump()
     {
-
         if (isGrounded && !crouching)
         {
-            playerVelocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravity);
+            float jumpVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity * 1.5f);
+            playerVelocity.y = jumpVelocity;
         }
     }
 
-    public void StartSprinting()
+        public void ToggleSprint()
     {
-        if (isGrounded && !crouching)
+        if (crouching)
         {
-            speed = 8f;
-            camMove.isSprinting = true;
-
+            crouching = false;
+            lerpCrouch = true;
         }
 
+        camMove.isSprinting = !camMove.isSprinting;
+        targetSpeed = camMove.isSprinting ? 8f : 5f;
     }
 
-    public void StopSprinting()
+    public void Crouch(Vector2 input)
     {
-        speed = 5f;
-        camMove.isSprinting = false;
-    }
+        bool isMoving = input.sqrMagnitude > 0.01f;
 
-    public void Crouch()
-    {
         if (isGrounded)
         {
-            if (camMove.isSprinting)
+            if (camMove.isSprinting && isMoving)
             {
                 Slide();
                 return;
             }
-   
-            
-                crouching = !crouching;
-                crouchTimer = 0f;
-                lerpCrouch = true;
+
+            crouching = !crouching;
+            crouchTimer = 0f;
+            lerpCrouch = true;
+
+            if (crouching)
+            {
+                targetSpeed = 2f;
             }
-
-
+            else
+            {
+                targetSpeed = 5f;
+            }
+        }
     }
 
     public void Slide()
     {
         if (isGrounded && camMove.isSprinting && !isSliding)
         {
-
             isSliding = true;
             slideTimer = slideDuration;
-
             controller.height = slideHeight;
-
             Vector3 forward = transform.forward;
             playerVelocity = forward * slideSpeed;
             playerVelocity.y = -2f;
-
             camMove.isSliding = true;
-
         }
     }
 
-
     public void Dodge(Vector3 direction)
     {
-        if (isDodging || !isGrounded) return; // only once per dodge
+        if (isDodging || !isGrounded) return;
         isDodging = true;
         dodgeTimer = dodgeDuration;
         dodgeDirection = direction.normalized * dodgeSpeed;
-
         camMove.isDodging = true;
         camMove.dodgeDirection = direction;
     }
 }
-
-
