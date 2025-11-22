@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Runtime.CompilerServices;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -32,11 +33,15 @@ public class RandomTerrain : MonoBehaviour
     protected Terrain terrain;
     protected TerrainData terrainData;
 
+    // NavMeshSurface reference for NavMesh building
+    protected NavMeshSurface navSurface;
+
     // Initialize terrain generation on Awake
     private void Awake()
     {
         terrain = GetComponent<Terrain>();
         terrainData = terrain.terrainData;
+        navSurface = GetComponent<NavMeshSurface>();
 
         // Call terrain generation method
         GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
@@ -156,6 +161,17 @@ public class RandomTerrain : MonoBehaviour
         }
 
         passedTerrainData.SetHeights(0, 0, heightMap);
+
+
+        if (navSurface != null)
+        {
+            Debug.Log("Building NavMesh...");
+            navSurface.BuildNavMesh();
+        }
+        else
+        {
+            Debug.LogError("NavMeshSurface missing on Terrain GameObject.");
+        }
 
         GenerateTerrainAssets(spawnMap, noiseMap);
     }

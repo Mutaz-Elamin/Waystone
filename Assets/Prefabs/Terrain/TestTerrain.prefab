@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1676654557973936696}
   - component: {fileID: 2760037028007094918}
   - component: {fileID: 1142874805145319405}
-  m_Layer: 0
+  - component: {fileID: 2596973706438122283}
+  m_Layer: 20
   m_Name: TestTerrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,6 +211,22 @@ MonoBehaviour:
     maxHeight: 0.7
     assetStep: 4
     randomSpawnChance: 0.3
+  - assetName: Chicken
+    assetPrefab: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
+    assetSpawnThreshholdMin: 0.5
+    assetSpawnThreshholdMax: 0.8
+    minHeight: 0.4
+    maxHeight: 0.6
+    assetStep: 6
+    randomSpawnChance: 0.5
+  - assetName: Wolf
+    assetPrefab: {fileID: 2833206327871748732, guid: de08d20745aeb8340895208fe0d39ead, type: 3}
+    assetSpawnThreshholdMin: 0.1
+    assetSpawnThreshholdMax: 0.2
+    minHeight: 0.5
+    maxHeight: 0.9
+    assetStep: 12
+    randomSpawnChance: 0.4
   assetNoiseScale: 50
   regions:
   - name: Water
@@ -272,3 +289,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2596973706438122283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002305631318767705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1048576
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
