@@ -38,8 +38,6 @@ public class RandomTerrain : MonoBehaviour
         terrain = GetComponent<Terrain>();
         terrainData = terrain.terrainData;
 
-        spawnSeed = seed * 100;
-
         // Call terrain generation method
         GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
@@ -51,9 +49,10 @@ public class RandomTerrain : MonoBehaviour
         {
             // Regenerate terrain with a new random seed for testing random seed quickly - commented out during most use
             seed = UnityEngine.Random.Range(0, 1000);
+            spawnSeed = seed * 100;
             GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
         }
-        //GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 
     // Optional: Method to set seeds externally
@@ -237,7 +236,7 @@ public class RandomTerrain : MonoBehaviour
                         continue;
                     if (y % assetPrefabs[i].assetStep != 0)
                         continue;
-                    if (spawnRate < assetPrefabs[i].assetSpawnThreshhold)
+                    if (spawnRate < assetPrefabs[i].assetSpawnThreshholdMin || spawnRate > assetPrefabs[i].assetSpawnThreshholdMax)
                         continue;
                     if (assetPrefabs[i].minHeight > currentHeight || assetPrefabs[i].maxHeight < currentHeight)
                         continue;
@@ -283,7 +282,8 @@ public struct TerrainAsset
 {
     public string assetName;
     public GameObject assetPrefab;
-    public float assetSpawnThreshhold;
+    public float assetSpawnThreshholdMin;
+    public float assetSpawnThreshholdMax;
     public float minHeight;
     public float maxHeight;
     public int assetStep;
