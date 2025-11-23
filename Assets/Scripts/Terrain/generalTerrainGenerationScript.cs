@@ -256,6 +256,15 @@ public class RandomTerrain : MonoBehaviour
         int height = spawnMap.GetLength(0);
         int width = spawnMap.GetLength(1);
 
+        GameObject[] parentPrefabs = new GameObject[assets.Length];
+        for (int i = 0; i < assets.Length; i++)
+        {
+            GameObject parentObject = new(assets[i].assetName + " Assets");
+            parentObject.transform.parent = terrain.transform;
+            parentObject.transform.localPosition = Vector3.zero;
+            parentPrefabs[i] = parentObject;
+        }
+
         Vector3 terrainPos = terrain.transform.position;
         Vector3 terrainSize = terrainData.size;
 
@@ -302,6 +311,7 @@ public class RandomTerrain : MonoBehaviour
                         Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
 
                         GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
+                        instance.transform.parent = parentPrefabs[i].transform;
                         spawnedArray.Add(instance);
 
                         if (c < clusterCount - 1)
