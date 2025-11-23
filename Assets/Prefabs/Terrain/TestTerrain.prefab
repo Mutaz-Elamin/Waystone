@@ -209,33 +209,23 @@ MonoBehaviour:
     assetSpawnThreshholdMax: 0.7
     minHeight: 0.3
     maxHeight: 0.7
-    assetStep: 2
-    randomSpawnChance: 0.1
-    clusterMinCount: 1
-    clusterMaxCount: 3
-    clusterSpread: 5
+    assetStep: 8
+    randomSpawnChance: 0.4
+    clusterMinCount: 8
+    clusterMaxCount: 20
+    clusterSpread: 25
+  npcPrefabs:
   - assetName: Chicken
     assetPrefab: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
     assetSpawnThreshholdMin: 0.5
-    assetSpawnThreshholdMax: 0.8
+    assetSpawnThreshholdMax: 0.7
     minHeight: 0.4
     maxHeight: 0.6
-    assetStep: 6
-    randomSpawnChance: 0.5
-    clusterMinCount: 1
-    clusterMaxCount: 1
-    clusterSpread: 0
-  - assetName: Wolf
-    assetPrefab: {fileID: 2833206327871748732, guid: de08d20745aeb8340895208fe0d39ead, type: 3}
-    assetSpawnThreshholdMin: 0.1
-    assetSpawnThreshholdMax: 0.2
-    minHeight: 0.5
-    maxHeight: 0.9
     assetStep: 12
-    randomSpawnChance: 0.4
-    clusterMinCount: 1
-    clusterMaxCount: 1
-    clusterSpread: 0
+    randomSpawnChance: 0.5
+    clusterMinCount: 3
+    clusterMaxCount: 6
+    clusterSpread: 2
   assetNoiseScale: 50
   regions:
   - name: Water

@@ -22,9 +22,11 @@ public class RandomTerrain : MonoBehaviour
     [Header("Asset Spawning")]
     [SerializeField] protected int spawnSeed = 0;
     [SerializeField] protected TerrainAsset[] assetPrefabs;
+    [SerializeField] protected TerrainAsset[] npcPrefabs;
     [SerializeField] protected float assetNoiseScale = 20f;
 
     private readonly System.Collections.Generic.List<GameObject> spawnedAssets = new();
+    private readonly System.Collections.Generic.List<GameObject> spawnedNpcs = new();
 
     // Fields for terrain types and colours - can be expanded for biomes
     [Header("Terrain Regions")]
@@ -45,7 +47,7 @@ public class RandomTerrain : MonoBehaviour
         navSurface = GetComponent<NavMeshSurface>();
 
         // Call terrain generation method
-        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+        GenerateTerrain(this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 
     // Method to regenerate terrain on key press for testing purposes - can be removed in final version
@@ -56,7 +58,7 @@ public class RandomTerrain : MonoBehaviour
             // Regenerate terrain with a new random seed for testing random seed quickly - commented out during most use
             seed = UnityEngine.Random.Range(0, 1000);
             spawnSeed = seed * 100;
-            GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+            GenerateTerrain(this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
         }
         //GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
@@ -66,7 +68,7 @@ public class RandomTerrain : MonoBehaviour
     {
         seed = newSeed;
         spawnSeed = newSeed * 100;
-        GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+        GenerateTerrain(this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
 
     // Method to get the current seed
@@ -141,7 +143,7 @@ public class RandomTerrain : MonoBehaviour
     }
 
     // Main terrain generation method using Perlin noise
-    private void GenerateTerrain(Terrain passedTerrain, TerrainData passedTerrainData, float passedNoiseScale, float passedHeightMultiplier, int passedSeed)
+    private void GenerateTerrain(TerrainData passedTerrainData, float passedNoiseScale, float passedHeightMultiplier, int passedSeed)
     {
         int heightmapHeight = passedTerrainData.heightmapResolution;
         int heightmapWidth = passedTerrainData.heightmapResolution;
@@ -149,6 +151,7 @@ public class RandomTerrain : MonoBehaviour
         float[,] noiseMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, passedNoiseScale, octaves, persistance, lacunarity, passedSeed);
 
         float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
+        float[,] npcMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed * 1000);
 
         ColourTerrain(noiseMap);
 
@@ -174,7 +177,8 @@ public class RandomTerrain : MonoBehaviour
             Debug.LogError("NavMeshSurface missing on Terrain GameObject.");
         }
 
-        GenerateTerrainAssets(spawnMap, noiseMap);
+        SpawnTerrainAssets(spawnMap, noiseMap, assetPrefabs, spawnedAssets);
+        SpawnTerrainAssets(npcMap, noiseMap, npcPrefabs, spawnedNpcs);
     }
 
     // Method to colour the terrain
@@ -217,18 +221,18 @@ public class RandomTerrain : MonoBehaviour
     }
 
     // Method to randomly spawn assets across the terrain
-    private void GenerateTerrainAssets(float[,] spawnMap, float[,] heightMap)
+    private void SpawnTerrainAssets(float[,] spawnMap, float[,] heightMap, TerrainAsset[] assets, System.Collections.Generic.List<GameObject> spawnedArray)
     {
-        foreach (var asset in spawnedAssets)
+        foreach (var asset in spawnedArray)
         {
             if (asset != null)
             {
                 Destroy(asset);
             }
         }
-        spawnedAssets.Clear();
+        spawnedArray.Clear();
 
-        if (assetPrefabs == null || assetPrefabs.Length == 0)
+        if (assets == null || assets.Length == 0)
         {
             Debug.LogWarning("No asset prefabs assigned for terrain asset spawning.");
             return;
@@ -247,17 +251,17 @@ public class RandomTerrain : MonoBehaviour
                 float spawnRate = spawnMap[y, x]; // 0..1
                 float currentHeight = heightMap[y, x];
 
-                for (int i = 0; i < assetPrefabs.Length; i++)
+                for (int i = 0; i < assets.Length; i++)
                 {
-                    if (x % assetPrefabs[i].assetStep != 0)
+                    if (x % assets[i].assetStep != 0)
                         continue;
-                    if (y % assetPrefabs[i].assetStep != 0)
+                    if (y % assets[i].assetStep != 0)
                         continue;
-                    if (spawnRate < assetPrefabs[i].assetSpawnThreshholdMin || spawnRate > assetPrefabs[i].assetSpawnThreshholdMax)
+                    if (spawnRate < assets[i].assetSpawnThreshholdMin || spawnRate > assets[i].assetSpawnThreshholdMax)
                         continue;
-                    if (assetPrefabs[i].minHeight > currentHeight || assetPrefabs[i].maxHeight < currentHeight)
+                    if (assets[i].minHeight > currentHeight || assets[i].maxHeight < currentHeight)
                         continue;
-                    if (UnityEngine.Random.Range(0f, 1f) > assetPrefabs[i].randomSpawnChance)
+                    if (UnityEngine.Random.Range(0f, 1f) > assets[i].randomSpawnChance * 0.1)
                         continue;
 
                     // Normalized coordinates across the terrain (0..1)
@@ -268,22 +272,22 @@ public class RandomTerrain : MonoBehaviour
                     float worldX = terrainPos.x + xNorm * terrainSize.x;
                     float worldZ = terrainPos.z + zNorm * terrainSize.z;
 
-                    int minCount = Mathf.Max(1, assetPrefabs[i].clusterMinCount);
-                    int maxCount = Mathf.Max(minCount, assetPrefabs[i].clusterMaxCount);
+                    int minCount = Mathf.Max(1, assets[i].clusterMinCount);
+                    int maxCount = Mathf.Max(minCount, assets[i].clusterMaxCount);
                     int clusterCount = UnityEngine.Random.Range(minCount, maxCount + 1);
 
-                    float assetDistance = assetPrefabs[i].clusterSpread * UnityEngine.Random.Range(0.75f, 1.3f);
+                    float assetDistance = assets[i].clusterSpread * UnityEngine.Random.Range(0.75f, 1.3f);
 
                     for (int c = 0; c < clusterCount; c++)
                     {
                         float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
                         Vector3 spawnPos = new(worldX, worldY, worldZ);
 
-                        GameObject prefab = assetPrefabs[i].assetPrefab;
+                        GameObject prefab = assets[i].assetPrefab;
                         Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
 
                         GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
-                        spawnedAssets.Add(instance);
+                        spawnedArray.Add(instance);
 
                         if (c < clusterCount - 1)
                         {
