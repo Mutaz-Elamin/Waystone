@@ -6,10 +6,14 @@ using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.VFX;
 
-[RequireComponent(typeof(Terrain))]
 public class RandomTerrain : MonoBehaviour
 {
+    [Header("Generated Terrain Settings")]
+    [SerializeField] protected int heightmapResolution = 1025;
+    [SerializeField] protected Vector3 terrainSize = new Vector3(1000, 1000, 1000);
+
     // Fields used to control terrain generation - for final version these shouldnt be serialized but set in code per biome
+    [Header("Terrain Generation Settings")]
     [SerializeField] protected float noiseScale = 10f;
     [SerializeField] protected float heightMultiplier = 0.03f;
     [SerializeField] protected AnimationCurve meshHeightCurve;
@@ -42,12 +46,23 @@ public class RandomTerrain : MonoBehaviour
     // Initialize terrain generation on Awake
     private void Awake()
     {
-        terrain = GetComponent<Terrain>();
-        terrainData = terrain.terrainData;
-        navSurface = GetComponent<NavMeshSurface>();
+        terrainData = new TerrainData();
+        terrainData.heightmapResolution = heightmapResolution;
+        terrainData.size = terrainSize;
+
+        GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
+        terrainObject.name = "Procedural Terrain";
+        terrainObject.transform.parent = this.transform;
+        terrainObject.transform.localPosition = Vector3.zero;
+        terrainObject.layer = LayerMask.NameToLayer("NavMesh");
+
+        terrain = terrainObject.GetComponent<Terrain>();
+
+        navSurface = terrainObject.AddComponent<NavMeshSurface>();
+        navSurface.layerMask = LayerMask.GetMask("NavMesh");
 
         // Call terrain generation method
-        GenerateTerrain(this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+        GenerateTerrain();
     }
 
     // Method to regenerate terrain on key press for testing purposes - can be removed in final version
@@ -58,7 +73,7 @@ public class RandomTerrain : MonoBehaviour
             // Regenerate terrain with a new random seed for testing random seed quickly - commented out during most use
             seed = UnityEngine.Random.Range(0, 1000);
             spawnSeed = seed * 100;
-            GenerateTerrain(this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+            GenerateTerrain();
         }
         //GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
     }
@@ -68,7 +83,7 @@ public class RandomTerrain : MonoBehaviour
     {
         seed = newSeed;
         spawnSeed = newSeed * 100;
-        GenerateTerrain(this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
+        GenerateTerrain();
     }
 
     // Method to get the current seed
@@ -143,12 +158,12 @@ public class RandomTerrain : MonoBehaviour
     }
 
     // Main terrain generation method using Perlin noise
-    private void GenerateTerrain(TerrainData passedTerrainData, float passedNoiseScale, float passedHeightMultiplier, int passedSeed)
+    private void GenerateTerrain()
     {
-        int heightmapHeight = passedTerrainData.heightmapResolution;
-        int heightmapWidth = passedTerrainData.heightmapResolution;
+        int heightmapHeight = terrainData.heightmapResolution;
+        int heightmapWidth = terrainData.heightmapResolution;
 
-        float[,] noiseMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, passedNoiseScale, octaves, persistance, lacunarity, passedSeed);
+        float[,] noiseMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, noiseScale, octaves, persistance, lacunarity, seed);
 
         float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
         float[,] npcMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed * 1000);
@@ -160,11 +175,11 @@ public class RandomTerrain : MonoBehaviour
         {
             for (int x = 0; x < heightmapWidth; x++)
             {
-                heightMap[y, x] = noiseMap[y, x] * passedHeightMultiplier * meshHeightCurve.Evaluate(noiseMap[y, x]);
+                heightMap[y, x] = noiseMap[y, x] * heightMultiplier * meshHeightCurve.Evaluate(noiseMap[y, x]);
             }
         }
 
-        passedTerrainData.SetHeights(0, 0, heightMap);
+        terrainData.SetHeights(0, 0, heightMap);
 
 
         if (navSurface != null)
