@@ -204,7 +204,7 @@ MonoBehaviour:
   spawnSeed: 1000
   assetPrefabs:
   - assetName: Tree
-    assetPrefab: {fileID: 245300629925737006, guid: 5b52d12b21d21b948a90f203cb20fc68, type: 3}
+    assetPrefab: {fileID: 4796221756594958542, guid: 85c26c44dc5dc80478f7d952a7adc7d9, type: 3}
     assetSpawnThreshholdMin: 0.5
     assetSpawnThreshholdMax: 0.7
     minHeight: 0.3

@@ -274,7 +274,7 @@ public class RandomTerrain : MonoBehaviour
 
                     // With the following lines:
                     GameObject prefab = assetPrefabs[i].assetPrefab;
-                    Quaternion rot = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+                    Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
 
                     GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
                     spawnedAssets.Add(instance);
