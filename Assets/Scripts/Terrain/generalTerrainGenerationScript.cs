@@ -222,6 +222,7 @@ public class RandomTerrain : MonoBehaviour
         }
 
         texture.SetPixels(colourMap);
+        texture.filterMode = FilterMode.Point;
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.Apply();
 
