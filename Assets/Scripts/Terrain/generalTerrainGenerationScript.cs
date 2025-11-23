@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Runtime.CompilerServices;
 using Unity.AI.Navigation;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -267,17 +268,36 @@ public class RandomTerrain : MonoBehaviour
                     float worldX = terrainPos.x + xNorm * terrainSize.x;
                     float worldZ = terrainPos.z + zNorm * terrainSize.z;
 
-                    // Sample terrain height at this position
-                    float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
+                    int minCount = Mathf.Max(1, assetPrefabs[i].clusterMinCount);
+                    int maxCount = Mathf.Max(minCount, assetPrefabs[i].clusterMaxCount);
+                    int clusterCount = UnityEngine.Random.Range(minCount, maxCount + 1);
 
-                    Vector3 spawnPos = new(worldX, worldY, worldZ);
+                    float assetDistance = assetPrefabs[i].clusterSpread * UnityEngine.Random.Range(0.75f, 1.3f);
 
-                    // With the following lines:
-                    GameObject prefab = assetPrefabs[i].assetPrefab;
-                    Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
+                    for (int c = 0; c < clusterCount; c++)
+                    {
+                        float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
+                        Vector3 spawnPos = new(worldX, worldY, worldZ);
 
-                    GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
-                    spawnedAssets.Add(instance);
+                        GameObject prefab = assetPrefabs[i].assetPrefab;
+                        Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
+
+                        GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
+                        spawnedAssets.Add(instance);
+
+                        if (c < clusterCount - 1)
+                        {
+                            float angle = UnityEngine.Random.Range(0f, 360f);
+                            float posx = Mathf.Cos(angle) * assetDistance;
+                            float posz = Mathf.Sin(angle) * assetDistance;
+
+                            float nextX = worldX + posx;
+                            float nextZ = worldZ + posz;
+
+                            worldX = Mathf.Clamp(nextX, terrainPos.x, terrainPos.x + terrainSize.x);
+                            worldZ = Mathf.Clamp(nextZ, terrainPos.z, terrainPos.z + terrainSize.z);
+                        }
+                    }
                     break;
                 }
             }
@@ -304,4 +324,7 @@ public struct TerrainAsset
     public float maxHeight;
     public int assetStep;
     public float randomSpawnChance;
+    public int clusterMinCount;
+    public int clusterMaxCount;
+    public float clusterSpread;
 }
