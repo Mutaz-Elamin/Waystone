@@ -29,6 +29,8 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected float falloffSlope;
     [Range(0,10)]
     [SerializeField] protected float falloffPosition;
+    [Range(0,15)]
+    [SerializeField] protected int falloffMultiplier;
 
     // Fields used for spawning assets
     [Header("Asset Spawning")]
@@ -214,13 +216,13 @@ public class RandomTerrain : MonoBehaviour
                 if (falloff)
                 {
                     noiseMap[y, x] = Mathf.Clamp01(noiseMap[y, x] - falloffMap[y, x]);
+                    noiseMap[y, x] = Mathf.Clamp01(noiseMap[y, x] * (1f + falloffMultiplier * 0.025f));
                 }
 
                 heightMap[y, x] = noiseMap[y, x] * heightMultiplier * meshHeightCurve.Evaluate(noiseMap[y, x]);
             }
         }
 
-        //ColourTerrain(falloffMap);
         ColourTerrain(noiseMap);
 
         terrainData.SetHeights(0, 0, heightMap);
@@ -269,7 +271,6 @@ public class RandomTerrain : MonoBehaviour
                         break;
                     }
                 }
-                //colourMap[y * width + x] = Color.Lerp(Color.black, Color.white, currentHeight);
             }
         }
 
@@ -330,16 +331,10 @@ public class RandomTerrain : MonoBehaviour
 
                 for (int i = 0; i < assets.Length; i++)
                 {
-                    if (x % assets[i].assetStep != 0)
+                    if (!SpawnAssetRequirements(assets[i], x, y, spawnRate, currentHeight, true))
+                    {
                         continue;
-                    if (y % assets[i].assetStep != 0)
-                        continue;
-                    if (spawnRate < assets[i].assetSpawnThreshholdMin || spawnRate > assets[i].assetSpawnThreshholdMax)
-                        continue;
-                    if (assets[i].minHeight > currentHeight || assets[i].maxHeight < currentHeight)
-                        continue;
-                    if (UnityEngine.Random.Range(0f, 1f) > assets[i].randomSpawnChance * 0.1)
-                        continue;
+                    }
 
                     // Normalized coordinates across the terrain (0..1)
                     float xNorm = (float)x / (width - 1);
@@ -357,16 +352,24 @@ public class RandomTerrain : MonoBehaviour
 
                     for (int c = 0; c < clusterCount; c++)
                     {
-                        float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
-                        Vector3 spawnPos = new(worldX, worldY, worldZ);
+                        int mapX = Mathf.RoundToInt((worldX - terrainPos.x) / terrainSize.x * (width - 1));
+                        int mapY = Mathf.RoundToInt((worldZ - terrainPos.z) / terrainSize.z * (height - 1));
 
-                        GameObject prefab = assets[i].assetPrefab;
-                        Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
+                        mapX = Mathf.Clamp(mapX, 0, width - 1);
+                        mapY = Mathf.Clamp(mapY, 0, height - 1);
 
-                        GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
-                        instance.transform.parent = parentPrefabs[i].transform;
-                        spawnedArray.Add(instance);
+                        if (SpawnAssetRequirements(assets[i], worldX, worldZ, spawnMap[mapY, mapX], heightMap[mapY, mapX], false))
+                        {
+                            float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
+                            Vector3 spawnPos = new(worldX, worldY, worldZ);
 
+                            GameObject prefab = assets[i].assetPrefab;
+                            Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
+
+                            GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
+                            instance.transform.parent = parentPrefabs[i].transform;
+                            spawnedArray.Add(instance);
+                        }
                         if (c < clusterCount - 1)
                         {
                             float angle = UnityEngine.Random.Range(0f, 360f);
@@ -384,6 +387,26 @@ public class RandomTerrain : MonoBehaviour
                 }
             }
         }
+    }
+
+    protected bool SpawnAssetRequirements(TerrainAsset asset, float x, float y, float spawnRate, float currentHeight, bool checkStep)
+    {
+        if (checkStep)
+        {
+            if (x % asset.assetStep != 0)
+                return false;
+            if (y % asset.assetStep != 0)
+                return false;
+            if (spawnRate < asset.assetSpawnThreshholdMin || spawnRate > asset.assetSpawnThreshholdMax)
+                return false;
+            if (UnityEngine.Random.Range(0f, 1f) > asset.randomSpawnChance * 0.1)
+                return false;
+        }
+        if (asset.minHeight > currentHeight || asset.maxHeight < currentHeight)
+        {
+            return false;
+        }
+        return true;
     }
 }
 
