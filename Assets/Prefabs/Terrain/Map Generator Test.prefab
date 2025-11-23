@@ -47,7 +47,7 @@ MonoBehaviour:
   heightmapResolution: 1025
   terrainSize: {x: 1000, y: 1000, z: 1000}
   noiseScale: 200
-  heightMultiplier: 0.075
+  heightMultiplier: 0.055
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -139,6 +139,11 @@ MonoBehaviour:
   octaves: 4
   persistance: 0.55
   lacunarity: 3
+  falloff: 1
+  falloffSlope: 1.1
+  falloffPosition: 4.12
+  spawnAssets: 1
+  spawnNpcs: 0
   spawnSeed: 100
   assetPrefabs:
   - assetName: Tree

@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Runtime.CompilerServices;
+using System.Xml;
 using Unity.AI.Navigation;
 using UnityEditor.VersionControl;
 using UnityEngine;
@@ -22,8 +23,17 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected float persistance = 0.5f;
     [SerializeField] protected float lacunarity = 2f;
 
+    [Header("Falloff Map Settings")]
+    [SerializeField] protected bool falloff = false;
+    [Range(-10,10)]
+    [SerializeField] protected float falloffSlope;
+    [Range(0,10)]
+    [SerializeField] protected float falloffPosition;
+
     // Fields used for spawning assets
     [Header("Asset Spawning")]
+    [SerializeField] protected bool spawnAssets = true;
+    [SerializeField] protected bool spawnNpcs = true;
     [SerializeField] protected int spawnSeed = 0;
     [SerializeField] protected TerrainAsset[] assetPrefabs;
     [SerializeField] protected TerrainAsset[] npcPrefabs;
@@ -157,6 +167,30 @@ public class RandomTerrain : MonoBehaviour
         return noiseMap;
     }
 
+    protected float[,] GenerateFalloffMap(int dim)
+    {
+        float[,] falloffMap = new float[dim,dim];
+
+        for (int y = 0; y < dim; y++)
+        {
+            for (int x = 0; x < dim; x++)
+            {
+                float relY = y / (float)dim * 2 - 1;
+                float relX = x / (float)dim * 2 - 1;
+            
+                float falloffValue = Mathf.Max(Mathf.Abs(relY), Mathf.Abs(relX));
+                falloffValue = CalculateFalloffValue(falloffValue);
+                falloffMap[y, x] += falloffValue;
+            }
+        }
+        return falloffMap;
+    }
+
+    protected float CalculateFalloffValue(float value)
+    {
+        return Mathf.Pow(value, falloffSlope) / (Mathf.Pow(value, falloffSlope) + Mathf.Pow(falloffPosition - falloffPosition * value, falloffSlope));
+    }
+
     // Main terrain generation method using Perlin noise
     private void GenerateTerrain()
     {
@@ -164,36 +198,53 @@ public class RandomTerrain : MonoBehaviour
         int heightmapWidth = terrainData.heightmapResolution;
 
         float[,] noiseMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, noiseScale, octaves, persistance, lacunarity, seed);
-
-        float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
-        float[,] npcMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed * 1000);
-
-        ColourTerrain(noiseMap);
+        float[,] falloffMap = GenerateFalloffMap(heightmapWidth);
 
         float[,] heightMap = new float[heightmapHeight, heightmapWidth];
+
+        if (falloff)
+        {
+            Debug.Log("Falloff On");
+        }
+
         for (int y = 0; y < heightmapHeight; y++)
         {
             for (int x = 0; x < heightmapWidth; x++)
             {
+                if (falloff)
+                {
+                    noiseMap[y, x] = Mathf.Clamp01(noiseMap[y, x] - falloffMap[y, x]);
+                }
+
                 heightMap[y, x] = noiseMap[y, x] * heightMultiplier * meshHeightCurve.Evaluate(noiseMap[y, x]);
             }
         }
 
+        //ColourTerrain(falloffMap);
+        ColourTerrain(noiseMap);
+
         terrainData.SetHeights(0, 0, heightMap);
 
-
-        if (navSurface != null)
+        if (spawnAssets) 
         {
-            Debug.Log("Building NavMesh...");
-            navSurface.BuildNavMesh();
-        }
-        else
-        {
-            Debug.LogError("NavMeshSurface missing on Terrain GameObject.");
+            float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
+            SpawnTerrainAssets(spawnMap, noiseMap, assetPrefabs, spawnedAssets);
         }
 
-        SpawnTerrainAssets(spawnMap, noiseMap, assetPrefabs, spawnedAssets);
-        SpawnTerrainAssets(npcMap, noiseMap, npcPrefabs, spawnedNpcs);
+        if (spawnNpcs)
+        {
+            float[,] npcMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed * 1000);
+            if (navSurface != null)
+            {
+                Debug.Log("Building NavMesh...");
+                navSurface.BuildNavMesh();
+            }
+            else
+            {
+                Debug.LogError("NavMeshSurface missing on Terrain GameObject.");
+            }
+            SpawnTerrainAssets(npcMap, noiseMap, npcPrefabs, spawnedNpcs);
+        }
     }
 
     // Method to colour the terrain
@@ -218,6 +269,7 @@ public class RandomTerrain : MonoBehaviour
                         break;
                     }
                 }
+                //colourMap[y * width + x] = Color.Lerp(Color.black, Color.white, currentHeight);
             }
         }
 
