@@ -134,8 +134,8 @@ public class RandomTerrain : MonoBehaviour
 
         for (int i = 0; i < octaves; i++)
         {
-            float offsetX = random.Next(-100000, 100000);
-            float offsetY = random.Next(-100000, 100000);
+            float offsetX = random.Next(-1000, 1000);
+            float offsetY = random.Next(-1000, 1000);
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
 

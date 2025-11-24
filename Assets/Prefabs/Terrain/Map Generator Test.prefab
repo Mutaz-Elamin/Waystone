@@ -46,8 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightmapResolution: 1025
   terrainSize: {x: 1000, y: 1000, z: 1000}
-  noiseScale: 500
-  heightMultiplier: 0.16
+  noiseScale: 200
+  heightMultiplier: 0.05
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -176,7 +176,7 @@ MonoBehaviour:
   - name: Water
     startHeight: 0
     colour: {r: 0.08009967, g: 0.3194844, b: 0.6792453, a: 0}
-    blend: 10
+    blend: 8
   - name: Sand
     startHeight: 0.025
     colour: {r: 0.6320754, g: 0.54607534, b: 0.33094516, a: 0}
@@ -188,12 +188,12 @@ MonoBehaviour:
   - name: Grass 2
     startHeight: 0.12
     colour: {r: 0.021359911, g: 0.3018868, b: 0.09469338, a: 0}
-    blend: 10
+    blend: 7
   - name: Mountain
     startHeight: 0.29
     colour: {r: 0.33962262, g: 0.27671006, b: 0.20986114, a: 0}
-    blend: 10
+    blend: 5
   - name: Snow
-    startHeight: 0.91
+    startHeight: 1
     colour: {r: 0.6840513, g: 0.7924528, b: 0.7677987, a: 0}
-    blend: 10
+    blend: 2
