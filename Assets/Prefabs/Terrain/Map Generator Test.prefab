@@ -177,7 +177,7 @@ MonoBehaviour:
     startHeight: 0
     colour: {r: 0.08009967, g: 0.3194844, b: 0.6792453, a: 0}
   - name: Sand
-    startHeight: 0.022
+    startHeight: 0.025
     colour: {r: 0.6320754, g: 0.54607534, b: 0.33094516, a: 0}
   - name: Grass 1
     startHeight: 0.055
@@ -186,7 +186,7 @@ MonoBehaviour:
     startHeight: 0.12
     colour: {r: 0.021359911, g: 0.3018868, b: 0.09469338, a: 0}
   - name: Mountain
-    startHeight: 0.31
+    startHeight: 0.29
     colour: {r: 0.33962262, g: 0.27671006, b: 0.20986114, a: 0}
   - name: Snow
     startHeight: 0.91

@@ -49,6 +49,9 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected Material terrainMaterial;
     protected Texture2D terrainHeightTexture;
     [SerializeField] protected TerrainType[] regions;
+    private float maxMultiplier;
+    private float minWorldHeight;
+    private float maxWorldHeight;
 
     // References to Terrain and TerrainData components data
     protected Terrain terrain;
@@ -236,7 +239,7 @@ public class RandomTerrain : MonoBehaviour
         if (spawnAssets)
         {
             float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
-            SpawnTerrainAssets(spawnMap, noiseMap, assetPrefabs, spawnedAssets);
+            SpawnTerrainAssets(spawnMap, heightMap, assetPrefabs, spawnedAssets);
         }
 
         if (spawnNpcs)
@@ -251,7 +254,7 @@ public class RandomTerrain : MonoBehaviour
             {
                 Debug.LogError("NavMeshSurface missing on Terrain GameObject.");
             }
-            SpawnTerrainAssets(npcMap, noiseMap, npcPrefabs, spawnedNpcs);
+            SpawnTerrainAssets(npcMap, heightMap, npcPrefabs, spawnedNpcs);
         }
     }
 
@@ -272,10 +275,10 @@ public class RandomTerrain : MonoBehaviour
         if (terrain == null || terrain.materialTemplate == null) return;
 
         float curveMax = GetCurveMax(meshHeightCurve);
-        float maxMultiplier = Mathf.Clamp01(heightMultiplier * curveMax);
+        maxMultiplier = Mathf.Clamp01(heightMultiplier * curveMax);
 
-        float minWorldHeight = terrain.transform.position.y;
-        float maxWorldHeight = minWorldHeight + maxMultiplier * terrainData.size.y;
+        minWorldHeight = terrain.transform.position.y;
+        maxWorldHeight = minWorldHeight + maxMultiplier * terrainData.size.y;
 
         Material material = terrain.materialTemplate;
         material.SetFloat("minHeight", minWorldHeight);
@@ -344,7 +347,13 @@ public class RandomTerrain : MonoBehaviour
             for (int x = 0; x < width; x++)
             {
                 float spawnRate = spawnMap[y, x]; // 0..1
-                float currentHeight = heightMap[y, x];
+                float heightFraction = 0f;
+                if (maxMultiplier > 0f)
+                {
+                    heightFraction = Mathf.Clamp01(heightMap[y, x] / maxMultiplier);
+                }
+
+                float currentHeight = heightFraction;
 
                 for (int i = 0; i < assets.Length; i++)
                 {
@@ -374,8 +383,15 @@ public class RandomTerrain : MonoBehaviour
 
                         mapX = Mathf.Clamp(mapX, 0, width - 1);
                         mapY = Mathf.Clamp(mapY, 0, height - 1);
+                        
+                        heightFraction = 0f;
+                        if (maxMultiplier > 0f)
+                        {
+                            heightFraction = Mathf.Clamp01(heightMap[mapY, mapX] / maxMultiplier);
+                        }
+                        currentHeight = heightFraction;
 
-                        if (SpawnAssetRequirements(assets[i], worldX, worldZ, spawnMap[mapY, mapX], heightMap[mapY, mapX], false))
+                        if (SpawnAssetRequirements(assets[i], worldX, worldZ, spawnMap[mapY, mapX], currentHeight, false))
                         {
                             float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
                             Vector3 spawnPos = new(worldX, worldY, worldZ);
