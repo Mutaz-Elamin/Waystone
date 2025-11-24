@@ -400,9 +400,11 @@ public class RandomTerrain : MonoBehaviour
                             Vector3 spawnPos = new(worldX, worldY, worldZ);
 
                             GameObject prefab = assets[i].assetPrefab;
-                            Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.Range(-5f, 5f));
+                            Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(assets[i].minXrotation, assets[i].maxXrotation), UnityEngine.Random.Range(assets[i].minYrotation, assets[i].maxYrotation), UnityEngine.Random.Range(assets[i].minZrotation, assets[i].minZrotation));
 
                             GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
+                            float scaleMultiplier = UnityEngine.Random.Range(assets[i].minScale, assets[i].maxScale);
+                            instance.transform.localScale *= scaleMultiplier;
                             instance.transform.parent = parentPrefabs[i].transform;
                             spawnedArray.Add(instance);
                         }
@@ -462,6 +464,22 @@ public struct TerrainAsset
 {
     public string assetName;
     public GameObject assetPrefab;
+    [Range (0.5f, 2f)]
+    public float minScale;
+    [Range (0.5f, 2f)]
+    public float maxScale;
+    [Range (-360f, 360f)]
+    public float minXrotation;
+    [Range (-360f, 360f)]
+    public float maxXrotation;
+    [Range (-360f, 360f)]
+    public float minYrotation;
+    [Range (-360f, 360f)]
+    public float maxYrotation;
+    [Range (-360f, 360f)]
+    public float minZrotation;
+    [Range (-360f, 360f)]
+    public float maxZrotation;
     public float assetSpawnThreshholdMin;
     public float assetSpawnThreshholdMax;
     public float minHeight;
