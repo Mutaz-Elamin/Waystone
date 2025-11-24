@@ -14,7 +14,7 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected Vector3 terrainSize = new Vector3(1000, 1000, 1000);
 
     // Fields used to control terrain generation - for final version these shouldnt be serialized but set in code per biome
-    [Header("Terrain Generation Settings")]
+    [Header("Terrain Terafroming Generation Settings")]
     [SerializeField] protected float noiseScale = 10f;
     [SerializeField] protected float heightMultiplier = 0.03f;
     [SerializeField] protected AnimationCurve meshHeightCurve;
@@ -25,11 +25,11 @@ public class RandomTerrain : MonoBehaviour
 
     [Header("Falloff Map Settings")]
     [SerializeField] protected bool falloff = false;
-    [Range(-10,10)]
+    [Range(-10, 10)]
     [SerializeField] protected float falloffSlope;
-    [Range(0,10)]
+    [Range(0, 10)]
     [SerializeField] protected float falloffPosition;
-    [Range(0,15)]
+    [Range(0, 15)]
     [SerializeField] protected int falloffMultiplier;
 
     // Fields used for spawning assets
@@ -45,7 +45,9 @@ public class RandomTerrain : MonoBehaviour
     private readonly System.Collections.Generic.List<GameObject> spawnedNpcs = new();
 
     // Fields for terrain types and colours - can be expanded for biomes
-    [Header("Terrain Regions")]
+    [Header("Terrain Texturing")]
+    [SerializeField] protected Material terrainMaterial;
+    protected Texture2D terrainHeightTexture;
     [SerializeField] protected TerrainType[] regions;
 
     // References to Terrain and TerrainData components data
@@ -58,9 +60,11 @@ public class RandomTerrain : MonoBehaviour
     // Initialize terrain generation on Awake
     private void Awake()
     {
-        terrainData = new TerrainData();
-        terrainData.heightmapResolution = heightmapResolution;
-        terrainData.size = terrainSize;
+        terrainData = new TerrainData
+        {
+            heightmapResolution = heightmapResolution,
+            size = terrainSize
+        };
 
         GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
         terrainObject.name = "Procedural Terrain";
@@ -69,6 +73,11 @@ public class RandomTerrain : MonoBehaviour
         terrainObject.layer = LayerMask.NameToLayer("NavMesh");
 
         terrain = terrainObject.GetComponent<Terrain>();
+
+        if (terrainMaterial != null)
+        {
+            terrain.materialTemplate = new Material(terrainMaterial);
+        }
 
         navSurface = terrainObject.AddComponent<NavMeshSurface>();
         navSurface.layerMask = LayerMask.GetMask("NavMesh");
@@ -171,7 +180,7 @@ public class RandomTerrain : MonoBehaviour
 
     protected float[,] GenerateFalloffMap(int dim)
     {
-        float[,] falloffMap = new float[dim,dim];
+        float[,] falloffMap = new float[dim, dim];
 
         for (int y = 0; y < dim; y++)
         {
@@ -179,7 +188,7 @@ public class RandomTerrain : MonoBehaviour
             {
                 float relY = y / (float)dim * 2 - 1;
                 float relX = x / (float)dim * 2 - 1;
-            
+
                 float falloffValue = Mathf.Max(Mathf.Abs(relY), Mathf.Abs(relX));
                 falloffValue = CalculateFalloffValue(falloffValue);
                 falloffMap[y, x] += falloffValue;
@@ -204,11 +213,6 @@ public class RandomTerrain : MonoBehaviour
 
         float[,] heightMap = new float[heightmapHeight, heightmapWidth];
 
-        if (falloff)
-        {
-            Debug.Log("Falloff On");
-        }
-
         for (int y = 0; y < heightmapHeight; y++)
         {
             for (int x = 0; x < heightmapWidth; x++)
@@ -223,11 +227,13 @@ public class RandomTerrain : MonoBehaviour
             }
         }
 
-        ColourTerrain(noiseMap);
-
         terrainData.SetHeights(0, 0, heightMap);
 
-        if (spawnAssets) 
+        CheckHeightRange();
+
+        ApplyTerrainTypesToShader();
+
+        if (spawnAssets)
         {
             float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
             SpawnTerrainAssets(spawnMap, noiseMap, assetPrefabs, spawnedAssets);
@@ -249,44 +255,55 @@ public class RandomTerrain : MonoBehaviour
         }
     }
 
-    // Method to colour the terrain
-    protected void ColourTerrain(float[,] noiseMap)
+    // Finds the highest y value on the curve - biggest height multiplier on the terrain/highest point
+    protected float GetCurveMax(AnimationCurve curve)
     {
-        int height = noiseMap.GetLength(0);
-        int width = noiseMap.GetLength(1);
-
-        Texture2D texture = new(width, height);
-        Color[] colourMap = new Color[width * height];
-
-        for (int y = 0; y < height; y++)
+        float max = float.MinValue;
+        foreach (var key in curve.keys)
         {
-            for (int x = 0; x < width; x++)
-            {
-                float currentHeight = noiseMap[y, x];
-                for (int i = 0; i < regions.Length; i++)
-                {
-                    if (currentHeight <= regions[i].height)
-                    {
-                        colourMap[y * width + x] = regions[i].colour;
-                        break;
-                    }
-                }
-            }
+            if (key.value > max) max = key.value;
+        }
+        return Mathf.Max(max, 0f);
+    }
+
+    // Sets the min and max possible heights of the terrain - terrain types are therfore relative to possible extremes
+    protected void CheckHeightRange()
+    {
+        if (terrain == null || terrain.materialTemplate == null) return;
+
+        float curveMax = GetCurveMax(meshHeightCurve);
+        float maxMultiplier = Mathf.Clamp01(heightMultiplier * curveMax);
+
+        float minWorldHeight = terrain.transform.position.y;
+        float maxWorldHeight = minWorldHeight + maxMultiplier * terrainData.size.y;
+
+        Material material = terrain.materialTemplate;
+        material.SetFloat("minHeight", minWorldHeight);
+        material.SetFloat("maxHeight", maxWorldHeight);
+    }
+
+    // Updated colouring of terrain mesh using custom shader - new colour method
+    protected void ApplyTerrainTypesToShader()
+    {
+        if (terrain == null || terrain.materialTemplate == null || regions == null || regions.Length == 0)
+            return;
+
+        Material mat = terrain.materialTemplate;
+
+        int regionCount = Mathf.Min(regions.Length, 8);
+
+        Color[] colours = new Color[regionCount];
+        float[] heights = new float[regionCount];
+
+        for (int i = 0; i < regionCount; i++)
+        {
+            colours[i] = regions[i].colour;
+            heights[i] = Mathf.Clamp01(regions[i].startHeight);
         }
 
-        texture.SetPixels(colourMap);
-        texture.filterMode = FilterMode.Point;
-        texture.wrapMode = TextureWrapMode.Clamp;
-        texture.Apply();
-
-        TerrainLayer terrainLayer = new();
-
-        var layers = terrainData.terrainLayers;
-        terrainData.terrainLayers = new TerrainLayer[] { terrainLayer };
-
-        terrainLayer.diffuseTexture = texture;
-        terrainLayer.tileSize = new Vector2(terrainData.size.x, terrainData.size.z);
-        terrainLayer.tileOffset = Vector2.zero;
+        mat.SetInt("regionsCount", regionCount);
+        mat.SetColorArray("baseColours", colours);
+        mat.SetFloatArray("baseHeights", heights);
     }
 
     // Method to randomly spawn assets across the terrain
@@ -414,7 +431,8 @@ public class RandomTerrain : MonoBehaviour
 public struct TerrainType
 {
     public string name;
-    public float height;
+    [Range(0f,1f)]
+    public float startHeight;
     public Color colour;
 }
 

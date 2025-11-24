@@ -46,14 +46,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightmapResolution: 1025
   terrainSize: {x: 1000, y: 1000, z: 1000}
-  noiseScale: 200
-  heightMultiplier: 0.055
+  noiseScale: 500
+  heightMultiplier: 0.16
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.020019531
-      value: -0.007080078
+      time: -0.019393722
+      value: -0.00546611
       inSlope: -0.1086436
       outSlope: -0.1086436
       tangentMode: 0
@@ -61,8 +61,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.20184277
     - serializedVersion: 3
-      time: 0.19486372
-      value: 0.003384702
+      time: 0.19889544
+      value: 0.038681332
       inSlope: 0.089659706
       outSlope: 0.089659706
       tangentMode: 0
@@ -70,8 +70,8 @@ MonoBehaviour:
       inWeight: 0.18102904
       outWeight: 0.8577479
     - serializedVersion: 3
-      time: 0.24285755
-      value: 0.00531685
+      time: 0.24560723
+      value: 0.07134651
       inSlope: 0.2524868
       outSlope: 0.2524868
       tangentMode: 0
@@ -79,8 +79,8 @@ MonoBehaviour:
       inWeight: 0.45502204
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.34142077
-      value: 0.06249116
+      time: 0.3386773
+      value: 0.12617038
       inSlope: 0.64142036
       outSlope: 0.64142036
       tangentMode: 0
@@ -88,8 +88,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.15496786
     - serializedVersion: 3
-      time: 0.43317288
-      value: 0.10539471
+      time: 0.4304294
+      value: 0.16907394
       inSlope: 0.4908616
       outSlope: 0.4908616
       tangentMode: 0
@@ -97,17 +97,17 @@ MonoBehaviour:
       inWeight: 0.15897249
       outWeight: 0.16598438
     - serializedVersion: 3
-      time: 0.56814307
-      value: 0.18381609
-      inSlope: 1.3469192
-      outSlope: 1.3469192
+      time: 0.58596843
+      value: 0.24279618
+      inSlope: 0.72323567
+      outSlope: 0.72323567
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.16577284
+      inWeight: 0.46011055
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.7640826
-      value: 0.3535917
+      time: 0.7709413
+      value: 0.33708227
       inSlope: 1.1760269
       outSlope: 1.1760269
       tangentMode: 0
@@ -115,8 +115,8 @@ MonoBehaviour:
       inWeight: 0.102306746
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.927481
-      value: 0.79979515
+      time: 0.9247375
+      value: 0.84696496
       inSlope: 3.5889904
       outSlope: 3.5889904
       tangentMode: 0
@@ -137,11 +137,12 @@ MonoBehaviour:
     m_RotationOrder: 4
   seed: 1
   octaves: 4
-  persistance: 0.55
-  lacunarity: 3
-  falloff: 1
+  persistance: 0.3
+  lacunarity: 4
+  falloff: 0
   falloffSlope: 1.1
   falloffPosition: 4.12
+  falloffMultiplier: 6
   spawnAssets: 1
   spawnNpcs: 0
   spawnSeed: 100
@@ -170,22 +171,23 @@ MonoBehaviour:
     clusterMaxCount: 5
     clusterSpread: 3
   assetNoiseScale: 50
+  terrainMaterial: {fileID: 2100000, guid: def43f2dd602e6c44824fb10164c8e5e, type: 2}
   regions:
   - name: Water
-    height: 0.2
+    startHeight: 0
     colour: {r: 0.08009967, g: 0.3194844, b: 0.6792453, a: 0}
   - name: Sand
-    height: 0.25
+    startHeight: 0.022
     colour: {r: 0.6320754, g: 0.54607534, b: 0.33094516, a: 0}
   - name: Grass 1
-    height: 0.4
+    startHeight: 0.055
     colour: {r: 0.2027039, g: 0.49056602, b: 0.0485938, a: 0}
   - name: Grass 2
-    height: 0.7
+    startHeight: 0.12
     colour: {r: 0.021359911, g: 0.3018868, b: 0.09469338, a: 0}
   - name: Mountain
-    height: 0.9
+    startHeight: 0.31
     colour: {r: 0.33962262, g: 0.27671006, b: 0.20986114, a: 0}
   - name: Snow
-    height: 1
+    startHeight: 0.91
     colour: {r: 0.6840513, g: 0.7924528, b: 0.7677987, a: 0}
