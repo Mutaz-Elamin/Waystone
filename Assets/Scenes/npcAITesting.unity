@@ -133,6 +133,8 @@ GameObject:
   - component: {fileID: 97202622}
   - component: {fileID: 97202621}
   - component: {fileID: 97202625}
+  - component: {fileID: 97202626}
+  - component: {fileID: 97202627}
   m_Layer: 15
   m_Name: Player
   m_TagString: Player
@@ -252,6 +254,62 @@ MonoBehaviour:
   healthBar: {fileID: 141152830}
   staminaBar: {fileID: 582261643}
   hungerBar: {fileID: 312488524}
+--- !u!114 &97202626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97202620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f54ff5ba4e1bec4eb6ca8bcc99588aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravity: -9.8
+  speed: 5
+  targetSpeed: 0
+  jumpHeight: 1.5
+  camMove: {fileID: 0}
+  crouchTimer: 0
+  crouchLerpSpeed: 6
+  slideSpeed: 6
+  slideDuration: 0.6
+  slideHeight: 0.5
+  normalHeight: 2
+  slideStaminaCost: 20
+  dodgeDuration: 0.3
+  dodgeSpeed: 12
+  dodgeStaminaCost: 15
+  doubleTapThreshold: 0.25
+  sprintStaminaCostRate: 5
+  lowHungerSpeedPenalty: 0.5
+--- !u!143 &97202627
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97202620}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &104250298
 GameObject:
   m_ObjectHideFlags: 0

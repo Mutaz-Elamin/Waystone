@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public float crouchTimer = 0;
     private float crouchVisualOffset = 0.5f;
     private Vector3 camStartPos;
-    public float crouchLerpSpeed = 6f; // smoother interpolation
+    public float crouchLerpSpeed = 6f;
 
     // Slide
     private bool isSliding = false;
@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private float slideTimer = 0f;
     public float slideHeight = 0.5f;
     public float normalHeight = 2f;
+    public float slideStaminaCost = 20f; // New: Stamina cost for a slide
 
     // Dodge
     private bool isDodging = false;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     public float dodgeDuration = 0.3f;
     public float dodgeSpeed = 12f;
     private Vector3 dodgeDirection = Vector3.zero;
+    public float dodgeStaminaCost = 15f; // New: Stamina cost for a dodge
 
     // Double-tap dodge
     private float lastTapTimeForward = -1f;
@@ -45,18 +47,30 @@ public class PlayerMovement : MonoBehaviour
     public float doubleTapThreshold = 0.25f;
     private Vector2 lastInput = Vector2.zero;
 
+    // --- Survival Stats Integration ---
+    private PlayerStats playerStats;
+    public float sprintStaminaCostRate = 5f; // New: Stamina consumed per second while sprinting
+    public float lowHungerSpeedPenalty = 0.5f; // New: Speed multiplier when hunger is low
+    // -----------------------------------
+
     void Start()
     {
         targetSpeed = speed;
         controller = GetComponent<CharacterController>();
         camMove = GetComponent<CameraLook>();
         camStartPos = camMove.cam.transform.localPosition;
+
+        // INTEGRATION: Get the PlayerStats component
+        playerStats = GetComponent<PlayerStats>();
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStats script missing! Stamina features will be disabled.");
+        }
     }
 
     void Update()
     {
         isGrounded = controller.isGrounded;
-
 
         if (lerpCrouch)
         {
@@ -82,7 +96,17 @@ public class PlayerMovement : MonoBehaviour
         playerVelocity.y += gravity * Time.deltaTime;
         if (playerVelocity.y < 0)
         {
-            playerVelocity.y += gravity * (1.5f - 1f) * Time.deltaTime; 
+            playerVelocity.y += gravity * (1.5f - 1f) * Time.deltaTime;
+        }
+
+        // INTEGRATION: Continuous Stamina consumption while sprinting
+        if (playerStats != null && camMove.isSprinting)
+        {
+            if (!playerStats.ConsumeStamina(sprintStaminaCostRate * Time.deltaTime))
+            {
+                // If stamina runs out, force out of sprint
+                ToggleSprint();
+            }
         }
     }
 
@@ -94,6 +118,8 @@ public class PlayerMovement : MonoBehaviour
         // --- Double-tap dodge ---
         if (!isSliding && !isDodging)
         {
+            // ... (existing double-tap logic) ...
+
             if (input.x > 0.5f && lastInput.x <= 0.5f)
             {
                 if (Time.time - lastTapTimeRight < doubleTapThreshold)
@@ -160,7 +186,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // --- Normal movement ---
-        speed = Mathf.Lerp(speed, targetSpeed, Time.deltaTime * 5f);
+
+        // INTEGRATION: Apply hunger speed penalty
+        float hungerPenalty = 1f;
+        if (playerStats != null && playerStats.currentHunger <= 20f)
+        {
+            hungerPenalty = lowHungerSpeedPenalty;
+        }
+
+        float currentTargetSpeed = targetSpeed * hungerPenalty;
+        speed = Mathf.Lerp(speed, currentTargetSpeed, Time.deltaTime * 5f);
         controller.Move(transform.TransformDirection(moveDir) * speed * Time.deltaTime);
 
         // Gravity
@@ -174,6 +209,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
+        // INTEGRATION: Can add a stamina cost for jumping here if needed
         if (isGrounded && !crouching)
         {
             float jumpVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity * 1.5f);
@@ -181,7 +217,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-        public void ToggleSprint()
+    public void ToggleSprint()
     {
         if (crouching)
         {
@@ -189,8 +225,12 @@ public class PlayerMovement : MonoBehaviour
             lerpCrouch = true;
         }
 
-        camMove.isSprinting = !camMove.isSprinting;
-        targetSpeed = camMove.isSprinting ? 8f : 5f;
+        // INTEGRATION: Only allow toggling ON sprint if stamina is available or if turning OFF sprint
+        if (!camMove.isSprinting || (playerStats != null && playerStats.currentStamina > 0))
+        {
+            camMove.isSprinting = !camMove.isSprinting;
+            targetSpeed = camMove.isSprinting ? 8f : 5f;
+        }
     }
 
     public void Crouch(Vector2 input)
@@ -222,25 +262,43 @@ public class PlayerMovement : MonoBehaviour
 
     public void Slide()
     {
+        // INTEGRATION: Check and consume stamina before sliding
         if (isGrounded && camMove.isSprinting && !isSliding)
         {
-            isSliding = true;
-            slideTimer = slideDuration;
-            controller.height = slideHeight;
-            Vector3 forward = transform.forward;
-            playerVelocity = forward * slideSpeed;
-            playerVelocity.y = -2f;
-            camMove.isSliding = true;
+            if (playerStats != null && playerStats.ConsumeStamina(slideStaminaCost))
+            {
+                isSliding = true;
+                slideTimer = slideDuration;
+                controller.height = slideHeight;
+                Vector3 forward = transform.forward;
+                playerVelocity = forward * slideSpeed;
+                playerVelocity.y = -2f;
+                camMove.isSliding = true;
+                ToggleSprint(); // Optional: Stop sprinting after sliding
+            }
+            else
+            {
+                Debug.Log("Not enough stamina to slide!");
+            }
         }
     }
 
     public void Dodge(Vector3 direction)
     {
+        // INTEGRATION: Check and consume stamina before dodging
         if (isDodging || !isGrounded) return;
-        isDodging = true;
-        dodgeTimer = dodgeDuration;
-        dodgeDirection = direction.normalized * dodgeSpeed;
-        camMove.isDodging = true;
-        camMove.dodgeDirection = direction;
+
+        if (playerStats != null && playerStats.ConsumeStamina(dodgeStaminaCost))
+        {
+            isDodging = true;
+            dodgeTimer = dodgeDuration;
+            dodgeDirection = direction.normalized * dodgeSpeed;
+            camMove.isDodging = true;
+            camMove.dodgeDirection = direction;
+        }
+        else
+        {
+            Debug.Log("Not enough stamina to dodge!");
+        }
     }
 }
