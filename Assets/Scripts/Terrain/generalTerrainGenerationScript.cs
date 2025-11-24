@@ -297,16 +297,19 @@ public class RandomTerrain : MonoBehaviour
 
         Color[] colours = new Color[regionCount];
         float[] heights = new float[regionCount];
+        float[] blends = new float[regionCount];
 
         for (int i = 0; i < regionCount; i++)
         {
             colours[i] = regions[i].colour;
             heights[i] = Mathf.Clamp01(regions[i].startHeight);
+            blends[i] = Mathf.Clamp01(regions[i].blend * 0.01f);
         }
 
         mat.SetInt("regionsCount", regionCount);
         mat.SetColorArray("baseColours", colours);
         mat.SetFloatArray("baseHeights", heights);
+        mat.SetFloatArray("baseBlends", blends);
     }
 
     // Method to randomly spawn assets across the terrain
@@ -450,6 +453,8 @@ public struct TerrainType
     [Range(0f,1f)]
     public float startHeight;
     public Color colour;
+    [Range(0f,20f)]
+    public int blend;
 }
 
 [Serializable]

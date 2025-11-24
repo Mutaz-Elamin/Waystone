@@ -151,8 +151,8 @@ MonoBehaviour:
     assetPrefab: {fileID: 4796221756594958542, guid: 85c26c44dc5dc80478f7d952a7adc7d9, type: 3}
     assetSpawnThreshholdMin: 0.5
     assetSpawnThreshholdMax: 0.7
-    minHeight: 0.3
-    maxHeight: 0.7
+    minHeight: 0.057
+    maxHeight: 0.28
     assetStep: 8
     randomSpawnChance: 0.7
     clusterMinCount: 7
@@ -176,18 +176,24 @@ MonoBehaviour:
   - name: Water
     startHeight: 0
     colour: {r: 0.08009967, g: 0.3194844, b: 0.6792453, a: 0}
+    blend: 10
   - name: Sand
     startHeight: 0.025
     colour: {r: 0.6320754, g: 0.54607534, b: 0.33094516, a: 0}
+    blend: 1
   - name: Grass 1
     startHeight: 0.055
     colour: {r: 0.2027039, g: 0.49056602, b: 0.0485938, a: 0}
+    blend: 5
   - name: Grass 2
     startHeight: 0.12
     colour: {r: 0.021359911, g: 0.3018868, b: 0.09469338, a: 0}
+    blend: 10
   - name: Mountain
     startHeight: 0.29
     colour: {r: 0.33962262, g: 0.27671006, b: 0.20986114, a: 0}
+    blend: 10
   - name: Snow
     startHeight: 0.91
     colour: {r: 0.6840513, g: 0.7924528, b: 0.7677987, a: 0}
+    blend: 10
