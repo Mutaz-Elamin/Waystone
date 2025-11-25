@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1862669719269725080}
   - component: {fileID: 5887744371781159470}
   - component: {fileID: 1558151435542185281}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -107,7 +107,8 @@ GameObject:
   - component: {fileID: 5956890667884220859}
   - component: {fileID: 6510005133421482596}
   - component: {fileID: 7794061027358952642}
-  m_Layer: 0
+  - component: {fileID: 4315493426444246288}
+  m_Layer: 15
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -232,13 +233,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravity: -9.8
   speed: 2
+  targetSpeed: 0
   jumpHeight: 1.5
+  camMove: {fileID: 0}
   crouchTimer: 0
+  crouchLerpSpeed: 6
   slideSpeed: 6
   slideDuration: 0.6
   slideHeight: 0.5
   normalHeight: 2
-  slideControlRed: 0.5
   dodgeDuration: 0.3
   dodgeSpeed: 12
   doubleTapThreshold: 0.25
@@ -271,3 +274,24 @@ MonoBehaviour:
   isDodging: 0
   dodgeDirection: {x: 0, y: 0, z: 0}
   isSprinting: 0
+  isMoving: 0
+--- !u!114 &4315493426444246288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4667984914492440204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2660245ce3a4542884d142bd6106fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackOrigin: {fileID: 1862669719269725080}
+  attackRange: 1.8
+  attackRadius: 0.4
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  lightAttackCooldown: 0.3
+  heavyAttackCooldown: 0.7
