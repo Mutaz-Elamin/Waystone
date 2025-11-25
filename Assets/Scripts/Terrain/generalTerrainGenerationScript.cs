@@ -425,6 +425,28 @@ public class RandomTerrain : MonoBehaviour
                 }
             }
         }
+
+        for (int i=0; i < parentPrefabs.Length; i++)
+        {
+            if (parentPrefabs[i] != null && parentPrefabs[i].transform.childCount > 0)
+            {
+                GameObject parent = parentPrefabs[i];
+                GameObject childObject = parent.transform.GetChild(0).gameObject;
+                if (childObject.GetComponent<TerrainAssetScript>() != null) 
+                {
+                    TerrainAssetManagement assetManager;
+                    assetManager = parent.AddComponent<TerrainAssetManagement>();
+                    Transform transformParent = parent.transform;
+                    assetManager.SetCount(parent.transform.childCount);
+                    foreach (Transform child in parent.transform)
+                    {
+                        TerrainAssetScript childScript = child.gameObject.GetComponent<TerrainAssetScript>();
+                        assetManager.AddAsset(childScript);
+                    }
+                    StartCoroutine(assetManager.ParentCoroutine());
+                }
+            }
+        }
     }
 
     protected bool SpawnAssetRequirements(TerrainAsset asset, float x, float y, float spawnRate, float currentHeight, bool checkStep)

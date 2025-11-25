@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 560473746945937656}
   - component: {fileID: -3528057147668963098}
+  - component: {fileID: 1576075809551616925}
   m_Layer: 0
   m_Name: protoTreeSpawn
   m_TagString: Untagged
@@ -56,6 +57,24 @@ CapsuleCollider:
   m_Height: 8.2
   m_Direction: 1
   m_Center: {x: 0, y: 3.9, z: 0}
+--- !u!114 &1576075809551616925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4796221756594958542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42add0da546ac8142b4ca376b917737d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTiltAngle: 3
+  swaySpeed: 1
+  swaySpeedRandomRange: 0.1
+  windAngleRandomRange: 90
+  gustSpeed: 0.4
+  windAxis: {x: 1, y: 0, z: 0.3}
 --- !u!1001 &1615924941350949602
 PrefabInstance:
   m_ObjectHideFlags: 0

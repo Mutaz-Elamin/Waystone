@@ -149,6 +149,14 @@ MonoBehaviour:
   assetPrefabs:
   - assetName: Tree
     assetPrefab: {fileID: 4796221756594958542, guid: 85c26c44dc5dc80478f7d952a7adc7d9, type: 3}
+    minScale: 0.8
+    maxScale: 1.25
+    minXrotation: -3
+    maxXrotation: 3
+    minYrotation: -360
+    maxYrotation: 360
+    minZrotation: -3
+    maxZrotation: 3
     assetSpawnThreshholdMin: 0.5
     assetSpawnThreshholdMax: 0.7
     minHeight: 0.057
@@ -161,6 +169,14 @@ MonoBehaviour:
   npcPrefabs:
   - assetName: Chicken
     assetPrefab: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
+    minScale: 0.8
+    maxScale: 0.95
+    minXrotation: 0
+    maxXrotation: 0
+    minYrotation: 0
+    maxYrotation: 0
+    minZrotation: 0
+    maxZrotation: 0
     assetSpawnThreshholdMin: 0.5
     assetSpawnThreshholdMax: 0.7
     minHeight: 0.4
