@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour
     private PlayerMovement movement;
     private CameraLook camLook;
     private InventoryManager inventoryManager;
+    private PlayerCollector collector;
+    public bool interactPressed;
 
     void Awake()
     {
@@ -21,16 +23,25 @@ public class InputManager : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         camLook = GetComponent<CameraLook>();
         inventoryManager = GetComponent<InventoryManager>();
+        collector = GetComponent<PlayerCollector>();
 
         onFoot.Jump.performed += ctx => movement.Jump();
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
+        onFoot.Interact.performed += ctx =>
+        {
+            if (ctx.performed && collector != null)
+            {
+                collector.TryCollect();
+            }
+        };
         inventory.ToggleInventory.performed += ctx => inventoryManager.ToggleInventory();
     }
 
     void FixedUpdate()
     {
         movement.Move(onFoot.Movement.ReadValue<Vector2>());
+        
     }
 
     void LateUpdate()
@@ -48,4 +59,7 @@ public class InputManager : MonoBehaviour
         onFoot.Disable();
         inventory.Disable();
     }
+
+
 }
+

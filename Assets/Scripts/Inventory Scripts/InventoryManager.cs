@@ -60,14 +60,14 @@ public class InventoryManager : MonoBehaviour
     public void Add(ItemClass item)
     {
         items.Add(item);
-        Debug.Log("Added " + item.itemName + " to inventory.");
+        
         refreshUI();
     }
 
     public void Remove(ItemClass item)
     {
         items.Remove(item);
-        Debug.Log("Removed " + item.itemName + " from inventory.");
+        
     }
     void Update()
     {
