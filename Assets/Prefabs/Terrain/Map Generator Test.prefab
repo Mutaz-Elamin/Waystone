@@ -144,7 +144,7 @@ MonoBehaviour:
   falloffPosition: 4.12
   falloffMultiplier: 6
   spawnAssets: 1
-  spawnNpcs: 0
+  spawnNpcs: 1
   spawnSeed: 100
   assetPrefabs:
   - assetName: Tree
@@ -181,8 +181,8 @@ MonoBehaviour:
     maxZrotation: 0
     assetSpawnThreshholdMin: 0.5
     assetSpawnThreshholdMax: 0.7
-    minHeight: 0.4
-    maxHeight: 0.6
+    minHeight: 0.057
+    maxHeight: 0.28
     assetStep: 12
     randomSpawnChance: 0.5
     clusterMinCount: 3
