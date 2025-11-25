@@ -150,7 +150,7 @@ MonoBehaviour:
   - assetName: Tree
     assetPrefab: {fileID: 4796221756594958542, guid: 85c26c44dc5dc80478f7d952a7adc7d9, type: 3}
     minScale: 0.8
-    maxScale: 1.25
+    maxScale: 1.15
     minXrotation: -3
     maxXrotation: 3
     minYrotation: -360
@@ -161,11 +161,13 @@ MonoBehaviour:
     assetSpawnThreshholdMax: 0.7
     minHeight: 0.057
     maxHeight: 0.28
-    assetStep: 8
+    assetStep: 4
     randomSpawnChance: 0.7
     clusterMinCount: 7
-    clusterMaxCount: 15
+    clusterMaxCount: 14
     clusterSpread: 18
+    overlapAvoidanceRadius: 2
+    overlapAvoid: 1
   npcPrefabs:
   - assetName: Chicken
     assetPrefab: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
@@ -186,6 +188,8 @@ MonoBehaviour:
     clusterMinCount: 3
     clusterMaxCount: 5
     clusterSpread: 3
+    overlapAvoidanceRadius: 0
+    overlapAvoid: 0
   assetNoiseScale: 50
   terrainMaterial: {fileID: 2100000, guid: def43f2dd602e6c44824fb10164c8e5e, type: 2}
   regions:
