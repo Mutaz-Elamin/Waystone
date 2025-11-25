@@ -8,19 +8,24 @@ public class InputManager : MonoBehaviour
 {
     private PlayerInput playerInput;
     private PlayerInput.OnFootActions onFoot;
+    private PlayerInput.InventoryActions inventory;
     private PlayerMovement movement;
     private CameraLook camLook;
+    private InventoryManager inventoryManager;
 
     void Awake()
     {
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
+        inventory = playerInput.Inventory;
         movement = GetComponent<PlayerMovement>();
         camLook = GetComponent<CameraLook>();
+        inventoryManager = GetComponent<InventoryManager>();
 
         onFoot.Jump.performed += ctx => movement.Jump();
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
+        inventory.ToggleInventory.performed += ctx => inventoryManager.ToggleInventory();
     }
 
     void FixedUpdate()
@@ -33,6 +38,14 @@ public class InputManager : MonoBehaviour
         camLook.Look(onFoot.Look.ReadValue<Vector2>());
     }
 
-    void OnEnable() => onFoot.Enable();
-    void OnDisable() => onFoot.Disable();
+    void OnEnable()
+    {
+        onFoot.Enable();
+        inventory.Enable();
+    }
+    void OnDisable()
+    {
+        onFoot.Disable();
+        inventory.Disable();
+    }
 }

@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
-    // x: -165.1, -99.80002
-    //y : 152.0999, 86.80011
+    
     [SerializeField] private GameObject slotHolder;
     [SerializeField] private ItemClass itemToAdd;
     [SerializeField] private ItemClass itemToRemove;
-
+    [SerializeField] private GameObject inventoryUI;
 
 
     private List<ItemClass> items = new List<ItemClass>();
@@ -20,6 +19,8 @@ public class InventoryManager : MonoBehaviour
 
     void Start()
     {
+        inventoryUI = GameObject.Find("Inventory");
+    
         slotHolder = GameObject.Find("Slots");
 
 
@@ -30,8 +31,9 @@ public class InventoryManager : MonoBehaviour
             slots[i] = slotHolder.transform.GetChild(i).gameObject;
         }
 
-        Add(itemToAdd);
-        Add(itemToAdd);
+
+
+        inventoryUI.SetActive(false);
         refreshUI();
 
 
@@ -70,5 +72,9 @@ public class InventoryManager : MonoBehaviour
     void Update()
     {
 
+    }
+    public void ToggleInventory()
+    {
+        inventoryUI.SetActive(!inventoryUI.activeSelf);
     }
 }
