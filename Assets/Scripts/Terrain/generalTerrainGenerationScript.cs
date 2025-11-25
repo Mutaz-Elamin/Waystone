@@ -399,6 +399,14 @@ public class RandomTerrain : MonoBehaviour
                             float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
                             Vector3 spawnPos = new(worldX, worldY, worldZ);
 
+                            if (assets[i].overlapAvoid)
+                            {
+                                if (IsTooCloseToOtherAssets(spawnPos, assets[i].overlapAvoidanceRadius, spawnedArray))
+                                {
+                                    continue;
+                                }
+                            }
+
                             GameObject prefab = assets[i].assetPrefab;
                             Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(assets[i].minXrotation, assets[i].maxXrotation), UnityEngine.Random.Range(assets[i].minYrotation, assets[i].maxYrotation), UnityEngine.Random.Range(assets[i].minZrotation, assets[i].minZrotation));
 
@@ -447,6 +455,29 @@ public class RandomTerrain : MonoBehaviour
                 }
             }
         }
+    }
+
+    protected bool IsTooCloseToOtherAssets(Vector3 candidatePos, float minRadius, System.Collections.Generic.List<GameObject> spawnedArray)
+    {
+        if (minRadius <= 0f || spawnedArray == null || spawnedArray.Count == 0)
+            return false;
+
+        float minRadiusSqr = minRadius * minRadius;
+
+        foreach (var obj in spawnedArray)
+        {
+            if (obj == null) continue;
+
+            Vector3 p = obj.transform.position;
+            float dx = p.x - candidatePos.x;
+            float dz = p.z - candidatePos.z;
+            float distSqr = dx * dx + dz * dz;
+
+            if (distSqr < minRadiusSqr)
+                return true;
+        }
+
+        return false;
     }
 
     protected bool SpawnAssetRequirements(TerrainAsset asset, float x, float y, float spawnRate, float currentHeight, bool checkStep)
@@ -511,4 +542,6 @@ public struct TerrainAsset
     public int clusterMinCount;
     public int clusterMaxCount;
     public float clusterSpread;
+    public float overlapAvoidanceRadius;
+    public bool overlapAvoid;
 }
