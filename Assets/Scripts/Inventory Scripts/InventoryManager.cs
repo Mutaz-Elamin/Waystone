@@ -10,23 +10,27 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject slotHolder;
     [SerializeField] private ItemClass itemToAdd;
     [SerializeField] private ItemClass itemToRemove;
-    [SerializeField] private GameObject inventoryUI;
-    InputManager inputManager;
+
+
 
     private List<ItemClass> items = new List<ItemClass>();
-   
+
 
     private GameObject[] slots;
 
     void Start()
     {
+        slotHolder = GameObject.Find("Slots");
+
 
 
         slots = new GameObject[slotHolder.transform.childCount];
-        for (int i = 0; i < slotHolder.transform.childCount; i++) {
+        for (int i = 0; i < slotHolder.transform.childCount; i++)
+        {
             slots[i] = slotHolder.transform.GetChild(i).gameObject;
         }
 
+        Add(itemToAdd);
         Add(itemToAdd);
         refreshUI();
 
@@ -50,23 +54,21 @@ public class InventoryManager : MonoBehaviour
         }
 
     }
-    
-    public void Add (ItemClass item) {
+
+    public void Add(ItemClass item)
+    {
         items.Add(item);
         Debug.Log("Added " + item.itemName + " to inventory.");
         refreshUI();
     }
-    
-    public void Remove (ItemClass item) {
+
+    public void Remove(ItemClass item)
+    {
         items.Remove(item);
         Debug.Log("Removed " + item.itemName + " from inventory.");
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
-        }
 
     }
 }
