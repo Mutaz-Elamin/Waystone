@@ -86,6 +86,8 @@ public class RandomTerrain : MonoBehaviour
         navSurface.layerMask = LayerMask.GetMask("NavMesh");
 
         // Call terrain generation method
+        seed = UnityEngine.Random.Range(0, 1000);
+        spawnSeed = seed * 100;
         GenerateTerrain();
     }
 
