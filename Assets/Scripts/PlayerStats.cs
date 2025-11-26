@@ -1,12 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // <<< REQUIRED to use TextMeshProUGUI
 
 public class PlayerStats : MonoBehaviour
 {
-    // --- Current Values ---
-    public float currentHealth;
-    public float currentStamina;
-    public float currentHunger;
+    // --- Private Backing Fields ---
+    private float _currentHealth;
+    private float _currentStamina;
+    private float _currentHunger;
+
+    // --- Public Properties (Read-Only Access for other scripts) ---
+    public float CurrentHealth => _currentHealth;
+    public float CurrentStamina => _currentStamina;
+    public float CurrentHunger => _currentHunger;
 
     // --- Maximum Values ---
     [Header("Stat Maxima")]
@@ -15,57 +21,80 @@ public class PlayerStats : MonoBehaviour
     public float maxHunger = 100f;
 
     // --- Regeneration and Decay Rates (Units per Second) ---
-    [Header("Rates (Units per Second)")]
+    [Header("Rates & Costs")]
     public float healthRegenRate = 0f;
     public float staminaRegenRate = 10f;
-    public float hungerDecayRate = 0.5f; // Decreased decay rate for testing
+    public float hungerDecayRate = 0.5f;
+    [Tooltip("Health points lost per second when hunger is zero.")]
+    public float starvationDamageRate = 5f;
+
+    // --- Stamina Regeneration Control ---
+    [Header("Stamina Control")]
+    public float staminaRegenDelay = 1.0f; // Time delay before regen starts
+    private float lastStaminaConsumptionTime;
+
+    [HideInInspector] public bool isConsumingStamina = false; // Set by PlayerMovement
+    [HideInInspector] public bool isJumping = false; // Set by PlayerMovement
 
     // --- UI References ---
-    [Header("UI Bar References")]
+    [Header("UI Bar & Text References (Required)")]
     public Slider healthBar;
     public Slider staminaBar;
     public Slider hungerBar;
 
+    // TextMeshPro Labels (Connect these in the Inspector)
+    public TextMeshProUGUI healthText;
+    public TextMeshProUGUI staminaText;
+    public TextMeshProUGUI hungerText;
+
+
     private void Start()
     {
         // Initialize all stats to their maximum value
-        currentHealth = maxHealth;
-        currentStamina = maxStamina;
-        currentHunger = maxHunger;
+        _currentHealth = maxHealth;
+        _currentStamina = maxStamina;
+        _currentHunger = maxHunger;
 
         // Set the max value for the UI sliders
         if (healthBar != null) healthBar.maxValue = maxHealth;
         if (staminaBar != null) staminaBar.maxValue = maxStamina;
         if (hungerBar != null) hungerBar.maxValue = maxHunger;
 
-        // Initial UI update
         UpdateStatUI();
     }
 
     private void Update()
     {
+        float deltaTime = Time.deltaTime;
+
         // --- Hunger Decay ---
-        currentHunger -= hungerDecayRate * Time.deltaTime;
-        currentHunger = Mathf.Clamp(currentHunger, 0f, maxHunger);
+        _currentHunger -= hungerDecayRate * deltaTime;
+        _currentHunger = Mathf.Clamp(_currentHunger, 0f, maxHunger);
 
         // --- Stamina Regeneration ---
-        if (currentStamina < maxStamina)
+        bool canRegen = !isConsumingStamina && !isJumping;
+
+        if (canRegen && _currentStamina < maxStamina)
         {
-            currentStamina += staminaRegenRate * Time.deltaTime;
-            currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+            // Check for the regeneration delay
+            if (Time.time >= lastStaminaConsumptionTime + staminaRegenDelay)
+            {
+                _currentStamina += staminaRegenRate * deltaTime;
+                _currentStamina = Mathf.Clamp(_currentStamina, 0f, maxStamina);
+            }
         }
 
         // --- Health Regeneration ---
-        if (currentHealth < maxHealth && healthRegenRate > 0)
+        if (_currentHealth < maxHealth && healthRegenRate > 0)
         {
-            currentHealth += healthRegenRate * Time.deltaTime;
-            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+            _currentHealth += healthRegenRate * deltaTime;
+            _currentHealth = Mathf.Clamp(_currentHealth, 0f, maxHealth);
         }
 
         // --- Starvation Damage ---
-        if (currentHunger <= 0)
+        if (_currentHunger <= 0)
         {
-            DamageHealth(2f * Time.deltaTime); // Reduced starvation damage rate
+            DamageHealth(starvationDamageRate * deltaTime);
         }
 
         UpdateStatUI();
@@ -73,42 +102,43 @@ public class PlayerStats : MonoBehaviour
 
     private void UpdateStatUI()
     {
-        if (healthBar != null) healthBar.value = currentHealth;
-        if (staminaBar != null) staminaBar.value = currentStamina;
-        if (hungerBar != null) hungerBar.value = currentHunger;
+        // Update Sliders based on private values
+        if (healthBar != null) healthBar.value = _currentHealth;
+        if (staminaBar != null) staminaBar.value = _currentStamina;
+        if (hungerBar != null) hungerBar.value = _currentHunger;
+
+        // Update Text Labels using the private values
+        if (healthText != null) healthText.text = $"Health: {Mathf.Ceil(_currentHealth)} / {maxHealth}";
+        if (staminaText != null) staminaText.text = $"Stamina: {Mathf.Ceil(_currentStamina)} / {maxStamina}";
+        if (hungerText != null) hungerText.text = $"Hunger: {Mathf.Ceil(_currentHunger)} / {maxHunger}";
     }
 
     // --- Public Functions for Integration ---
 
     public void DamageHealth(float amount)
     {
-        currentHealth -= amount;
-
-        if (currentHealth <= 0)
+        _currentHealth -= amount;
+        if (_currentHealth <= 0)
         {
-            currentHealth = 0;
+            _currentHealth = 0;
             Debug.Log("Player has died!");
-            // TODO: Add actual death/respawn logic here
         }
-        UpdateStatUI();
     }
 
     public bool ConsumeStamina(float amount)
     {
-        if (currentStamina >= amount)
+        if (_currentStamina >= amount)
         {
-            currentStamina -= amount;
-            // The UI update is called every frame in Update(), but we call it here for immediate feedback too.
-            UpdateStatUI();
+            _currentStamina -= amount;
+            lastStaminaConsumptionTime = Time.time;
             return true;
         }
-        return false; // Failed to consume stamina
+        return false;
     }
 
     public void RestoreHunger(float amount)
     {
-        currentHunger += amount;
-        currentHunger = Mathf.Clamp(currentHunger, 0f, maxHunger);
-        UpdateStatUI();
+        _currentHunger += amount;
+        _currentHunger = Mathf.Clamp(_currentHunger, 0f, maxHunger);
     }
 }
