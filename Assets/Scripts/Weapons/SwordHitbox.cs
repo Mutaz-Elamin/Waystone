@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class SwordHitbox : MonoBehaviour
 {
     [HideInInspector]
@@ -11,10 +10,13 @@ public class SwordHitbox : MonoBehaviour
     {
         if (!canHit) return;
 
-        // Disable the object it hits
-        other.gameObject.SetActive(false);
+        // Only disable objects that are NOT player AND NOT camera
+        if (!other.CompareTag("Player") && !other.CompareTag("MainCamera"))
+        {
+            Debug.Log("Hit: " + other.name);
+            other.gameObject.SetActive(false);
+        }
 
-        // Disable hitting until next attack
         canHit = false;
     }
 }

@@ -257,40 +257,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!65 &615539111
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 615539108}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.51, y: 2.04, z: 0.28}
-  m_Center: {x: -1.03, y: 4.37, z: 4.04}
---- !u!114 &615539112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 615539108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbbbadcfab1e4f94fa9656c126b56990, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canHit: 0
 --- !u!1001 &627539621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -396,12 +362,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
       insertIndex: -1
       addedObject: {fileID: 615539110}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 8416272007918961125, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 615539111}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
+      addedObject: {fileID: 1463201254}
+    - targetCorrespondingSourceObject: {fileID: 8416272007918961125, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 615539112}
+      addedObject: {fileID: 1463201255}
   m_SourcePrefab: {fileID: 100100000, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
 --- !u!1 &1038679888
 GameObject:
@@ -650,6 +616,45 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1862669719269725080, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
   m_PrefabInstance: {fileID: 2050023757684310782}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1463201250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8416272007918961125, guid: f5f47559c12a7874ba859d1e2959d9ce, type: 3}
+  m_PrefabInstance: {fileID: 627539621}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1463201254
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463201250}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.046858083, y: 0.11420746, z: 0.035178795}
+  m_Center: {x: -4.2393606e-11, y: -0.0033603571, z: 0.004009945}
+--- !u!114 &1463201255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463201250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbbbadcfab1e4f94fa9656c126b56990, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canHit: 0
 --- !u!1 &1624902868
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,9 +1012,17 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4315493426444246288, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 615539110}
+    - target: {fileID: 4315493426444246288, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4315493426444246288, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: swordHitbox
+      value: 
+      objectReference: {fileID: 1463201255}
     - target: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_Name
       value: Player
