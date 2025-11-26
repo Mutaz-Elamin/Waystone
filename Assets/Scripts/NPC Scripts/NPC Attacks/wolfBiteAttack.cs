@@ -24,10 +24,10 @@ public class WolfBiteAttack : NpcAttack
     private void Awake()
     {
         attackCollider = GetComponentInChildren<BoxCollider>();
-        wolfAnimator = transform.root.GetComponent<Animator>();
+        wolfAnimator = transform.parent.parent.parent.parent.parent.parent.parent.GetComponent<Animator>();
 
         // Ignore collisions between the attack hitbox and all colliders on the same NPC
-        var ownerCols = transform.root.GetComponentsInChildren<Collider>(true);
+        var ownerCols = transform.parent.parent.parent.parent.parent.parent.parent.GetComponentsInChildren<Collider>(true);
         foreach (var c in ownerCols)
         {
             if (c && attackCollider && c != attackCollider)
@@ -68,7 +68,7 @@ public class WolfBiteAttack : NpcAttack
     {
         if (player != null)
         {
-            transform.root.LookAt(player.transform);
+            transform.parent.parent.parent.parent.parent.parent.parent.LookAt(player.transform);
         }
 
         wolfAnimator.SetBool("Bite", true);
@@ -105,7 +105,7 @@ public class WolfBiteAttack : NpcAttack
         if (other.CompareTag("npc"))
         {
             Debug.Log("Test NPC Attack Hit: " + other.gameObject.name);
-            other.GetComponent<GeneralNPC>()?.TakeDamage(2, DamageCause.EnemyAttack);
+            other.GetComponent<GeneralNPC>()?.TakeDamage(this.attackDamage, DamageCause.EnemyAttack);
         }
     }
 }

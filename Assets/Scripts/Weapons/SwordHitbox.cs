@@ -8,13 +8,10 @@ public class SwordHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!canHit) return;
-
-        // Only disable objects that are NOT player AND NOT camera
-        if (!other.CompareTag("Player") && !other.CompareTag("MainCamera"))
+        if (other.CompareTag("npc"))
         {
-            Debug.Log("Hit: " + other.name);
-            other.gameObject.SetActive(false);
+            Debug.Log("Test NPC Attack Hit: " + other.gameObject.name);
+            other.GetComponent<GeneralNPC>()?.TakeDamage(1, DamageCause.EnemyAttack);
         }
 
         canHit = false;
