@@ -6,9 +6,13 @@ public class InputManager : MonoBehaviour
     private PlayerInput playerInput;
     private PlayerInput.OnFootActions onFoot;
 
+    private PlayerInput.InventoryActions inventory;
     private PlayerMovement movement;
     private CameraLook camLook;
     private PlayerAttack attack;
+    private InventoryManager inventoryManager;
+    private PlayerCollector collector;
+    public bool interactPressed;
 
 
     void Awake()
@@ -17,6 +21,11 @@ public class InputManager : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         camLook = GetComponent<CameraLook>();
         attack = GetComponent<PlayerAttack>();
+        playerInput = new PlayerInput();
+        onFoot = playerInput.OnFoot;
+        inventory = playerInput.Inventory;
+        inventoryManager = GetComponent<InventoryManager>();
+        collector = GetComponent<PlayerCollector>();
 
         if (movement == null || camLook == null)
         {
@@ -37,13 +46,23 @@ public class InputManager : MonoBehaviour
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
 
- // onFoot.HeavyAttack.performed += ctx => attack.HeavyAttack();
+        // onFoot.HeavyAttack.performed += ctx => attack.HeavyAttack();
+
+        onFoot.Interact.performed += ctx =>
+        {
+            if (ctx.performed && collector != null)
+            {
+                collector.TryCollect();
+            }
+        };
+        inventory.ToggleInventory.performed += ctx => inventoryManager.ToggleInventory();
     }
 
     void FixedUpdate()
     {
         // Continuous reading for physics-based movement
         movement.Move(onFoot.Movement.ReadValue<Vector2>());
+        
     }
 
     void LateUpdate()
@@ -61,6 +80,7 @@ public class InputManager : MonoBehaviour
         {
             onFoot.Enable();
         }
+        inventory.Enable();
     }
 
     void OnDisable()
@@ -70,6 +90,6 @@ public class InputManager : MonoBehaviour
         {
             onFoot.Disable();
         }
+        inventory.Disable();
     }
-    // ------------------------
 }
