@@ -10,6 +10,8 @@ public class InputManager : MonoBehaviour
     private PlayerInput.OnFootActions onFoot;
     private PlayerMovement movement;
     private CameraLook camLook;
+    private PlayerAttack attack;
+
 
     void Awake()
     {
@@ -17,10 +19,14 @@ public class InputManager : MonoBehaviour
         onFoot = playerInput.OnFoot;
         movement = GetComponent<PlayerMovement>();
         camLook = GetComponent<CameraLook>();
+        attack = GetComponent<PlayerAttack>();
 
         onFoot.Jump.performed += ctx => movement.Jump();
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
+        onFoot.LightAttack.performed += ctx => attack.LightAttack();
+
+ // onFoot.HeavyAttack.performed += ctx => attack.HeavyAttack();
     }
 
     void FixedUpdate()
