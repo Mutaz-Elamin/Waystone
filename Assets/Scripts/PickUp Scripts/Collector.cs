@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlayerCollector : MonoBehaviour
 {
-    [SerializeField] private float collectCooldown = 0.2f;
-    [SerializeField] private InventoryManager inventory;   // assign in Inspector or auto-find
+    private float collectCooldown = 0.2f;
+    private InventoryManager inventory; 
 
     private float lastCollectTime = 0f;
     private readonly List<Collectible> nearbyItems = new List<Collectible>();
@@ -29,6 +29,7 @@ public class PlayerCollector : MonoBehaviour
         if (item != null && !nearbyItems.Contains(item))
         {
             nearbyItems.Add(item);
+            item.ShowPrompt();
         }
     }
 
@@ -38,6 +39,7 @@ public class PlayerCollector : MonoBehaviour
         if (item != null)
         {
             nearbyItems.Remove(item);
+            item.HidePrompt();
         }
     }
 
