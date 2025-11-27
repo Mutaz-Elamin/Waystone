@@ -186,6 +186,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3052405957883040748, guid: 5fd64158dee65b94490581516a11cd41, type: 3}
       insertIndex: -1
       addedObject: {fileID: 176392262}
+    - targetCorrespondingSourceObject: {fileID: 3052405957883040748, guid: 5fd64158dee65b94490581516a11cd41, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 176392263}
   m_SourcePrefab: {fileID: 100100000, guid: 5fd64158dee65b94490581516a11cd41, type: 3}
 --- !u!1 &176392252 stripped
 GameObject:
@@ -236,6 +239,18 @@ MonoBehaviour:
   healthText: {fileID: 0}
   staminaText: {fileID: 0}
   hungerText: {fileID: 0}
+--- !u!114 &176392263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176392252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af14d965bb8d90419dadedfaf4a20d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &253540428
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -322,7 +337,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].maxScale
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].minScale
@@ -338,15 +353,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].assetStep
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].maxHeight
-      value: 0.28
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].minHeight
-      value: 0.057
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetPrefab
@@ -370,7 +385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].maxXrotation
-      value: 360
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].maxYrotation
@@ -378,11 +393,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].maxZrotation
-      value: 360
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].minXrotation
-      value: -360
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].minYrotation
@@ -390,7 +405,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].minZrotation
-      value: -360
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].clusterSpread
