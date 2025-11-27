@@ -84,7 +84,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Heavy Attack"",
                     ""type"": ""Button"",
-                    ""id"": ""2731e16f-9ae9-408e-8d7a-9d14856fe0e3""
+                    ""id"": ""2731e16f-9ae9-408e-8d7a-9d14856fe0e3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
