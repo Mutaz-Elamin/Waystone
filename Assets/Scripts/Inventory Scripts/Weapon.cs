@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/newItem")]
-public class AnItem : ItemClass
+[CreateAssetMenu(fileName = "Weapon", menuName = "Inventory/Weapons")]
+public class Weapon : ItemClass
 {
 
     // Start is called before the first frame update

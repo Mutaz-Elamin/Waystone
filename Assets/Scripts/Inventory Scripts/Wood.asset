@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
-  m_Name: Check
+  m_Script: {fileID: 11500000, guid: 5276e2049c6e34a4680704a0639e7590, type: 3}
+  m_Name: Wood
   m_EditorClassIdentifier: 
-  itemName: item
-  itemIcon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  isStackable: 1
+  itemName: Wood
+  itemIcon: {fileID: 0}

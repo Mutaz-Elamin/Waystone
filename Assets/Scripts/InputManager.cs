@@ -35,17 +35,54 @@ public class InputManager : MonoBehaviour
                 collector.TryCollect();
             }
         };
-        inventory.ToggleInventory.performed += ctx => inventoryManager.ToggleInventory();
-    }
+        inventory.ToggleInventory.performed += ctx => HandleInventoryToggle();
 
-    void FixedUpdate()
+
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    
+    
+
+private void HandleInventoryToggle()
+{
+    if (inventoryManager == null) return;
+
+    inventoryManager.ToggleInventory();
+
+    bool isOpen = inventoryManager.IsOpen;
+
+    if (isOpen)
     {
+        // Inventory open - show mouse, unlock cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    else
+    {
+        // Inventory closed - hide mouse, lock cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+}
+
+
+
+
+void FixedUpdate()
+    {
+        if (inventoryManager != null && inventoryManager.IsOpen)
+            
+            return;
         movement.Move(onFoot.Movement.ReadValue<Vector2>());
         
     }
 
     void LateUpdate()
     {
+        if (inventoryManager != null && inventoryManager.IsOpen)
+            return;
         camLook.Look(onFoot.Look.ReadValue<Vector2>());
     }
 

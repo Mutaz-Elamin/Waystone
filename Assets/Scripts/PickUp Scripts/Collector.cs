@@ -14,13 +14,9 @@ public class PlayerCollector : MonoBehaviour
     {
         if (inventory == null)
         {
-            inventory = FindObjectOfType<InventoryManager>();
+            inventory = FindFirstObjectByType<InventoryManager>();
         }
 
-        if (inventory == null)
-        {
-            Debug.LogError("PlayerCollector: No InventoryManager found in scene.");
-        }
     }
 
     private void OnTriggerEnter(Collider other)
