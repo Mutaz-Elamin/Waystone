@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class PlayerAttack : MonoBehaviour
 {
     [Header("References")]
@@ -10,82 +11,110 @@ public class PlayerAttack : MonoBehaviour
     public Collider attackCollider;
 
     [Header("Combo Settings")]
-    public float comboResetTime = 1.0f; 
-    private int comboStep = 0;           
+    public float comboResetTime = 1f;
+    private int comboStep = 0;
     private bool canAttack = true;
 
     private float lastAttackTime;
 
+    // Flags
+    private bool isDefending = false;
+
+    // --- LIGHT ATTACKS ---
     public void LightAttack()
     {
-        if (!canAttack) return;
+        if (!canAttack || isDefending) return;
 
         float timeSinceLast = Time.time - lastAttackTime;
-
-        // Reset combo if too slow
-        if (timeSinceLast > comboResetTime)
-        {
-            comboStep = 0;
-        }
+        if (timeSinceLast > comboResetTime) comboStep = 0;
 
         comboStep++;
 
-        if (comboStep == 1)
-        {
-            ResetAllLightAttackTriggers();
-            animator.SetTrigger("LightAttack");
-        }
-        else if (comboStep == 2)
-        {
-            ResetAllLightAttackTriggers();
-            animator.SetTrigger("LightAttack2");
-        }
-        else if (comboStep == 3)
-        {
-            ResetAllLightAttackTriggers();
-            animator.SetTrigger("LightAttack3");
-        }
+        ResetAllAttackTriggers();
+
+        if (comboStep == 1) animator.SetTrigger("LightAttack");
+        else if (comboStep == 2) animator.SetTrigger("LightAttack2");
+        else if (comboStep == 3) animator.SetTrigger("LightAttack3");
         else
         {
             comboStep = 1;
-            ResetAllLightAttackTriggers();
             animator.SetTrigger("LightAttack");
         }
 
         StartCoroutine(AttackWindow());
-
         lastAttackTime = Time.time;
     }
 
-    IEnumerator AttackWindow()
+    private IEnumerator AttackWindow()
     {
         canAttack = false;
 
         attackCollider.enabled = true;
-        yield return new WaitForSeconds(0.25f);  // active frames
-
+        yield return new WaitForSeconds(0.25f); // active frames
         attackCollider.enabled = false;
 
         yield return new WaitForSeconds(0.1f);
         canAttack = true;
     }
-    void ResetAllLightAttackTriggers()
+
+    // --- HEAVY ATTACK ---
+    public void StartHeavyCharge()
+    {
+        if (!canAttack || isDefending) return;
+
+        canAttack = false;
+
+        ResetAllAttackTriggers();
+        animator.ResetTrigger("HeavyRelease");
+        animator.SetTrigger("HeavyWindup");
+        animator.SetBool("IsChargingHeavy", true);
+    }
+
+    public void ReleaseHeavyAttack()
+    {
+        if (isDefending) return;
+
+        animator.SetBool("IsChargingHeavy", false);
+        animator.SetTrigger("HeavyRelease");
+
+        StartCoroutine(HeavyAttackWindow());
+    }
+
+    private IEnumerator HeavyAttackWindow()
+    {
+        attackCollider.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        attackCollider.enabled = false;
+
+        yield return new WaitForSeconds(0.2f);
+        canAttack = true;
+    }
+
+    // --- DEFEND ---
+    public void StartDefend()
+    {
+        isDefending = true;
+        animator.SetBool("IsDefending", true);
+    }
+
+    public void StopDefend()
+    {
+        isDefending = false;
+        animator.SetBool("IsDefending", false);
+    }
+
+
+    private void ResetAllAttackTriggers()
     {
         animator.ResetTrigger("LightAttack");
         animator.ResetTrigger("LightAttack2");
         animator.ResetTrigger("LightAttack3");
+        animator.ResetTrigger("HeavyWindup");
+        animator.ResetTrigger("HeavyRelease");
     }
 }
 
 
-    //public void HeavyAttack()
-
-    // { if (Time.time - lastHeavyTime < heavyCooldown) return;
-
-    //lastHeavyTime = Time.time;
-
-    //  animator.SetTrigger("HeavyAttack");
-    //    swordHitbox.canHit = true;}
 
 
 

@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Defend",
+                    "type": "Button",
+                    "id": "b3a96e15-340c-4e44-b288-608acf9f9f24",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -295,7 +304,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Heavy Attack"
+                    "action": "Heavy Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -307,6 +316,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c401e9ad-53f5-4366-9c02-077711bd939a",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Defend",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

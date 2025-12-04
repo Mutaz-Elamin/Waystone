@@ -98,6 +98,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Defend"",
+                    ""type"": ""Button"",
+                    ""id"": ""b3a96e15-340c-4e44-b288-608acf9f9f24"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -331,6 +340,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c401e9ad-53f5-4366-9c02-077711bd939a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Defend"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -375,6 +395,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_OnFoot_LightAttack = m_OnFoot.FindAction("Light Attack", throwIfNotFound: true);
         m_OnFoot_HeavyAttack = m_OnFoot.FindAction("Heavy Attack", throwIfNotFound: true);
         m_OnFoot_Interact = m_OnFoot.FindAction("Interact", throwIfNotFound: true);
+        m_OnFoot_Defend = m_OnFoot.FindAction("Defend", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleInventory = m_Inventory.FindAction("ToggleInventory", throwIfNotFound: true);
@@ -447,6 +468,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_OnFoot_LightAttack;
     private readonly InputAction m_OnFoot_HeavyAttack;
     private readonly InputAction m_OnFoot_Interact;
+    private readonly InputAction m_OnFoot_Defend;
     public struct OnFootActions
     {
         private @PlayerInput m_Wrapper;
@@ -459,6 +481,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @LightAttack => m_Wrapper.m_OnFoot_LightAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_OnFoot_HeavyAttack;
         public InputAction @Interact => m_Wrapper.m_OnFoot_Interact;
+        public InputAction @Defend => m_Wrapper.m_OnFoot_Defend;
         public InputActionMap Get() { return m_Wrapper.m_OnFoot; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -492,6 +515,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Defend.started += instance.OnDefend;
+            @Defend.performed += instance.OnDefend;
+            @Defend.canceled += instance.OnDefend;
         }
 
         private void UnregisterCallbacks(IOnFootActions instance)
@@ -520,6 +546,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Defend.started -= instance.OnDefend;
+            @Defend.performed -= instance.OnDefend;
+            @Defend.canceled -= instance.OnDefend;
         }
 
         public void RemoveCallbacks(IOnFootActions instance)
@@ -593,6 +622,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnLightAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnDefend(InputAction.CallbackContext context);
     }
     public interface IInventoryActions
     {

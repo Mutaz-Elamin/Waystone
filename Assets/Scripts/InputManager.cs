@@ -17,7 +17,7 @@ public class InputManager : MonoBehaviour
 
     void Awake()
     {
-        // Get references to external scripts
+
         movement = GetComponent<PlayerMovement>();
         camLook = GetComponent<CameraLook>();
         attack = GetComponent<PlayerAttack>();
@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        // Initialize Input System components
+
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
 
@@ -46,7 +46,11 @@ public class InputManager : MonoBehaviour
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
 
-        // onFoot.HeavyAttack.performed += ctx => attack.HeavyAttack();
+        onFoot.HeavyAttack.performed += ctx => attack.StartHeavyCharge();
+        onFoot.HeavyAttack.canceled += ctx => attack.ReleaseHeavyAttack();
+
+        onFoot.Defend.performed += ctx => attack.StartDefend();
+        onFoot.Defend.canceled += ctx => attack.StopDefend();
 
         onFoot.Interact.performed += ctx =>
         {
