@@ -5,40 +5,78 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+    [Header("References")]
     public Animator animator;
-    public SwordHitbox swordHitbox;
+    public Collider attackCollider;
 
-    public float attackActiveTime = 0.25f;
-    public float attackCooldown = 0.5f;
-
+    [Header("Combo Settings")]
+    public float comboResetTime = 1.0f; 
+    private int comboStep = 0;           
     private bool canAttack = true;
+
+    private float lastAttackTime;
 
     public void LightAttack()
     {
         if (!canAttack) return;
-        StartCoroutine(PerformAttack());
+
+        float timeSinceLast = Time.time - lastAttackTime;
+
+        // Reset combo if too slow
+        if (timeSinceLast > comboResetTime)
+        {
+            comboStep = 0;
+        }
+
+        comboStep++;
+
+        if (comboStep == 1)
+        {
+            ResetAllLightAttackTriggers();
+            animator.SetTrigger("LightAttack");
+        }
+        else if (comboStep == 2)
+        {
+            ResetAllLightAttackTriggers();
+            animator.SetTrigger("LightAttack2");
+        }
+        else if (comboStep == 3)
+        {
+            ResetAllLightAttackTriggers();
+            animator.SetTrigger("LightAttack3");
+        }
+        else
+        {
+            comboStep = 1;
+            ResetAllLightAttackTriggers();
+            animator.SetTrigger("LightAttack");
+        }
+
+        StartCoroutine(AttackWindow());
+
+        lastAttackTime = Time.time;
     }
 
-    private IEnumerator PerformAttack()
+    IEnumerator AttackWindow()
     {
         canAttack = false;
 
-        animator.SetTrigger("LightAttack");
+        attackCollider.enabled = true;
+        yield return new WaitForSeconds(0.25f);  // active frames
 
-        // Enable hitbox
-        swordHitbox.canHit = true;
-        swordHitbox.gameObject.SetActive(true);
+        attackCollider.enabled = false;
 
-        yield return new WaitForSeconds(attackActiveTime);
-
-        // Disable hitbox
-        swordHitbox.canHit = false;
-        swordHitbox.gameObject.SetActive(false);
-
-        // Wait for cooldown
-        yield return new WaitForSeconds(attackCooldown);
+        yield return new WaitForSeconds(0.1f);
         canAttack = true;
     }
+    void ResetAllLightAttackTriggers()
+    {
+        animator.ResetTrigger("LightAttack");
+        animator.ResetTrigger("LightAttack2");
+        animator.ResetTrigger("LightAttack3");
+    }
+}
+
 
     //public void HeavyAttack()
 
@@ -49,5 +87,5 @@ public class PlayerAttack : MonoBehaviour
     //  animator.SetTrigger("HeavyAttack");
     //    swordHitbox.canHit = true;}
 
-}
+
 
