@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     private InventoryManager inventoryManager;
     private PlayerCollector collector;
     public bool interactPressed;
+    private WeaponsManager weaponsManager;
 
 
     void Awake()
@@ -26,6 +27,7 @@ public class InputManager : MonoBehaviour
         inventory = playerInput.Inventory;
         inventoryManager = GetComponent<InventoryManager>();
         collector = GetComponent<PlayerCollector>();
+        weaponsManager = GetComponent<WeaponsManager>();
 
         if (movement == null || camLook == null)
         {
@@ -38,11 +40,9 @@ public class InputManager : MonoBehaviour
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
 
-        // Subscribe to Instantaneous Actions
         onFoot.Jump.performed += ctx => movement.Jump();
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
 
-        // Pass the current Movement stick/key value to Crouch for the slide check
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
 
@@ -51,6 +51,7 @@ public class InputManager : MonoBehaviour
 
         onFoot.Defend.performed += ctx => attack.StartDefend();
         onFoot.Defend.canceled += ctx => attack.StopDefend();
+        onFoot.ToggleWeapon.performed += ctx => weaponsManager.ToggleWeapon();
 
         onFoot.Interact.performed += ctx =>
         {
@@ -64,22 +65,20 @@ public class InputManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Continuous reading for physics-based movement
         movement.Move(onFoot.Movement.ReadValue<Vector2>());
         
     }
 
     void LateUpdate()
     {
-        // Continuous reading for camera look (runs after all movement)
+ 
         camLook.Look(onFoot.Look.ReadValue<Vector2>());
     }
 
     // --- FIX APPLIED HERE ---
     void OnEnable()
     {
-        // If Awake() ran, onFoot is guaranteed to be assigned.
-        // We only need to check if playerInput itself is assigned for safety.
+        
         if (playerInput != null)
         {
             onFoot.Enable();
@@ -89,7 +88,6 @@ public class InputManager : MonoBehaviour
 
     void OnDisable()
     {
-        // Same logic: if playerInput is assigned, onFoot is too.
         if (playerInput != null)
         {
             onFoot.Disable();

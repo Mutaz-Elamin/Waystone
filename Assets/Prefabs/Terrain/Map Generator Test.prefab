@@ -41,179 +41,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 4767146831374449068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 740aeeb3479f01e4e937c1391603f3b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 695bf252b9dbef743ad321eb98ad4fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   heightmapResolution: 1025
   terrainSize: {x: 1000, y: 1000, z: 1000}
-  noiseScale: 200
-  heightMultiplier: 0.05
+  noiseScale: 10
+  heightMultiplier: 0.03
   meshHeightCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.019393722
-      value: -0.00546611
-      inSlope: -0.1086436
-      outSlope: -0.1086436
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.20184277
-    - serializedVersion: 3
-      time: 0.19889544
-      value: 0.038681332
-      inSlope: 0.089659706
-      outSlope: 0.089659706
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.18102904
-      outWeight: 0.8577479
-    - serializedVersion: 3
-      time: 0.24560723
-      value: 0.07134651
-      inSlope: 0.2524868
-      outSlope: 0.2524868
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.45502204
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.3386773
-      value: 0.12617038
-      inSlope: 0.64142036
-      outSlope: 0.64142036
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.15496786
-    - serializedVersion: 3
-      time: 0.4304294
-      value: 0.16907394
-      inSlope: 0.4908616
-      outSlope: 0.4908616
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.15897249
-      outWeight: 0.16598438
-    - serializedVersion: 3
-      time: 0.58596843
-      value: 0.24279618
-      inSlope: 0.72323567
-      outSlope: 0.72323567
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.46011055
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.7709413
-      value: 0.33708227
-      inSlope: 1.1760269
-      outSlope: 1.1760269
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.102306746
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.9247375
-      value: 0.84696496
-      inSlope: 3.5889904
-      outSlope: 3.5889904
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.1785138
-    - serializedVersion: 3
-      time: 1.0225918
-      value: 0.9723802
-      inSlope: 0.0085208025
-      outSlope: 0.0085208025
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.27727216
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  seed: 1
+  seed: 0
   octaves: 4
-  persistance: 0.3
-  lacunarity: 4
+  persistance: 0.5
+  lacunarity: 2
   falloff: 0
-  falloffSlope: 1.1
-  falloffPosition: 4.12
-  falloffMultiplier: 6
+  falloffSlope: 0
+  falloffPosition: 0
+  falloffMultiplier: 0
   spawnAssets: 1
   spawnNpcs: 1
-  spawnSeed: 100
-  assetPrefabs:
-  - assetName: Tree
-    assetPrefab: {fileID: 4796221756594958542, guid: 85c26c44dc5dc80478f7d952a7adc7d9, type: 3}
-    minScale: 0.8
-    maxScale: 1.15
-    minXrotation: -3
-    maxXrotation: 3
-    minYrotation: -360
-    maxYrotation: 360
-    minZrotation: -3
-    maxZrotation: 3
-    assetSpawnThreshholdMin: 0.5
-    assetSpawnThreshholdMax: 0.7
-    minHeight: 0.057
-    maxHeight: 0.28
-    assetStep: 4
-    randomSpawnChance: 0.7
-    clusterMinCount: 7
-    clusterMaxCount: 14
-    clusterSpread: 18
-    overlapAvoidanceRadius: 2
-    overlapAvoid: 1
-  npcPrefabs:
-  - assetName: Chicken
-    assetPrefab: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
-    minScale: 0.8
-    maxScale: 0.95
-    minXrotation: 0
-    maxXrotation: 0
-    minYrotation: 0
-    maxYrotation: 0
-    minZrotation: 0
-    maxZrotation: 0
-    assetSpawnThreshholdMin: 0.5
-    assetSpawnThreshholdMax: 0.7
-    minHeight: 0.057
-    maxHeight: 0.28
-    assetStep: 12
-    randomSpawnChance: 0.5
-    clusterMinCount: 3
-    clusterMaxCount: 5
-    clusterSpread: 3
-    overlapAvoidanceRadius: 0
-    overlapAvoid: 0
-  assetNoiseScale: 50
-  terrainMaterial: {fileID: 2100000, guid: def43f2dd602e6c44824fb10164c8e5e, type: 2}
-  regions:
-  - name: Water
-    startHeight: 0
-    colour: {r: 0.08009967, g: 0.3194844, b: 0.6792453, a: 0}
-    blend: 8
-  - name: Sand
-    startHeight: 0.025
-    colour: {r: 0.6320754, g: 0.54607534, b: 0.33094516, a: 0}
-    blend: 1
-  - name: Grass 1
-    startHeight: 0.055
-    colour: {r: 0.2027039, g: 0.49056602, b: 0.0485938, a: 0}
-    blend: 5
-  - name: Grass 2
-    startHeight: 0.12
-    colour: {r: 0.021359911, g: 0.3018868, b: 0.09469338, a: 0}
-    blend: 7
-  - name: Mountain
-    startHeight: 0.29
-    colour: {r: 0.33962262, g: 0.27671006, b: 0.20986114, a: 0}
-    blend: 5
-  - name: Snow
-    startHeight: 1
-    colour: {r: 0.6840513, g: 0.7924528, b: 0.7677987, a: 0}
-    blend: 2
+  spawnSeed: 0
+  assetPrefabs: []
+  npcPrefabs: []
+  assetNoiseScale: 20
+  terrainMaterial: {fileID: 0}
+  regions: []

@@ -107,6 +107,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""bdc7ebd3-84f6-4645-911c-79617067da68"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -351,6 +360,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Defend"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c843e5ac-5d5e-43bb-a087-bb65a5a0bed9"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -396,6 +416,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_OnFoot_HeavyAttack = m_OnFoot.FindAction("Heavy Attack", throwIfNotFound: true);
         m_OnFoot_Interact = m_OnFoot.FindAction("Interact", throwIfNotFound: true);
         m_OnFoot_Defend = m_OnFoot.FindAction("Defend", throwIfNotFound: true);
+        m_OnFoot_ToggleWeapon = m_OnFoot.FindAction("ToggleWeapon", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleInventory = m_Inventory.FindAction("ToggleInventory", throwIfNotFound: true);
@@ -469,6 +490,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_OnFoot_HeavyAttack;
     private readonly InputAction m_OnFoot_Interact;
     private readonly InputAction m_OnFoot_Defend;
+    private readonly InputAction m_OnFoot_ToggleWeapon;
     public struct OnFootActions
     {
         private @PlayerInput m_Wrapper;
@@ -482,6 +504,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @HeavyAttack => m_Wrapper.m_OnFoot_HeavyAttack;
         public InputAction @Interact => m_Wrapper.m_OnFoot_Interact;
         public InputAction @Defend => m_Wrapper.m_OnFoot_Defend;
+        public InputAction @ToggleWeapon => m_Wrapper.m_OnFoot_ToggleWeapon;
         public InputActionMap Get() { return m_Wrapper.m_OnFoot; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -518,6 +541,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Defend.started += instance.OnDefend;
             @Defend.performed += instance.OnDefend;
             @Defend.canceled += instance.OnDefend;
+            @ToggleWeapon.started += instance.OnToggleWeapon;
+            @ToggleWeapon.performed += instance.OnToggleWeapon;
+            @ToggleWeapon.canceled += instance.OnToggleWeapon;
         }
 
         private void UnregisterCallbacks(IOnFootActions instance)
@@ -549,6 +575,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Defend.started -= instance.OnDefend;
             @Defend.performed -= instance.OnDefend;
             @Defend.canceled -= instance.OnDefend;
+            @ToggleWeapon.started -= instance.OnToggleWeapon;
+            @ToggleWeapon.performed -= instance.OnToggleWeapon;
+            @ToggleWeapon.canceled -= instance.OnToggleWeapon;
         }
 
         public void RemoveCallbacks(IOnFootActions instance)
@@ -623,6 +652,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnDefend(InputAction.CallbackContext context);
+        void OnToggleWeapon(InputAction.CallbackContext context);
     }
     public interface IInventoryActions
     {
