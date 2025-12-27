@@ -324,9 +324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2660245ce3a4542884d142bd6106fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 9084821500082570285}
-  attackCollider: {fileID: 7346989073526622111}
-  comboResetTime: 1
+  currentWeapon: {fileID: 0}
 --- !u!114 &-9186404693073310303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +381,7 @@ MonoBehaviour:
   itemToAdd: {fileID: 11400000, guid: 63787b0fdb985de43b9d41f76486eb8c, type: 2}
   itemToRemove: {fileID: 0}
   inventoryUI: {fileID: 0}
---- !u!1001 &6981270452895139157
+--- !u!1001 &8897101230191524015
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -391,67 +389,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6709877470028474192}
     m_Modifications:
-    - target: {fileID: 3506540569206068512, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
-      propertyPath: m_Name
-      value: SwordWithAttack (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.24
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.28
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalPosition.z
       value: 1.05
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalRotation.w
       value: -0.7984787
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0.015819496
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0.6016971
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.01192085
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 2.27
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 286
       objectReference: {fileID: 0}
-    - target: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+    - target: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3112851570463172826, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
+      propertyPath: m_Name
+      value: SwordWithAttack (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
 --- !u!4 &6557268271186873039 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4315130952527794074, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
-  m_PrefabInstance: {fileID: 6981270452895139157}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &7346989073526622111 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 366986057478423242, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
-  m_PrefabInstance: {fileID: 6981270452895139157}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &9084821500082570285 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2229758420720681336, guid: 6be6537429f08b444b6af2b2dc0e6c84, type: 3}
-  m_PrefabInstance: {fileID: 6981270452895139157}
+  m_CorrespondingSourceObject: {fileID: 2339834059624624736, guid: 4884f21df9be6664c9fa69cbbf4fdb8f, type: 3}
+  m_PrefabInstance: {fileID: 8897101230191524015}
   m_PrefabAsset: {fileID: 0}
