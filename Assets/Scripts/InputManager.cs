@@ -72,17 +72,14 @@ private void HandleInventoryToggle()
 
 void FixedUpdate()
     {
-        if (inventoryManager != null && inventoryManager.IsOpen)
-            
-            return;
+
         movement.Move(onFoot.Movement.ReadValue<Vector2>());
         
     }
 
     void LateUpdate()
     {
-        if (inventoryManager != null && inventoryManager.IsOpen)
-            return;
+
         camLook.Look(onFoot.Look.ReadValue<Vector2>());
     }
 

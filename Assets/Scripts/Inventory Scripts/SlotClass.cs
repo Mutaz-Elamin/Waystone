@@ -7,12 +7,28 @@ public class SlotClass
     [SerializeField] private ItemClass item;
     [SerializeField] private int quantity;
 
+    public SlotClass()
+    {
+        item = null;
+        quantity = 0;
+    }
     public SlotClass(ItemClass _item, int _quantity)
     {
         item = _item;
         quantity = _quantity;
     }
 
+    public SlotClass(SlotClass slot)
+    {
+        item = slot.GetItem();
+        quantity = slot.GetQuantity();
+    }
+
+    public void Clear()
+    {
+        this.item = null;
+        this.quantity = 0;
+    }
     public ItemClass GetItem()
     {
         return item;
@@ -29,5 +45,11 @@ public class SlotClass
     public void removeQuantity(int _quantity)
     {
         quantity -= _quantity;
+    }
+
+    public void AddItem(ItemClass item, int quantity)
+    {
+        this.item = item;
+        this.quantity = quantity;   
     }
 }

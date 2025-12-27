@@ -59,7 +59,7 @@ public class PlayerCollector : MonoBehaviour
 
         if (target.itemData != null)
         {
-            inventory.Add(target.itemData);
+            inventory.Add(target.itemData, 1);
             collectedCount++;
             Debug.Log($"Collected {target.itemData.itemName}. Total collected: {collectedCount}");
         }
