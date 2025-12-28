@@ -42,7 +42,7 @@ public class SlotClass
     {
         quantity += _quantity;
     }
-    public void removeQuantity(int _quantity)
+    public void RemoveQuantity(int _quantity)
     {
         quantity -= _quantity;
     }

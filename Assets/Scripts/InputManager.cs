@@ -36,10 +36,14 @@ public class InputManager : MonoBehaviour
             }
         };
         inventory.ToggleInventory.performed += ctx => HandleInventoryToggle();
+        inventory.PickSwap.performed += ctx => {
+            if (inventoryManager != null && inventoryManager.IsOpen)
+            inventoryManager.PickOrSwapItem();
+    };
 
 
 
-        Cursor.lockState = CursorLockMode.Locked;
+    Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
     
@@ -58,6 +62,7 @@ private void HandleInventoryToggle()
         // Inventory open - show mouse, unlock cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        
     }
     else
     {
@@ -72,14 +77,17 @@ private void HandleInventoryToggle()
 
 void FixedUpdate()
     {
-
+        if (inventoryManager != null && inventoryManager.IsOpen)
+            
+            return;
         movement.Move(onFoot.Movement.ReadValue<Vector2>());
         
     }
 
     void LateUpdate()
     {
-
+        if (inventoryManager != null && inventoryManager.IsOpen)
+            return;
         camLook.Look(onFoot.Look.ReadValue<Vector2>());
     }
 

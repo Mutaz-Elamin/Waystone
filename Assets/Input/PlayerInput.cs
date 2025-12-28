@@ -306,6 +306,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickSwap"",
+                    ""type"": ""Button"",
+                    ""id"": ""bbfdb68d-2768-470d-b582-d8b6dae4cf09"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -317,6 +326,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ToggleInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""554ac8f8-3760-4e39-98f2-ef3321077adf"",
+                    ""path"": ""<Mouse>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickSwap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -336,6 +356,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleInventory = m_Inventory.FindAction("ToggleInventory", throwIfNotFound: true);
+        m_Inventory_PickSwap = m_Inventory.FindAction("PickSwap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -484,11 +505,13 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Inventory;
     private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
     private readonly InputAction m_Inventory_ToggleInventory;
+    private readonly InputAction m_Inventory_PickSwap;
     public struct InventoryActions
     {
         private @PlayerInput m_Wrapper;
         public InventoryActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @ToggleInventory => m_Wrapper.m_Inventory_ToggleInventory;
+        public InputAction @PickSwap => m_Wrapper.m_Inventory_PickSwap;
         public InputActionMap Get() { return m_Wrapper.m_Inventory; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -501,6 +524,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @ToggleInventory.started += instance.OnToggleInventory;
             @ToggleInventory.performed += instance.OnToggleInventory;
             @ToggleInventory.canceled += instance.OnToggleInventory;
+            @PickSwap.started += instance.OnPickSwap;
+            @PickSwap.performed += instance.OnPickSwap;
+            @PickSwap.canceled += instance.OnPickSwap;
         }
 
         private void UnregisterCallbacks(IInventoryActions instance)
@@ -508,6 +534,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @ToggleInventory.started -= instance.OnToggleInventory;
             @ToggleInventory.performed -= instance.OnToggleInventory;
             @ToggleInventory.canceled -= instance.OnToggleInventory;
+            @PickSwap.started -= instance.OnPickSwap;
+            @PickSwap.performed -= instance.OnPickSwap;
+            @PickSwap.canceled -= instance.OnPickSwap;
         }
 
         public void RemoveCallbacks(IInventoryActions instance)
@@ -537,5 +566,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     public interface IInventoryActions
     {
         void OnToggleInventory(InputAction.CallbackContext context);
+        void OnPickSwap(InputAction.CallbackContext context);
     }
 }

@@ -284,6 +284,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "PickSwap",
+                    "type": "Button",
+                    "id": "bbfdb68d-2768-470d-b582-d8b6dae4cf09",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -295,6 +304,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "554ac8f8-3760-4e39-98f2-ef3321077adf",
+                    "path": "<Mouse>/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PickSwap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

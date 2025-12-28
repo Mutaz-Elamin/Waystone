@@ -65,8 +65,9 @@ public class PlayerCollector : MonoBehaviour
         }
 
         // Hide/remove the cube from the world
-        target.gameObject.SetActive(false);
+        Destroy(target.gameObject);
         nearbyItems.RemoveAt(0);
+        
 
         lastCollectTime = Time.time;
     }

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour
 {
     [SerializeField] private GameObject itemCursor;
     [SerializeField] private GameObject slotHolder;
+    [SerializeField] private GameObject hotbarslotHolder;
     [SerializeField] private ItemClass itemToAdd;
     [SerializeField] private ItemClass itemToRemove;
     [SerializeField] private GameObject inventoryUI;
@@ -19,9 +21,13 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private SlotClass[] startingItems;
     private SlotClass[] items;
+    private SlotClass[] hotbarItems;
 
 
     private GameObject[] slots ;
+    private GameObject[] hotbarSlots ;
+    private SlotClass sourceSlot;
+
 
     void Start()
     {
@@ -31,6 +37,14 @@ public class InventoryManager : MonoBehaviour
 
         slots = new GameObject[slotHolder.transform.childCount];
         items = new SlotClass[slots.Length];
+        hotbarSlots = new GameObject[hotbarslotHolder.transform.childCount];
+
+
+        for (int i = 0; i < hotbarSlots.Length; i++)
+        {
+            hotbarSlots[i] = hotbarslotHolder.transform.GetChild(i).gameObject;
+        }
+
         for (int i = 0; i < items.Length; i++)
         {
             items[i] = new SlotClass();
@@ -39,6 +53,12 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < startingItems.Length; i++)
         {
             items[i] = startingItems[i];
+        }
+
+        hotbarItems = new SlotClass[hotbarSlots.Length];
+        for (int i = 0; i < hotbarItems.Length; i++)
+        {
+            hotbarItems[i] = new SlotClass();
         }
 
 
@@ -53,12 +73,13 @@ public class InventoryManager : MonoBehaviour
         Add(itemToAdd,1);
         Add(itemToAdd,1);
         Remove(itemToRemove);
-        refreshUI();
+        RefreshUI();
+        
 
 
     }
 
-    private void refreshUI()
+    private void RefreshUI()
     {
         for (int i = 0; i < slots.Length; i++)
         {
@@ -84,8 +105,40 @@ public class InventoryManager : MonoBehaviour
                 slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
             }
         }
+        RefreshHotbarUI();
 
     }
+    private struct SlotRef
+    {
+        public bool isHotbar;
+        public int index;
+        public SlotClass slot;
+    }
+
+    public void RefreshHotbarUI()
+    {
+        for (int i = 0; i < hotbarSlots.Length; i++)
+        {
+            try
+            {
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = hotbarItems[i].GetItem().itemIcon;
+
+                if (hotbarItems[i].GetItem().isStackable)
+                    hotbarSlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = hotbarItems[i].GetQuantity().ToString();
+                else
+                    hotbarSlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            }
+            catch
+            {
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
+                hotbarSlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                hotbarSlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            }
+        }
+    }
+
+
 
     public bool Add(ItemClass item, int quantity)
     {
@@ -108,7 +161,7 @@ public class InventoryManager : MonoBehaviour
                 }
             }
 
-            refreshUI();
+        RefreshUI();
         return true;
     }
 
@@ -119,7 +172,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (slot.GetQuantity() > 1 && item.isStackable)
             {
-                slot.removeQuantity(1);
+                slot.RemoveQuantity(1);
             }
             else
             {
@@ -142,7 +195,7 @@ public class InventoryManager : MonoBehaviour
         }
 
 
-            refreshUI();
+        RefreshUI();
         return true;
     }
 
@@ -161,103 +214,135 @@ public class InventoryManager : MonoBehaviour
     void Update()
     {
         itemCursor.SetActive(isMovingItem);
-        itemCursor.transform.position = Input.mousePosition;
-        itemCursor.GetComponent<Image>().sprite = isMovingItem ? movingSlot.GetItem().itemIcon : null;
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (isMovingItem)
-            {
-                EndItemMove();
-            }
-            else
-            {
-                BeginItemMove();
-            }
-        }
-            
-         
-        
+
+        if (Mouse.current != null)
+            itemCursor.transform.position = Mouse.current.position.ReadValue();
+
+        itemCursor.GetComponent<Image>().sprite =
+            (isMovingItem && movingSlot != null && movingSlot.GetItem() != null)
+                ? movingSlot.GetItem().itemIcon
+                : null;
     }
 
-    private SlotClass getClosestSlot()
+
+
+
+    private SlotRef? GetClosestSlotRef()
     {
-       
-        for (int i = 0; i < items.Length; i++)
+        if (Mouse.current == null) return null;
+
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+
+        // Check hotbar first
+        for (int i = 0; i < hotbarSlots.Length; i++)
         {
-           if (Vector2.Distance(Input.mousePosition, slots[i].transform.position) <= 32f)
+            if (Vector2.Distance(mousePos, hotbarSlots[i].transform.position) <= 32f)
             {
-                return items[i];
+                return new SlotRef { isHotbar = true, index = i, slot = hotbarItems[i] };
             }
         }
+
+        // Then inventory grid
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (Vector2.Distance(mousePos, slots[i].transform.position) <= 32f)
+            {
+                return new SlotRef { isHotbar = false, index = i, slot = items[i] };
+            }
+        }
+
         return null;
     }
 
+
+
     private bool BeginItemMove()
     {
-        originalSlot = getClosestSlot();
-        if (originalSlot == null || originalSlot.GetItem() == null)
-        {
-            return false;
-        }
-        movingSlot = new SlotClass(originalSlot);
-        originalSlot.Clear();
+        var slotRef = GetClosestSlotRef();
+        if (slotRef == null) return false;
+
+        sourceSlot = slotRef.Value.slot;          //  remember source
+        if (sourceSlot.GetItem() == null) return false;
+
+        movingSlot = new SlotClass(sourceSlot);   // cursor copy
+        sourceSlot.Clear();                       // remove from source
         isMovingItem = true;
-        refreshUI();
+
+        RefreshUI();
         return true;
     }
+
 
     private bool EndItemMove()
     {
-        originalSlot = getClosestSlot();
-        if (originalSlot == null)
-        {
-            Add(movingSlot.GetItem(), movingSlot.GetQuantity());
-            movingSlot.Clear();
+        var slotRef = GetClosestSlotRef();
 
-        }
-        else
+      
+        if (slotRef == null)
         {
-            if (originalSlot.GetItem() != null)
+            sourceSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+            movingSlot.Clear();
+            isMovingItem = false;
+            RefreshUI();
+            return true;
+        }
+
+        SlotClass targetSlot = slotRef.Value.slot;
+
+      
+        if (targetSlot == sourceSlot)
+        {
+            sourceSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+            movingSlot.Clear();
+            isMovingItem = false;
+            RefreshUI();
+            return true;
+        }
+
+        // If target has item
+        if (targetSlot.GetItem() != null)
+        {
+            // Stack if same + stackable
+            if (targetSlot.GetItem() == movingSlot.GetItem() && targetSlot.GetItem().isStackable)
             {
-                if (originalSlot.GetItem() == movingSlot.GetItem())
-                {
-                    if (originalSlot.GetItem().isStackable)
-                    {
-                        originalSlot.AddQuantity(movingSlot.GetQuantity());
-                        movingSlot.Clear();
-                    }
-                    else
-                    {
-                        tempSlot = new SlotClass(originalSlot);
-                        originalSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
-                        movingSlot.AddItem(tempSlot.GetItem(), tempSlot.GetQuantity());
-                        refreshUI();
-                        return true;
-                    }
-                   
-                }
-                else
-                {
-                    tempSlot = new SlotClass(originalSlot);
-                    originalSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
-                    movingSlot.AddItem(tempSlot.GetItem(), tempSlot.GetQuantity());
-                    refreshUI();
-                    return true;
-                }
+                targetSlot.AddQuantity(movingSlot.GetQuantity());
+                movingSlot.Clear();
             }
             else
             {
-                originalSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+                //  REAL swap: target gets moving, source gets target's old
+                tempSlot = new SlotClass(targetSlot);
+
+                targetSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+                sourceSlot.AddItem(tempSlot.GetItem(), tempSlot.GetQuantity());
+
                 movingSlot.Clear();
             }
         }
+        else
+        {
+          
+            targetSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+            movingSlot.Clear();
+        }
+
         isMovingItem = false;
-        refreshUI();
+        RefreshUI();
         return true;
     }
+
+
     public void ToggleInventory()
     {
         IsOpen = !IsOpen;
         inventoryUI.SetActive(!inventoryUI.activeSelf);
     }
+    public void PickOrSwapItem()
+    {
+        if (!IsOpen) return;
+
+        if (!isMovingItem) BeginItemMove();
+        else EndItemMove();
+    }
+
 }
