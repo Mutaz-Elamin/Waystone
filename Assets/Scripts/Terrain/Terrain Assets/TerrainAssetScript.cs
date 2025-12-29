@@ -1,10 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class TerrainAssetScript : MonoBehaviour
 {
-    protected abstract void Awake();
-    // The method all assets scripts need to implement to define their specific behavior - called by a manager method
+    [Header("Managed Ticking (Per-Chunk Runner)")]
+    [SerializeField, Min(0f)] private float scriptActionInterval = 0f;
+
+    private float nextTickTime;
+
+    protected virtual void Awake() { }
+
     public abstract void ScriptAction();
+
+    internal void ManagedResetTickTimer(float now)
+    {
+        nextTickTime = now;
+    }
+
+    internal void ManagedTick(float now)
+    {
+        if (scriptActionInterval <= 0f)
+        {
+            ScriptAction();
+            return;
+        }
+
+        if (now >= nextTickTime)
+        {
+            ScriptAction();
+            nextTickTime = now + scriptActionInterval;
+        }
+    }
 }

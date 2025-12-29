@@ -1,57 +1,111 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class TerrainAssetManagement : MonoBehaviour
 {
-    protected TerrainAssetScript[] terrainAssets;
-    protected int count = 0;
-    protected int index = 0;
-    protected int chunckSize = 0;
+    [Header("Per-Chunk Tick Budget")]
+    [SerializeField, Min(0)] private int maxAssetsProcessedPerFrame = 256;
 
-    // Method to add to the list of game objects to manage
-    public void AddAsset(TerrainAssetScript asset)
+    [SerializeField, Min(0)] private int nullSweepIntervalFrames = 60;
+
+    private readonly List<TerrainAssetScript> assets = new(256);
+    private int cursor;
+    private int frameCounter;
+    private Coroutine routine;
+
+    public void ConfigureBudget(int maxPerFrame)
     {
-        if (index < count)
+        maxAssetsProcessedPerFrame = Mathf.Max(0, maxPerFrame);
+    }
+
+    public void RegisterAsset(TerrainAssetScript asset)
+    {
+        if (asset == null) return;
+        if (assets.Contains(asset)) return;
+
+        assets.Add(asset);
+        asset.ManagedResetTickTimer(Time.time);
+    }
+
+    public void UnregisterAsset(TerrainAssetScript asset)
+    {
+        if (asset == null) return;
+        assets.Remove(asset);
+
+        if (cursor >= assets.Count)
+            cursor = 0;
+    }
+
+    private void OnEnable()
+    {
+        if (!Application.isPlaying) return;
+        if (routine == null)
+            routine = StartCoroutine(ChunkRoutine());
+    }
+
+    private void OnDisable()
+    {
+        if (routine != null)
         {
-            terrainAssets[index] = asset;
-            index++;
-        }
-        else
-        {
-            Debug.Log("Asset array length not big enough.");
+            StopCoroutine(routine);
+            routine = null;
         }
     }
 
-    // Method to create the array to hold the assets and set count
-    public void SetCount (int count)
-    {
-        this.count = count;
-        terrainAssets = new TerrainAssetScript[count];
-
-        chunckSize = Mathf.CeilToInt(count / 7f);
-    }
-
-    // The method all assets scripts need to implement to define their specific behavior - called by a manager method
-    public IEnumerator ParentCoroutine()
+    private IEnumerator ChunkRoutine()
     {
         while (true)
         {
-            for (int i = 0; i < terrainAssets.Length; i++)
-            {
-                var asset = terrainAssets[i];
-                asset.ScriptAction();
-                if (count > chunckSize)
-                {
-                    if (i % chunckSize == 0)
-                    {
-                        yield return null;
-                    }
-                }
-            }
+            TickOnce();
             yield return null;
         }
+    }
+
+    private void TickOnce()
+    {
+        float now = Time.time;
+
+        if (nullSweepIntervalFrames > 0)
+        {
+            frameCounter++;
+            if (frameCounter >= nullSweepIntervalFrames)
+            {
+                frameCounter = 0;
+                SweepNulls();
+            }
+        }
+
+        int count = assets.Count;
+        if (count == 0) return;
+
+        int budget = maxAssetsProcessedPerFrame <= 0 ? count : Mathf.Min(maxAssetsProcessedPerFrame, count);
+
+        for (int i = 0; i < budget; i++)
+        {
+            if (assets.Count == 0) break;
+            if (cursor >= assets.Count) cursor = 0;
+
+            TerrainAssetScript a = assets[cursor];
+
+            if (a == null || !a.isActiveAndEnabled)
+            {
+                assets.RemoveAt(cursor);
+                continue;
+            }
+
+            a.ManagedTick(now);
+            cursor++;
+        }
+    }
+
+    private void SweepNulls()
+    {
+        for (int i = assets.Count - 1; i >= 0; i--)
+            if (assets[i] == null) assets.RemoveAt(i);
+
+        if (cursor >= assets.Count)
+            cursor = 0;
     }
 }

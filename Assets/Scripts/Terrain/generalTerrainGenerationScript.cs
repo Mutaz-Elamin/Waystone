@@ -41,6 +41,10 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected TerrainAsset[] npcPrefabs;
     [SerializeField] protected float assetNoiseScale = 20f;
 
+    [Header("Streaming / Grid + Pool")]
+    [SerializeField] private WorldGrid worldGrid;
+    [SerializeField] private PrefabPool prefabPool;
+
     private readonly System.Collections.Generic.List<GameObject> spawnedAssets = new();
     private readonly System.Collections.Generic.List<GameObject> spawnedNpcs = new();
 
@@ -80,6 +84,18 @@ public class RandomTerrain : MonoBehaviour
         if (terrainMaterial != null)
         {
             terrain.materialTemplate = new Material(terrainMaterial);
+        }
+
+        if (worldGrid == null)
+        {
+            worldGrid = GetComponent<WorldGrid>();
+            if (worldGrid == null) worldGrid = gameObject.AddComponent<WorldGrid>();
+        }
+
+        if (prefabPool == null)
+        {
+            prefabPool = GetComponent<PrefabPool>();
+            if (prefabPool == null) prefabPool = gameObject.AddComponent<PrefabPool>();
         }
 
         navSurface = terrainObject.AddComponent<NavMeshSurface>();
@@ -236,6 +252,12 @@ public class RandomTerrain : MonoBehaviour
 
         ApplyTerrainTypesToShader();
 
+        ReleaseAndDestroySpawnedClusters(spawnedAssets);
+        ReleaseAndDestroySpawnedClusters(spawnedNpcs);
+
+        if (worldGrid != null)
+            worldGrid.ClearAll();
+
         if (spawnAssets)
         {
             float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
@@ -301,9 +323,9 @@ public class RandomTerrain : MonoBehaviour
 
         for (int i = 0; i < regionCount; i++)
         {
-            colours[i] = regions[i].colour;
-            heights[i] = Mathf.Clamp01(regions[i].startHeight);
-            blends[i] = Mathf.Clamp01(regions[i].blend * 0.01f);
+            colours[i] = regions[i].Colour;
+            heights[i] = Mathf.Clamp01(regions[i].StartHeight);
+            blends[i] = Mathf.Clamp01(regions[i].Blend * 0.01f);
         }
 
         mat.SetInt("regionsCount", regionCount);
@@ -312,35 +334,39 @@ public class RandomTerrain : MonoBehaviour
         mat.SetFloatArray("baseBlends", blends);
     }
 
+    private void ReleaseAndDestroySpawnedClusters(System.Collections.Generic.List<GameObject> spawned)
+    {
+        if (spawned == null) return;
+
+        for (int i = spawned.Count - 1; i >= 0; i--)
+        {
+            GameObject go = spawned[i];
+            if (go == null) continue;
+
+            ClusterController cluster = go.GetComponent<ClusterController>();
+            if (cluster != null)
+                cluster.ReturnAllToPool();
+
+            Destroy(go);
+        }
+
+        spawned.Clear();
+    }
+
     // Method to randomly spawn assets across the terrain
     private void SpawnTerrainAssets(float[,] spawnMap, float[,] heightMap, TerrainAsset[] assets, System.Collections.Generic.List<GameObject> spawnedArray)
     {
-        foreach (var asset in spawnedArray)
-        {
-            if (asset != null)
-            {
-                Destroy(asset);
-            }
-        }
-        spawnedArray.Clear();
-
         if (assets == null || assets.Length == 0)
         {
             Debug.LogWarning("No asset prefabs assigned for terrain asset spawning.");
             return;
         }
 
+        if (spawnMap == null || heightMap == null)
+            return;
+
         int height = spawnMap.GetLength(0);
         int width = spawnMap.GetLength(1);
-
-        GameObject[] parentPrefabs = new GameObject[assets.Length];
-        for (int i = 0; i < assets.Length; i++)
-        {
-            GameObject parentObject = new(assets[i].assetName + " Assets");
-            parentObject.transform.parent = terrain.transform;
-            parentObject.transform.localPosition = Vector3.zero;
-            parentPrefabs[i] = parentObject;
-        }
 
         Vector3 terrainPos = terrain.transform.position;
         Vector3 terrainSize = terrainData.size;
@@ -349,109 +375,81 @@ public class RandomTerrain : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                float spawnRate = spawnMap[y, x]; // 0..1
-                float heightFraction = 0f;
-                if (maxMultiplier > 0f)
-                {
-                    heightFraction = Mathf.Clamp01(heightMap[y, x] / maxMultiplier);
-                }
+                float spawnRate = spawnMap[y, x];
 
-                float currentHeight = heightFraction;
+                float currentHeight = 0f;
+                if (maxMultiplier > 0f)
+                    currentHeight = Mathf.Clamp01(heightMap[y, x] / maxMultiplier);
 
                 for (int i = 0; i < assets.Length; i++)
                 {
-                    if (!SpawnAssetRequirements(assets[i], x, y, spawnRate, currentHeight, true))
-                    {
-                        continue;
-                    }
+                    TerrainAsset asset = assets[i];
 
-                    // Normalized coordinates across the terrain (0..1)
+                    if (!SpawnAssetRequirements(asset, x, y, spawnRate, currentHeight, true))
+                        continue;
+
                     float xNorm = (float)x / (width - 1);
                     float zNorm = (float)y / (height - 1);
 
-                    // Convert to world position
                     float worldX = terrainPos.x + xNorm * terrainSize.x;
                     float worldZ = terrainPos.z + zNorm * terrainSize.z;
+                    float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
 
-                    int minCount = Mathf.Max(1, assets[i].clusterMinCount);
-                    int maxCount = Mathf.Max(minCount, assets[i].clusterMaxCount);
+                    Vector3 clusterOrigin = new Vector3(worldX, worldY, worldZ);
+
+                    int minCount = Mathf.Max(1, asset.ClusterMinCount);
+                    int maxCount = Mathf.Max(minCount, asset.ClusterMaxCount);
                     int clusterCount = UnityEngine.Random.Range(minCount, maxCount + 1);
 
-                    float assetDistance = assets[i].clusterSpread * UnityEngine.Random.Range(0.75f, 1.3f);
-
-                    for (int c = 0; c < clusterCount; c++)
+                    if (asset.OverlapAvoid && asset.OverlapAvoidanceRadius > 0f && worldGrid != null)
                     {
-                        int mapX = Mathf.RoundToInt((worldX - terrainPos.x) / terrainSize.x * (width - 1));
-                        int mapY = Mathf.RoundToInt((worldZ - terrainPos.z) / terrainSize.z * (height - 1));
-
-                        mapX = Mathf.Clamp(mapX, 0, width - 1);
-                        mapY = Mathf.Clamp(mapY, 0, height - 1);
-                        
-                        heightFraction = 0f;
-                        if (maxMultiplier > 0f)
-                        {
-                            heightFraction = Mathf.Clamp01(heightMap[mapY, mapX] / maxMultiplier);
-                        }
-                        currentHeight = heightFraction;
-
-                        if (SpawnAssetRequirements(assets[i], worldX, worldZ, spawnMap[mapY, mapX], currentHeight, false))
-                        {
-                            float worldY = terrain.SampleHeight(new Vector3(worldX, 0f, worldZ)) + terrainPos.y;
-                            Vector3 spawnPos = new(worldX, worldY, worldZ);
-
-                            if (assets[i].overlapAvoid)
-                            {
-                                if (IsTooCloseToOtherAssets(spawnPos, assets[i].overlapAvoidanceRadius, spawnedArray))
-                                {
-                                    continue;
-                                }
-                            }
-
-                            GameObject prefab = assets[i].assetPrefab;
-                            Quaternion rot = Quaternion.Euler(UnityEngine.Random.Range(assets[i].minXrotation, assets[i].maxXrotation), UnityEngine.Random.Range(assets[i].minYrotation, assets[i].maxYrotation), UnityEngine.Random.Range(assets[i].minZrotation, assets[i].minZrotation));
-
-                            GameObject instance = Instantiate(prefab, spawnPos, rot, transform);
-                            float scaleMultiplier = UnityEngine.Random.Range(assets[i].minScale, assets[i].maxScale);
-                            instance.transform.localScale *= scaleMultiplier;
-                            instance.transform.parent = parentPrefabs[i].transform;
-                            spawnedArray.Add(instance);
-                        }
-                        if (c < clusterCount - 1)
-                        {
-                            float angle = UnityEngine.Random.Range(0f, 360f);
-                            float posx = Mathf.Cos(angle) * assetDistance;
-                            float posz = Mathf.Sin(angle) * assetDistance;
-
-                            float nextX = worldX + posx;
-                            float nextZ = worldZ + posz;
-
-                            worldX = Mathf.Clamp(nextX, terrainPos.x, terrainPos.x + terrainSize.x);
-                            worldZ = Mathf.Clamp(nextZ, terrainPos.z, terrainPos.z + terrainSize.z);
-                        }
+                        Vector2Int chunk = worldGrid.WorldToChunk(clusterOrigin);
+                        if (worldGrid.IsPositionTooClose(clusterOrigin, asset.OverlapAvoidanceRadius, chunk))
+                            continue;
                     }
+
+                    GameObject clusterRoot = new GameObject(asset.AssetName + " Cluster");
+                    clusterRoot.transform.position = clusterOrigin;
+
+                    ClusterController cluster = clusterRoot.AddComponent<ClusterController>();
+                    cluster.Initialise(
+                        clusterOrigin,
+                        clusterCount,
+                        asset.AssetPrefab,
+                        asset.ClusterSpread,
+                        asset.MinScale,
+                        asset.MaxScale,
+                        asset.MinXrotation,
+                        asset.MaxXrotation,
+                        asset.MinYrotation,
+                        asset.MaxYrotation,
+                        asset.MinZrotation,
+                        asset.MaxZrotation,
+                        asset.MinHeight,
+                        asset.MaxHeight,
+                        asset.OverlapAvoid,
+                        asset.OverlapAvoidanceRadius,
+                        Mathf.Max(0.1f, asset.ClusterCheckInterval),
+                        asset.ClusterSpawnSettings,
+                        asset.ClusterDespawnSettings,
+                        minWorldHeight,
+                        maxWorldHeight,
+                        worldGrid,
+                        prefabPool
+                    );
+
+                    if (worldGrid != null)
+                        worldGrid.RegisterCluster(cluster);
+                    else
+                        clusterRoot.transform.SetParent(terrain.transform, true);
+
+                    spawnedArray.Add(clusterRoot);
+
+                    // Spawn initial members (uses pooling + grid overlap)
+                    cluster.SpawnInitialPopulation();
+
+                    // Only allow one asset type per map cell
                     break;
-                }
-            }
-        }
-
-        for (int i=0; i < parentPrefabs.Length; i++)
-        {
-            if (parentPrefabs[i] != null && parentPrefabs[i].transform.childCount > 0)
-            {
-                GameObject parent = parentPrefabs[i];
-                GameObject childObject = parent.transform.GetChild(0).gameObject;
-                if (childObject.GetComponent<TerrainAssetScript>() != null) 
-                {
-                    TerrainAssetManagement assetManager;
-                    assetManager = parent.AddComponent<TerrainAssetManagement>();
-                    Transform transformParent = parent.transform;
-                    assetManager.SetCount(parent.transform.childCount);
-                    foreach (Transform child in parent.transform)
-                    {
-                        TerrainAssetScript childScript = child.gameObject.GetComponent<TerrainAssetScript>();
-                        assetManager.AddAsset(childScript);
-                    }
-                    StartCoroutine(assetManager.ParentCoroutine());
                 }
             }
         }
@@ -459,7 +457,16 @@ public class RandomTerrain : MonoBehaviour
 
     protected bool IsTooCloseToOtherAssets(Vector3 candidatePos, float minRadius, System.Collections.Generic.List<GameObject> spawnedArray)
     {
-        if (minRadius <= 0f || spawnedArray == null || spawnedArray.Count == 0)
+        if (minRadius <= 0f)
+            return false;
+
+        if (worldGrid != null)
+        {
+            Vector2Int chunk = worldGrid.WorldToChunk(candidatePos);
+            return worldGrid.IsPositionTooClose(candidatePos, minRadius, chunk);
+        }
+
+        if (spawnedArray == null || spawnedArray.Count == 0)
             return false;
 
         float minRadiusSqr = minRadius * minRadius;
@@ -468,80 +475,130 @@ public class RandomTerrain : MonoBehaviour
         {
             if (obj == null) continue;
 
-            Vector3 p = obj.transform.position;
-            float dx = p.x - candidatePos.x;
-            float dz = p.z - candidatePos.z;
-            float distSqr = dx * dx + dz * dz;
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                Transform t = obj.transform.GetChild(i);
+                if (t == null) continue;
 
-            if (distSqr < minRadiusSqr)
-                return true;
+                if ((t.position - candidatePos).sqrMagnitude < minRadiusSqr)
+                    return true;
+            }
         }
 
         return false;
     }
 
+
     protected bool SpawnAssetRequirements(TerrainAsset asset, float x, float y, float spawnRate, float currentHeight, bool checkStep)
     {
         if (checkStep)
         {
-            if (x % asset.assetStep != 0)
+            if (asset.AssetStep > 0)
+            {
+                if (((int)x) % asset.AssetStep != 0) return false;
+                if (((int)y) % asset.AssetStep != 0) return false;
+            }
+
+            if (spawnRate < asset.AssetSpawnThreshholdMin || spawnRate > asset.AssetSpawnThreshholdMax)
                 return false;
-            if (y % asset.assetStep != 0)
-                return false;
-            if (spawnRate < asset.assetSpawnThreshholdMin || spawnRate > asset.assetSpawnThreshholdMax)
-                return false;
-            if (UnityEngine.Random.Range(0f, 1f) > asset.randomSpawnChance * 0.1)
+
+            if (UnityEngine.Random.Range(0f, 1f) > asset.RandomSpawnChance * 0.1f)
                 return false;
         }
-        if (asset.minHeight > currentHeight || asset.maxHeight < currentHeight)
-        {
+
+        if (asset.MinHeight > currentHeight || asset.MaxHeight < currentHeight)
             return false;
-        }
+
         return true;
+
     }
 }
 
 [Serializable]
 public struct TerrainType
 {
-    public string name;
-    [Range(0f,1f)]
-    public float startHeight;
-    public Color colour;
-    [Range(0f,20f)]
-    public int blend;
+    [SerializeField] private string name;
+    [SerializeField, Range(0f, 1f)] private float startHeight;
+    [SerializeField] private Color colour;
+    [SerializeField, Range(0f, 20f)] private int blend;
+
+    public string Name => name;
+    public float StartHeight => startHeight;
+    public Color Colour => colour;
+    public int Blend => blend;
 }
 
 [Serializable]
 public struct TerrainAsset
 {
-    public string assetName;
-    public GameObject assetPrefab;
-    [Range (0.5f, 2f)]
-    public float minScale;
-    [Range (0.5f, 2f)]
-    public float maxScale;
-    [Range (-360f, 360f)]
-    public float minXrotation;
-    [Range (-360f, 360f)]
-    public float maxXrotation;
-    [Range (-360f, 360f)]
-    public float minYrotation;
-    [Range (-360f, 360f)]
-    public float maxYrotation;
-    [Range (-360f, 360f)]
-    public float minZrotation;
-    [Range (-360f, 360f)]
-    public float maxZrotation;
-    public float assetSpawnThreshholdMin;
-    public float assetSpawnThreshholdMax;
-    public float minHeight;
-    public float maxHeight;
-    public int assetStep;
-    public float randomSpawnChance;
-    public int clusterMinCount;
-    public int clusterMaxCount;
-    public float clusterSpread;
-    public float overlapAvoidanceRadius;
-    public bool overlapAvoid;
+    [Header("Prefab")]
+    [SerializeField] private string assetName;
+    [SerializeField] private GameObject assetPrefab;
+
+    [Header("Randomisation")]
+    [SerializeField, Range(0.5f, 2f)] private float minScale;
+    [SerializeField, Range(0.5f, 2f)] private float maxScale;
+
+    [SerializeField, Range(-360f, 360f)] private float minXrotation;
+    [SerializeField, Range(-360f, 360f)] private float maxXrotation;
+    [SerializeField, Range(-360f, 360f)] private float minYrotation;
+    [SerializeField, Range(-360f, 360f)] private float maxYrotation;
+    [SerializeField, Range(-360f, 360f)] private float minZrotation;
+    [SerializeField, Range(-360f, 360f)] private float maxZrotation;
+
+    [Header("Spawn Requirements")]
+    [SerializeField] private float assetSpawnThreshholdMin;
+    [SerializeField] private float assetSpawnThreshholdMax;
+    [SerializeField, Range(0f, 1f)] private float minHeight;
+    [SerializeField, Range(0f, 1f)] private float maxHeight;
+
+    [Header("Spawn Pattern")]
+    [SerializeField] private int assetStep;
+    [SerializeField, Range(0f, 1f)] private float randomSpawnChance;
+
+    [Header("Cluster Settings")]
+    [SerializeField] private int clusterMinCount;
+    [SerializeField] private int clusterMaxCount;
+    [SerializeField] private float clusterSpread;
+
+    [Header("Overlap Avoidance")]
+    [SerializeField] private float overlapAvoidanceRadius;
+    [SerializeField] private bool overlapAvoid;
+
+    [Header("Cluster Runtime")]
+    [SerializeField, Min(0.1f)] private float clusterCheckInterval;
+    [SerializeField] private ClusterRateSettings clusterSpawnSettings;
+    [SerializeField] private ClusterRateSettings clusterDespawnSettings;
+
+    public string AssetName => assetName;
+    public GameObject AssetPrefab => assetPrefab;
+
+    public float MinScale => minScale;
+    public float MaxScale => maxScale;
+
+    public float MinXrotation => minXrotation;
+    public float MaxXrotation => maxXrotation;
+    public float MinYrotation => minYrotation;
+    public float MaxYrotation => maxYrotation;
+    public float MinZrotation => minZrotation;
+    public float MaxZrotation => maxZrotation;
+
+    public float AssetSpawnThreshholdMin => assetSpawnThreshholdMin;
+    public float AssetSpawnThreshholdMax => assetSpawnThreshholdMax;
+    public float MinHeight => minHeight;
+    public float MaxHeight => maxHeight;
+
+    public int AssetStep => assetStep;
+    public float RandomSpawnChance => randomSpawnChance;
+
+    public int ClusterMinCount => clusterMinCount;
+    public int ClusterMaxCount => clusterMaxCount;
+    public float ClusterSpread => clusterSpread;
+
+    public float OverlapAvoidanceRadius => overlapAvoidanceRadius;
+    public bool OverlapAvoid => overlapAvoid;
+
+    public float ClusterCheckInterval => clusterCheckInterval;
+    public ClusterRateSettings ClusterSpawnSettings => clusterSpawnSettings;
+    public ClusterRateSettings ClusterDespawnSettings => clusterDespawnSettings;
 }
