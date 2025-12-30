@@ -9,10 +9,12 @@ public class InputManager : MonoBehaviour
     private PlayerInput playerInput;
     private PlayerInput.OnFootActions onFoot;
     private PlayerInput.InventoryActions inventory;
+    private PlayerInput.HotbarActions hotbars;
     private PlayerMovement movement;
     private CameraLook camLook;
     private InventoryManager inventoryManager;
     private PlayerCollector collector;
+    
     public bool interactPressed;
 
     void Awake()
@@ -24,6 +26,7 @@ public class InputManager : MonoBehaviour
         camLook = GetComponent<CameraLook>();
         inventoryManager = GetComponent<InventoryManager>();
         collector = GetComponent<PlayerCollector>();
+        hotbars = playerInput.Hotbar;
 
         onFoot.Jump.performed += ctx => movement.Jump();
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
@@ -41,9 +44,16 @@ public class InputManager : MonoBehaviour
             inventoryManager.PickOrSwapItem();
     };
 
+        hotbars.Hotbar1.performed += ctx => TryUseHotbar(1);
+        hotbars.Hotbar2.performed += ctx => TryUseHotbar(2);
+        hotbars.Hotbar3.performed += ctx => TryUseHotbar(3);
+        hotbars.Hotbar4.performed += ctx => TryUseHotbar(4);
+        hotbars.Hotbar5.performed += ctx => TryUseHotbar(5);
+        hotbars.Hotbar6.performed += ctx => TryUseHotbar(6);
 
 
-    Cursor.lockState = CursorLockMode.Locked;
+
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
     
@@ -71,11 +81,22 @@ private void HandleInventoryToggle()
         Cursor.visible = false;
     }
 }
+    private void TryUseHotbar(int index)
+    {
+        if (inventoryManager == null) return;
+
+        
+        if (inventoryManager.IsOpen) return;
+
+        inventoryManager.SelectHotbar(index);
+    }
 
 
 
 
-void FixedUpdate()
+
+
+    void FixedUpdate()
     {
         if (inventoryManager != null && inventoryManager.IsOpen)
             

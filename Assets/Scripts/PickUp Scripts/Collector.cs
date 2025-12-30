@@ -64,7 +64,7 @@ public class PlayerCollector : MonoBehaviour
             Debug.Log($"Collected {target.itemData.itemName}. Total collected: {collectedCount}");
         }
 
-        // Hide/remove the cube from the world
+        // remove the cube from the world
         Destroy(target.gameObject);
         nearbyItems.RemoveAt(0);
         

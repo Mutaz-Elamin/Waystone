@@ -13,6 +13,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private ItemClass itemToAdd;
     [SerializeField] private ItemClass itemToRemove;
     [SerializeField] private GameObject inventoryUI;
+    [SerializeField] private GameObject selector;
     public bool IsOpen = false;
     private SlotClass movingSlot;
     private SlotClass tempSlot;
@@ -70,9 +71,8 @@ public class InventoryManager : MonoBehaviour
 
 
         inventoryUI.SetActive(false);
-        Add(itemToAdd,1);
-        Add(itemToAdd,1);
-        Remove(itemToRemove);
+        
+
         RefreshUI();
         
 
@@ -151,13 +151,23 @@ public class InventoryManager : MonoBehaviour
                 }
         else
         {
-                for (int i = 0; i < items.Length; i++)
+            for (int i = 0; i < hotbarItems.Length; i++)
+            {
+                if (hotbarItems[i].GetItem() == null)
+                {
+                    hotbarItems[i].AddItem(item, quantity);
+                    RefreshUI();
+                    return true;
+                }
+            }
+            for (int i = 0; i < items.Length; i++)
                 {
                     if (items[i].GetItem() == null)
                     {
                         items[i].AddItem(item, quantity);
-                        break;
-                    }
+                    RefreshUI();
+                    return true;
+                }
                 }
             }
 
@@ -165,7 +175,8 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    public bool Remove(ItemClass item)
+    /* Old Remove (without crafting system logic)
+     * public bool Remove(ItemClass item)
     {
         SlotClass slot = Contains(item);
         if (slot != null)
@@ -197,11 +208,18 @@ public class InventoryManager : MonoBehaviour
 
         RefreshUI();
         return true;
-    }
+    } */
 
     public SlotClass Contains(ItemClass item)
     {
-        foreach(SlotClass slot in items)
+        foreach (SlotClass slot in hotbarItems)
+        {
+            if (slot.GetItem() == item)
+            {
+                return slot;
+            }
+        }
+        foreach (SlotClass slot in items)
         {
             if (slot.GetItem() == item)
             {
@@ -236,7 +254,7 @@ public class InventoryManager : MonoBehaviour
         // Check hotbar first
         for (int i = 0; i < hotbarSlots.Length; i++)
         {
-            if (Vector2.Distance(mousePos, hotbarSlots[i].transform.position) <= 32f)
+            if (Vector2.Distance(mousePos, hotbarSlots[i].transform.position) <= 50f)
             {
                 return new SlotRef { isHotbar = true, index = i, slot = hotbarItems[i] };
             }
@@ -344,5 +362,84 @@ public class InventoryManager : MonoBehaviour
         if (!isMovingItem) BeginItemMove();
         else EndItemMove();
     }
+    public void SelectHotbar(int index)
+    {
+        if (index < 0 || index >= hotbarSlots.Length) return;
+
+        // Move selector using RectTransform (UI safe)
+        RectTransform selectorRect = selector.GetComponent<RectTransform>();
+        RectTransform slotRect = hotbarSlots[index].GetComponent<RectTransform>();
+
+        if (selectorRect != null && slotRect != null)
+        {
+            selectorRect.SetParent(slotRect, false);
+            selectorRect.anchoredPosition = Vector2.zero; // center on the slot
+            selectorRect.SetAsLastSibling();              // draw on top
+        }
+
+        RefreshUI();
+    }
+
+    public int GetItemCount(ItemClass item)
+    {
+        int total = 0;
+
+        for (int i = 0; i < hotbarItems.Length; i++)
+            if (hotbarItems[i].GetItem() == item)
+                total += hotbarItems[i].GetQuantity();
+
+        for (int i = 0; i < items.Length; i++)
+            if (items[i].GetItem() == item)
+                total += items[i].GetQuantity();
+
+        return total;
+    }
+
+    public bool Remove(ItemClass item, int quantity)
+    {
+        int remaining = quantity;
+
+        // hotbar first
+        for (int i = 0; i < hotbarItems.Length && remaining > 0; i++)
+        {
+            if (hotbarItems[i].GetItem() != item) continue;
+
+            int inSlot = hotbarItems[i].GetQuantity();
+            if (inSlot > remaining)
+            {
+                hotbarItems[i].RemoveQuantity(remaining);
+                remaining = 0;
+            }
+            else
+            {
+                remaining -= inSlot;
+                hotbarItems[i].Clear();
+            }
+        }
+
+        // then inventory
+        for (int i = 0; i < items.Length && remaining > 0; i++)
+        {
+            if (items[i].GetItem() != item) continue;
+
+            int inSlot = items[i].GetQuantity();
+            if (inSlot > remaining)
+            {
+                items[i].RemoveQuantity(remaining);
+                remaining = 0;
+            }
+            else
+            {
+                remaining -= inSlot;
+                items[i].Clear();
+            }
+        }
+
+        RefreshUI();
+        return remaining == 0;
+    }
+
+
+
 
 }
