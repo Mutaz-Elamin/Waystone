@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
-  m_Name: Pickaxe
+  m_Script: {fileID: 11500000, guid: 5276e2049c6e34a4680704a0639e7590, type: 3}
+  m_Name: Metal
   m_EditorClassIdentifier: 
-  itemName: Pickaxe
-  itemIcon: {fileID: 21300000, guid: b54b94da5cee5c046bf327246ac181e6, type: 3}
-  isStackable: 0
+  itemName: Metal
+  itemIcon: {fileID: 21300000, guid: e78313c7d47aeb845aee79d5bc8d26c5, type: 3}
+  isStackable: 1

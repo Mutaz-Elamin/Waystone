@@ -9,7 +9,7 @@ public class PlayerCollector : MonoBehaviour
     private float lastCollectTime = 0f;
     private readonly List<Collectible> nearbyItems = new List<Collectible>();
     private int collectedCount = 0;
-
+    private CraftingStation stationInRange;
     void Start()
     {
         if (inventory == null)
@@ -21,6 +21,12 @@ public class PlayerCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        CraftingStation station = other.GetComponent<CraftingStation>();
+        if (station != null)
+        {
+            stationInRange = station;
+            return;
+        }
         Collectible item = other.GetComponent<Collectible>();
         if (item != null && !nearbyItems.Contains(item))
         {
@@ -31,6 +37,12 @@ public class PlayerCollector : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        CraftingStation station = other.GetComponent<CraftingStation>();
+        if (station != null && station == stationInRange)
+        {
+            stationInRange = null;
+            return;
+        }
         Collectible item = other.GetComponent<Collectible>();
         if (item != null)
         {
@@ -42,6 +54,15 @@ public class PlayerCollector : MonoBehaviour
     // Called by InputManager when Interact (E) is pressed
     public void TryCollect()
     {
+
+        if (stationInRange != null)
+        {
+            stationInRange.Interact(this);
+            lastCollectTime = Time.time;
+            return;
+        }
+
+
         if (inventory == null) return;
         if (nearbyItems.Count == 0) return;
 

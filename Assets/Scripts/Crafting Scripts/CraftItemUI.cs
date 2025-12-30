@@ -99,15 +99,16 @@ public class CraftItemUI : MonoBehaviour
                 craftButton.gameObject.SetActive(false);
                 return;
             }
-            craftButton.gameObject.SetActive(true);
+            
         }
+        craftButton.gameObject.SetActive(true);
     }
 
     
 
     private void TryCraft()
     {
-        Debug.Log("Craft button clicked!", this);
+        
 
         if (inventory == null || recipe == null) return;
         if (inventory.IsFull())
@@ -148,4 +149,6 @@ public class CraftItemUI : MonoBehaviour
 
         
     }
+
+
 }

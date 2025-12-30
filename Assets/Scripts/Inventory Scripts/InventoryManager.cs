@@ -17,6 +17,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private int selectedHotbarIndex = 0;
     [SerializeField] private GameObject craftingUI;
     [SerializeField] private Button craftingUIButton;
+    [SerializeField] private Button exitButton;
     public bool IsOpen = false;
     private SlotClass movingSlot;
     private SlotClass tempSlot;
@@ -76,9 +77,16 @@ public class InventoryManager : MonoBehaviour
         craftingUIButton.onClick.AddListener(() =>
         {
             craftingUI.SetActive(!craftingUI.activeSelf);
+            if (craftingUI.activeSelf && craftingMenu != null)
+                craftingMenu.Open(CraftingMenu.StationType.Default);
         });
+
         inventoryUI.SetActive(false);
-        
+        exitButton.onClick.RemoveAllListeners();
+        exitButton.onClick.AddListener(() =>
+        {
+            ToggleInventory();
+        });
 
         RefreshUI();
         
@@ -362,12 +370,18 @@ public class InventoryManager : MonoBehaviour
     {
         IsOpen = !IsOpen;
 
-        inventoryUI.SetActive(!inventoryUI.activeSelf);
-        if(!inventoryUI.activeSelf)
-        {
-            craftingUI.SetActive(false);
-        }
+        if (inventoryUI != null)
+            inventoryUI.SetActive(IsOpen);
 
+        // If closing inventory, always close crafting too
+        if (!IsOpen)
+        {
+            if (craftingUI != null)
+                craftingUI.SetActive(false);
+
+            if (craftingMenu != null)
+                craftingMenu.Close();
+        }
     }
     public void PickOrSwapItem()
     {
@@ -449,7 +463,24 @@ public class InventoryManager : MonoBehaviour
         }
         return true;
     }
+    [SerializeField] private CraftingMenu craftingMenu;   // drag your CraftingMenu object here in Inspector
 
-        
+    // Add this method anywhere inside InventoryManager:
+    public void OpenInventoryAndCrafting(CraftingMenu.StationType stationType)
+    {
+        IsOpen = true;
+
+        if (inventoryUI != null) inventoryUI.SetActive(true);
+        if (craftingUI != null) craftingUI.SetActive(true);
+
+        if (craftingMenu != null)
+            craftingMenu.Open(stationType);
+    }
+
+ 
+
+    
+
+
 
 }

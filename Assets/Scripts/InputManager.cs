@@ -81,6 +81,22 @@ private void HandleInventoryToggle()
         Cursor.visible = false;
     }
 }
+    public void SyncCursorToInventory()
+    {
+        if (inventoryManager == null) return;
+
+        if (inventoryManager.IsOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
     private void TryUseHotbar(int index)
     {
         if (inventoryManager == null) return;
