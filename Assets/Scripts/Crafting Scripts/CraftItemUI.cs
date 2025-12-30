@@ -43,7 +43,65 @@ public class CraftItemUI : MonoBehaviour
 
       
     }
+    private void Update()
+    {
+        CanCraft();
+        UpdateUI();
+    }
 
+    private void UpdateUI()
+    {
+        if (recipe == null) return;
+        // Update item icon and name
+        ItemClass outItem = recipe.outputItem.GetItem();
+        if (itemIcon != null && outItem != null && outItem.itemIcon != null)
+        {
+            itemIcon.sprite = outItem.itemIcon;
+        }
+        if (itemNameText != null && outItem != null)
+        {
+            itemNameText.text = outItem.itemName;
+        }
+        // Update requirements text
+        if (requirementsText != null)
+        {
+            string reqText = "";
+            foreach (var req in recipe.inputItems)
+            {
+                
+                reqText += $"{req.GetItem().itemName}: {inventory.GetItemCount(req.GetItem())} / {req.GetQuantity()} \n";
+            }
+            requirementsText.text = reqText;
+        }
+        // Update craft button text
+    
+
+
+    }
+
+    private void CanCraft()
+    {
+
+        if (inventory == null || recipe == null) return;
+        if (inventory.IsFull())
+        {
+            craftButton.gameObject.SetActive(false);
+            return;
+        }
+
+        // Check materials
+        foreach (var req in recipe.inputItems)
+        {
+            if (req == null || req.GetItem() == null) continue;
+
+            if (inventory.GetItemCount(req.GetItem()) < req.GetQuantity())
+            {
+                craftButton.gameObject.SetActive(false);
+                return;
+            }
+            craftButton.gameObject.SetActive(true);
+        }
+    }
 
     
 
@@ -52,6 +110,11 @@ public class CraftItemUI : MonoBehaviour
         Debug.Log("Craft button clicked!", this);
 
         if (inventory == null || recipe == null) return;
+        if (inventory.IsFull())
+        {
+          
+            return;
+        }
 
         // Check materials
         foreach (var req in recipe.inputItems)

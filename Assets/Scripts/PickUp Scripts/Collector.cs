@@ -61,7 +61,7 @@ public class PlayerCollector : MonoBehaviour
         {
             inventory.Add(target.itemData, 1);
             collectedCount++;
-            Debug.Log($"Collected {target.itemData.itemName}. Total collected: {collectedCount}");
+            
         }
 
         // remove the cube from the world

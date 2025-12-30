@@ -9,6 +9,9 @@ public class Collectible : MonoBehaviour
     void Start()
         
     {
+        
+
+        prompt.GetComponent<TextMeshPro>().text = itemData.itemName;
 
         if (prompt == null)
         {

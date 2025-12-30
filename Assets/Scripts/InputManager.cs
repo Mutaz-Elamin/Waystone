@@ -44,12 +44,12 @@ public class InputManager : MonoBehaviour
             inventoryManager.PickOrSwapItem();
     };
 
-        hotbars.Hotbar1.performed += ctx => TryUseHotbar(1);
-        hotbars.Hotbar2.performed += ctx => TryUseHotbar(2);
-        hotbars.Hotbar3.performed += ctx => TryUseHotbar(3);
-        hotbars.Hotbar4.performed += ctx => TryUseHotbar(4);
-        hotbars.Hotbar5.performed += ctx => TryUseHotbar(5);
-        hotbars.Hotbar6.performed += ctx => TryUseHotbar(6);
+        hotbars.Hotbar1.performed += ctx => TryUseHotbar(0);
+        hotbars.Hotbar2.performed += ctx => TryUseHotbar(1);
+        hotbars.Hotbar3.performed += ctx => TryUseHotbar(2);
+        hotbars.Hotbar4.performed += ctx => TryUseHotbar(3);
+        hotbars.Hotbar5.performed += ctx => TryUseHotbar(4);
+        hotbars.Hotbar6.performed += ctx => TryUseHotbar(5);
 
 
 
@@ -116,11 +116,13 @@ private void HandleInventoryToggle()
     {
         onFoot.Enable();
         inventory.Enable();
+        hotbars.Enable();
     }
     void OnDisable()
     {
         onFoot.Disable();
         inventory.Disable();
+        hotbars.Disable();
     }
 
 

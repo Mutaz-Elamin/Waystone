@@ -14,6 +14,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private ItemClass itemToRemove;
     [SerializeField] private GameObject inventoryUI;
     [SerializeField] private GameObject selector;
+    [SerializeField] private int selectedHotbarIndex = 0;
+    [SerializeField] private GameObject craftingUI;
+    [SerializeField] private Button craftingUIButton;
     public bool IsOpen = false;
     private SlotClass movingSlot;
     private SlotClass tempSlot;
@@ -68,8 +71,12 @@ public class InventoryManager : MonoBehaviour
             slots[i] = slotHolder.transform.GetChild(i).gameObject;
         }
 
-
-
+        craftingUI.SetActive(false);
+        craftingUIButton.onClick.RemoveAllListeners();
+        craftingUIButton.onClick.AddListener(() =>
+        {
+            craftingUI.SetActive(!craftingUI.activeSelf);
+        });
         inventoryUI.SetActive(false);
         
 
@@ -240,6 +247,7 @@ public class InventoryManager : MonoBehaviour
             (isMovingItem && movingSlot != null && movingSlot.GetItem() != null)
                 ? movingSlot.GetItem().itemIcon
                 : null;
+        selector.transform.position = hotbarSlots[selectedHotbarIndex].transform.position;
     }
 
 
@@ -353,7 +361,13 @@ public class InventoryManager : MonoBehaviour
     public void ToggleInventory()
     {
         IsOpen = !IsOpen;
+
         inventoryUI.SetActive(!inventoryUI.activeSelf);
+        if(!inventoryUI.activeSelf)
+        {
+            craftingUI.SetActive(false);
+        }
+
     }
     public void PickOrSwapItem()
     {
@@ -364,20 +378,7 @@ public class InventoryManager : MonoBehaviour
     }
     public void SelectHotbar(int index)
     {
-        if (index < 0 || index >= hotbarSlots.Length) return;
-
-        // Move selector using RectTransform (UI safe)
-        RectTransform selectorRect = selector.GetComponent<RectTransform>();
-        RectTransform slotRect = hotbarSlots[index].GetComponent<RectTransform>();
-
-        if (selectorRect != null && slotRect != null)
-        {
-            selectorRect.SetParent(slotRect, false);
-            selectorRect.anchoredPosition = Vector2.zero; // center on the slot
-            selectorRect.SetAsLastSibling();              // draw on top
-        }
-
-        RefreshUI();
+        selectedHotbarIndex = index;
     }
 
     public int GetItemCount(ItemClass item)
@@ -439,7 +440,16 @@ public class InventoryManager : MonoBehaviour
         return remaining == 0;
     }
 
+    public bool IsFull()
+    {
+        for (int i = 0; i < items.Length; i++)
+        {
+            if (items[i].GetItem() == null)
+                return false;
+        }
+        return true;
+    }
 
-
+        
 
 }
