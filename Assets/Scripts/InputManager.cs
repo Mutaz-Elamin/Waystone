@@ -45,6 +45,7 @@ public class InputManager : MonoBehaviour
 
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
+        onFoot.LightAttack.canceled += ctx => attack.StopLightAttack();
 
         onFoot.HeavyAttack.performed += ctx => attack.StartHeavyCharge();
         onFoot.HeavyAttack.canceled += ctx => attack.ReleaseHeavyAttack();

@@ -17,4 +17,6 @@ public abstract class Weapon : MonoBehaviour
     public virtual void ReleaseHeavyAttack() { }
     public virtual void StartDefend() { }
     public virtual void StopDefend() { }
+    //for pickaxe only
+    public virtual void StopLightAttack() { }
 }

@@ -9,6 +9,11 @@ public class PlayerAttack : MonoBehaviour
         currentWeapon?.LightAttack();
     }
 
+    public void StopLightAttack()
+    {
+        currentWeapon?.StopLightAttack();
+    }
+
     public void HeavyAttack()
     {
         currentWeapon?.HeavyAttack();

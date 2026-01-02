@@ -1,0 +1,235 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4965640063223852347
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 605784749699211580}
+  - component: {fileID: 4591256759826696010}
+  - component: {fileID: 6576886082003710750}
+  m_Layer: 15
+  m_Name: DaggerAttackZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &605784749699211580
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965640063223852347}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.40034476, y: 0.643916, z: -0.40614456, w: -0.5100421}
+  m_LocalPosition: {x: -2.54, y: 0.5110282, z: -1.6625911}
+  m_LocalScale: {x: 0.24, y: 0.24000001, z: 0.24000002}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1347254988495201604}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4591256759826696010
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965640063223852347}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 14.73, y: 11.1, z: 7.99}
+  m_Center: {x: 5.4, y: -17.42, z: -7.4}
+--- !u!114 &6576886082003710750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965640063223852347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d0c9f2dbd5311c42a5b1c8ab4bba9b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canHit: 0
+  damage: 1
+--- !u!1 &5397069016849034924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1347254988495201604}
+  - component: {fileID: 6400037114319032992}
+  - component: {fileID: 4446429655244078529}
+  m_Layer: 0
+  m_Name: DaggerHolder 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1347254988495201604
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5397069016849034924}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.2412365, y: -0.7196216, z: -0.62931764, w: 0.16706}
+  m_LocalPosition: {x: 0.03, y: 0.09, z: 0.82}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 605784749699211580}
+  - {fileID: 180678836540948876}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: -440.52, y: 157.44, z: 56.24}
+--- !u!95 &6400037114319032992
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5397069016849034924}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4894c5fdd82381b478659c0de1782f87, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4446429655244078529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5397069016849034924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 134a6c8cb4e24f64d98de790a493b705, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponName: 
+  animator: {fileID: 1969602053815517545}
+  attackCollider: {fileID: 4591256759826696010}
+  comboResetTime: 1
+--- !u!1001 &363488703043675751
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1347254988495201604}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.446
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.225
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.678
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7047643
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.69067776
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.15153952
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.057508774
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 72.96
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -82.29
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_Name
+      value: Dagger
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1969602053815517545}
+  m_SourcePrefab: {fileID: 100100000, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+--- !u!4 &180678836540948876 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+  m_PrefabInstance: {fileID: 363488703043675751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &705436615874714422 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+  m_PrefabInstance: {fileID: 363488703043675751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1969602053815517545
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705436615874714422}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4894c5fdd82381b478659c0de1782f87, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

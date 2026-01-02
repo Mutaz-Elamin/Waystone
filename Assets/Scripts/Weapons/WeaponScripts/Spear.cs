@@ -9,7 +9,6 @@ public class Spear : Weapon
     private bool canAttack = true;
     private float lastAttackTime;
     private bool isDefending = false;
-    public Animator animator; 
 
     public override void LightAttack()
     {
