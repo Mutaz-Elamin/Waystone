@@ -160,4 +160,18 @@ public class WorldGrid : MonoBehaviour
         clustersByChunk.Clear();
         hasPlayerChunk = false;
     }
+
+    public TerrainAssetManagement ParentToChunk(Transform t, Vector3 worldPos)
+    {
+        Vector2Int coord = WorldToChunk(worldPos);
+        GameObject root = GetOrCreateChunkRoot(coord);
+
+        t.SetParent(root.transform, worldPositionStays: true);
+
+        if (hasPlayerChunk)
+            root.SetActive(IsWithinActiveRadius(coord, lastPlayerChunk));
+
+        return root.GetComponent<TerrainAssetManagement>();
+    }
+
 }

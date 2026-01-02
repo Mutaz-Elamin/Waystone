@@ -191,6 +191,82 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: wallHeight
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: wallSpacing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: useMountains
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderMaxYRot
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderMinYRot
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderSpacing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderMaxScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderMinScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: extraBehindMax
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: extraBehindMin
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: useBorderAssets
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: extraBehindCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderAssetPrefab
+      value: 
+      objectReference: {fileID: 4796221756594958542, guid: 85c26c44dc5dc80478f7d952a7adc7d9, type: 3}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderOverlapAvoid
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: extraTangentJitter
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderClusterSpread
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderOverlapRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderClusterMaxCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: borderClusterMinCount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767146831374449068, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: m_Name
       value: Map Generator Test
@@ -201,11 +277,11 @@ PrefabInstance:
       objectReference: {fileID: 1406031168}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: spawnNpcs
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: spawnAssets
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: worldBorder

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 [DisallowMultipleComponent]
 public class WorldBorder : MonoBehaviour
@@ -31,6 +32,48 @@ public class WorldBorder : MonoBehaviour
 
     [Header("Spawn Blocking")]
     [SerializeField, Range(0f, 0.25f)] private float noSpawnNearBorder = 0.06f;
+
+    [Header("Border Assets")]
+    [SerializeField] private bool useBorderAssets = false;
+    [SerializeField] private GameObject borderAssetPrefab;
+
+    [SerializeField, Min(0.5f)] private float borderSpacing = 1f;
+    [SerializeField, Min(0f)] private float borderInset = 10f;
+
+    [SerializeField, Min(0)] private int extraBehindCount = 2;
+    [SerializeField, Min(0f)] private float extraBehindMin = 2f;
+    [SerializeField, Min(0f)] private float extraBehindMax = 12f;
+    [SerializeField, Min(0f)] private float extraTangentJitter = 4f;
+
+    [SerializeField] private bool borderOverlapAvoid = true;
+    [SerializeField, Min(0f)] private float borderOverlapRadius = 1f;
+
+    [SerializeField] private float borderMinScale = 1;
+    [SerializeField] private float borderMaxScale = 1f;
+
+    [SerializeField] private float borderMinYRot = 0f;
+    [SerializeField] private float borderMaxYRot = 0f;
+
+    [Header("Border Wall")]
+    [SerializeField] private bool useBorderWall = true;
+    [SerializeField, Min(0.5f)] private float wallSpacing = 1f;
+    [SerializeField, Min(0f)] private float wallInset = 3f;
+    [SerializeField, Min(0.1f)] private float wallRadius = 1.5f;
+    [SerializeField, Min(0.1f)] private float wallHeight = 200f;
+    [SerializeField, Min(0f)] private float wallSink = 2f;
+    [SerializeField] private bool carveNavMesh = true;
+
+    [Header("Ceiling")]
+    [SerializeField] private bool useCeiling = true;
+    [SerializeField, Min(0.1f)] private float ceilingThickness = 2f;
+
+    private readonly System.Collections.Generic.List<GameObject> borderSpawned = new System.Collections.Generic.List<GameObject>(2048);
+    private readonly System.Collections.Generic.List<GameObject> wallSpawned = new System.Collections.Generic.List<GameObject>(1024);
+
+    private Transform borderRoot;
+    private Transform borderAssetsRoot;
+    private Transform borderWallRoot;
+    private GameObject ceilingObj;
 
     private Terrain cachedTerrain;
     private Vector3 terrainPos;
@@ -271,4 +314,243 @@ public class WorldBorder : MonoBehaviour
 
         return Mathf.Min(tx, ty);
     }
+
+    public void ClearBorderAssets(PrefabPool pool)
+    {
+        for (int i = borderSpawned.Count - 1; i >= 0; i--)
+        {
+            GameObject go = borderSpawned[i];
+            if (go == null) continue;
+
+            if (pool != null) pool.Release(go);
+            else Destroy(go);
+        }
+        borderSpawned.Clear();
+
+        for (int i = wallSpawned.Count - 1; i >= 0; i--)
+        {
+            GameObject go = wallSpawned[i];
+            if (go == null) continue;
+            Destroy(go);
+        }
+        wallSpawned.Clear();
+
+        if (ceilingObj != null)
+        {
+            Destroy(ceilingObj);
+            ceilingObj = null;
+        }
+
+        if (borderRoot != null)
+        {
+            Destroy(borderRoot.gameObject);
+            borderRoot = null;
+            borderAssetsRoot = null;
+            borderWallRoot = null;
+        }
+    }
+
+
+    public void GenerateBorderAssets(WorldGrid grid, PrefabPool pool)
+    {
+        ClearBorderAssets(pool);
+
+        if (cachedTerrain == null) return;
+
+        if (borderRoot == null)
+        {
+            GameObject r = new GameObject("Border");
+            r.transform.SetParent(transform, worldPositionStays: true);
+            borderRoot = r.transform;
+
+            GameObject a = new GameObject("Assets");
+            a.transform.SetParent(borderRoot, worldPositionStays: false);
+            borderAssetsRoot = a.transform;
+
+            GameObject w = new GameObject("Wall");
+            w.transform.SetParent(borderRoot, worldPositionStays: false);
+            borderWallRoot = w.transform;
+        }
+
+        float halfMin = Mathf.Min(terrainSize.x, terrainSize.z) * 0.5f;
+        float approxPerimeter = 2f * Mathf.PI * halfMin * Mathf.Clamp01(radiusSize);
+
+        Vector3 center = terrainPos + new Vector3(terrainSize.x * 0.5f, 0f, terrainSize.z * 0.5f);
+        float topY = terrainPos.y + Mathf.Max(0.1f, wallHeight);
+
+        if (useBorderWall)
+        {
+            int segs = Mathf.Max(16, Mathf.CeilToInt(approxPerimeter / Mathf.Max(0.5f, wallSpacing)));
+            for (int i = 0; i < segs; i++)
+            {
+                float theta01 = i / (float)segs;
+                if (TryGetBorderPointWorld(theta01, wallInset, out Vector3 p))
+                    SpawnWallCollider(p, topY);
+            }
+        }
+
+        if (useCeiling)
+            SpawnCeiling(topY);
+
+        if (!useBorderAssets || borderAssetPrefab == null)
+            return;
+
+        int assetSegs = Mathf.Max(16, Mathf.CeilToInt(approxPerimeter / Mathf.Max(0.5f, borderSpacing)));
+
+        int extraCount = Mathf.Max(0, extraBehindCount);
+        float minDepth = Mathf.Max(0f, extraBehindMin);
+        float maxDepth = Mathf.Max(minDepth, extraBehindMax);
+        float jitter = Mathf.Max(0f, extraTangentJitter);
+
+        float rSqr = borderOverlapRadius * borderOverlapRadius;
+
+        for (int i = 0; i < assetSegs; i++)
+        {
+            float theta01 = i / (float)assetSegs;
+
+            if (!TryGetBorderPointWorld(theta01, borderInset, out Vector3 p))
+                continue;
+
+            Vector3 outward = p - center;
+            outward.y = 0f;
+            outward = outward.sqrMagnitude > 0.0001f ? outward.normalized : Vector3.forward;
+
+            Vector3 inward = -outward;
+            Vector3 tangent = new Vector3(-outward.z, 0f, outward.x);
+
+            TrySpawnBorderAsset(grid, pool, p, rSqr);
+
+            for (int e = 0; e < extraCount; e++)
+            {
+                float depth = Random.Range(minDepth, maxDepth);
+                float tj = jitter > 0f ? Random.Range(-jitter, jitter) : 0f;
+
+                Vector3 cand = p + inward * depth + tangent * tj;
+                if (!IsInsideWorld(cand)) continue;
+
+                float y = cachedTerrain.SampleHeight(new Vector3(cand.x, 0f, cand.z)) + terrainPos.y;
+                cand = new Vector3(cand.x, y, cand.z);
+
+                TrySpawnBorderAsset(grid, pool, cand, rSqr);
+            }
+        }
+    }
+
+
+    private bool TryGetBorderPointWorld(float theta01, float insetMeters, out Vector3 pos)
+    {
+        pos = default;
+
+        if (cachedTerrain == null) return false;
+
+        float angle = theta01 * 2f * Mathf.PI - Mathf.PI;
+
+        float rBorder = BorderRadiusAtAngle(angle);
+
+        Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        float rMax = RayToSquareMaxRadius(dir);
+        if (rMax < 0.000001f) return false;
+
+        float halfMin = Mathf.Min(terrainSize.x, terrainSize.z) * 0.5f;
+        float inset01 = (halfMin > 0.0001f) ? (insetMeters / halfMin) : 0f;
+
+        float rNorm = Mathf.Clamp01(rBorder - inset01);
+        float r = rNorm * rMax;
+
+        float cx = dir.x * r;
+        float cy = dir.y * r;
+
+        float u01 = cx * 0.5f + 0.5f;
+        float v01 = cy * 0.5f + 0.5f;
+
+        float wx = terrainPos.x + u01 * terrainSize.x;
+        float wz = terrainPos.z + v01 * terrainSize.z;
+        float wy = cachedTerrain.SampleHeight(new Vector3(wx, 0f, wz)) + terrainPos.y;
+
+        Vector3 p = new Vector3(wx, wy, wz);
+        if (!IsInsideWorld(p)) return false;
+
+        pos = p;
+        return true;
+    }
+
+    private void TrySpawnBorderAsset(WorldGrid grid, PrefabPool pool, Vector3 pos, float rSqr)
+    {
+        if (borderOverlapAvoid && borderOverlapRadius > 0f)
+        {
+            for (int i = 0; i < borderSpawned.Count; i++)
+            {
+                GameObject existing = borderSpawned[i];
+                if (existing == null) continue;
+                if ((existing.transform.position - pos).sqrMagnitude < rSqr)
+                    return;
+            }
+        }
+
+        float yaw = (borderMaxYRot != borderMinYRot) ? Random.Range(borderMinYRot, borderMaxYRot) : borderMinYRot;
+        Quaternion rot = Quaternion.Euler(0f, yaw, 0f);
+
+        Transform parent = borderAssetsRoot;
+
+        GameObject obj = (pool != null)
+            ? pool.Get(borderAssetPrefab, pos, rot, parent)
+            : Instantiate(borderAssetPrefab, pos, rot, parent);
+
+        if (grid != null)
+            grid.ParentToChunk(obj.transform, pos);
+
+        float minS = Mathf.Min(borderMinScale, borderMaxScale);
+        float maxS = Mathf.Max(borderMinScale, borderMaxScale);
+        float sc = Random.Range(minS, maxS);
+        obj.transform.localScale *= sc;
+
+        borderSpawned.Add(obj);
+    }
+
+    private void SpawnWallCollider(Vector3 groundPos, float topY)
+    {
+        GameObject go = new GameObject("WallCollider");
+        go.transform.SetParent(borderWallRoot, worldPositionStays: true);
+
+        float baseY = groundPos.y - Mathf.Max(0f, wallSink);
+        float height = Mathf.Max((wallRadius * 2f) + 0.01f, topY - baseY);
+
+        go.transform.position = new Vector3(groundPos.x, baseY, groundPos.z);
+        go.transform.rotation = Quaternion.identity;
+
+        CapsuleCollider col = go.AddComponent<CapsuleCollider>();
+        col.direction = 1;
+        col.radius = Mathf.Max(0.01f, wallRadius);
+        col.height = height;
+        col.center = new Vector3(0f, height * 0.5f, 0f);
+
+        if (carveNavMesh)
+        {
+            NavMeshObstacle o = go.AddComponent<NavMeshObstacle>();
+            o.shape = NavMeshObstacleShape.Capsule;
+            o.radius = col.radius;
+            o.height = col.height;
+            o.center = col.center;
+            o.carving = true;
+        }
+
+        wallSpawned.Add(go);
+    }
+
+    private void SpawnCeiling(float topY)
+    {
+        ceilingObj = new GameObject("Ceiling");
+        ceilingObj.transform.SetParent(borderRoot, worldPositionStays: true);
+
+        Vector3 center = terrainPos + new Vector3(terrainSize.x * 0.5f, 0f, terrainSize.z * 0.5f);
+        float th = Mathf.Max(0.1f, ceilingThickness);
+
+        ceilingObj.transform.position = new Vector3(center.x, topY + th * 0.5f, center.z);
+        ceilingObj.transform.rotation = Quaternion.identity;
+
+        BoxCollider box = ceilingObj.AddComponent<BoxCollider>();
+        box.size = new Vector3(terrainSize.x, th, terrainSize.z);
+        box.center = Vector3.zero;
+    }
+
 }

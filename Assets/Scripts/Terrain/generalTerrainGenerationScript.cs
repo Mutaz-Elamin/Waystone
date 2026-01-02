@@ -233,6 +233,8 @@ public class RandomTerrain : MonoBehaviour
     // Main terrain generation method using Perlin noise
     private void GenerateTerrain()
     {
+        worldBorder.ClearBorderAssets(prefabPool);
+
         int heightmapHeight = terrainData.heightmapResolution;
         int heightmapWidth = terrainData.heightmapResolution;
 
@@ -292,6 +294,8 @@ public class RandomTerrain : MonoBehaviour
             }
             SpawnTerrainAssets(npcMap, heightMap, npcPrefabs, spawnedNpcs);
         }
+
+        worldBorder.GenerateBorderAssets(worldGrid, prefabPool);
     }
 
     // Finds the highest y value on the curve - biggest height multiplier on the terrain/highest point
