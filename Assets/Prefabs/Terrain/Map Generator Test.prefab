@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 88667868244418622}
   - component: {fileID: 6191713121643012047}
+  - component: {fileID: 1780368354484054787}
   m_Layer: 0
   m_Name: Map Generator Test
   m_TagString: Untagged
@@ -168,6 +169,19 @@ MonoBehaviour:
     clusterSpread: 18
     overlapAvoidanceRadius: 2
     overlapAvoid: 1
+    clusterCheckInterval: 0
+    clusterSpawnSettings:
+      timeFilter: 0
+      chanceDay: 0
+      chanceNight: 0
+      minPlayerDistance: 0
+      maxPlayerDistance: 0
+    clusterDespawnSettings:
+      timeFilter: 0
+      chanceDay: 0
+      chanceNight: 0
+      minPlayerDistance: 0
+      maxPlayerDistance: 0
   npcPrefabs:
   - assetName: Chicken
     assetPrefab: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
@@ -190,7 +204,23 @@ MonoBehaviour:
     clusterSpread: 3
     overlapAvoidanceRadius: 0
     overlapAvoid: 0
+    clusterCheckInterval: 0
+    clusterSpawnSettings:
+      timeFilter: 0
+      chanceDay: 0
+      chanceNight: 0
+      minPlayerDistance: 0
+      maxPlayerDistance: 0
+    clusterDespawnSettings:
+      timeFilter: 0
+      chanceDay: 0
+      chanceNight: 0
+      minPlayerDistance: 0
+      maxPlayerDistance: 0
   assetNoiseScale: 50
+  worldBorder: {fileID: 0}
+  worldGrid: {fileID: 0}
+  prefabPool: {fileID: 0}
   terrainMaterial: {fileID: 2100000, guid: def43f2dd602e6c44824fb10164c8e5e, type: 2}
   regions:
   - name: Water
@@ -217,3 +247,87 @@ MonoBehaviour:
     startHeight: 1
     colour: {r: 0.6840513, g: 0.7924528, b: 0.7677987, a: 0}
     blend: 2
+--- !u!114 &1780368354484054787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4767146831374449068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58bac812b4526934c873e9256a207c6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radiusSize: 0.9
+  irregularity: 0.12
+  noiseScale: 5
+  octaves: 2
+  persistence: 0.5
+  lacunarity: 2
+  warpStrength: 0.32
+  warpScale: 1.1
+  useMountains: 0
+  innerWidth: 0.15
+  outerWidth: 0.15
+  ridgeAddHeight01: 0.045
+  ridgeNoiseAmplitude: 0.005
+  ridgeNoiseScale: 2
+  innerCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6039972
+      value: 0.02964639
+      inSlope: 0.153126
+      outSlope: 0.153126
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.11680474
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  outerCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  noSpawnNearBorder: 0.06

@@ -42,6 +42,7 @@ public class RandomTerrain : MonoBehaviour
     [SerializeField] protected float assetNoiseScale = 20f;
 
     [Header("Streaming / Grid + Pool")]
+    [SerializeField] private WorldBorder worldBorder;
     [SerializeField] private WorldGrid worldGrid;
     [SerializeField] private PrefabPool prefabPool;
 
@@ -97,6 +98,14 @@ public class RandomTerrain : MonoBehaviour
             prefabPool = GetComponent<PrefabPool>();
             if (prefabPool == null) prefabPool = gameObject.AddComponent<PrefabPool>();
         }
+
+        if (worldBorder == null)
+        {
+            worldBorder = UnityEngine.Object.FindFirstObjectByType<WorldBorder>();
+            if (worldBorder == null)
+                worldBorder = gameObject.AddComponent<WorldBorder>();
+        }
+
 
         navSurface = terrainObject.AddComponent<NavMeshSurface>();
         navSurface.layerMask = LayerMask.GetMask("NavMesh");
@@ -246,6 +255,9 @@ public class RandomTerrain : MonoBehaviour
             }
         }
 
+        worldBorder.Initialise(terrain, seed);
+        worldBorder.ApplyToHeights(heightMap);
+
         terrainData.SetHeights(0, 0, heightMap);
 
         CheckHeightRange();
@@ -261,12 +273,14 @@ public class RandomTerrain : MonoBehaviour
         if (spawnAssets)
         {
             float[,] spawnMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed);
+            worldBorder.ApplyToSpawnMap(spawnMap);
             SpawnTerrainAssets(spawnMap, heightMap, assetPrefabs, spawnedAssets);
         }
 
         if (spawnNpcs)
         {
             float[,] npcMap = GenerateNoiseMap(heightmapHeight, heightmapWidth, assetNoiseScale, octaves, persistance, lacunarity, spawnSeed * 1000);
+            worldBorder.ApplyToSpawnMap(npcMap);
             if (navSurface != null)
             {
                 Debug.Log("Building NavMesh...");
@@ -435,7 +449,8 @@ public class RandomTerrain : MonoBehaviour
                         minWorldHeight,
                         maxWorldHeight,
                         worldGrid,
-                        prefabPool
+                        prefabPool,
+                        worldBorder
                     );
 
                     if (worldGrid != null)

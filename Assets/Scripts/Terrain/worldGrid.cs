@@ -5,7 +5,7 @@ using UnityEngine;
 public class WorldGrid : MonoBehaviour
 {
     [Header("Grid Settings")]
-    [SerializeField] private float chunkSize = 100f;
+    [SerializeField] private float chunkSize = 50f;
     [SerializeField] private int activeChunkRadius = 2;
 
     [Header("Per-Chunk Assets")]

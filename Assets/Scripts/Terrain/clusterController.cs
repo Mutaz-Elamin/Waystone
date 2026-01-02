@@ -37,6 +37,7 @@ public class ClusterController : MonoBehaviour
 
     private WorldGrid grid;
     private PrefabPool pool;
+    private WorldBorder worldBorder;
     private TerrainAssetManagement chunkRunner;
 
     private Terrain terrain;
@@ -75,7 +76,8 @@ public class ClusterController : MonoBehaviour
         float minWorldHeight,
         float maxWorldHeight,
         WorldGrid grid,
-        PrefabPool pool)
+        PrefabPool pool,
+        WorldBorder worldBorder)
     {
         clusterOrigin = origin;
         this.targetCount = Mathf.Max(0, targetCount);
@@ -105,6 +107,7 @@ public class ClusterController : MonoBehaviour
 
         this.grid = grid;
         this.pool = pool;
+        this.worldBorder = worldBorder;
 
         transform.position = clusterOrigin;
 
@@ -273,6 +276,7 @@ public class ClusterController : MonoBehaviour
         const int attempts = 12;
         for (int i = 0; i < attempts; i++)
         {
+
             Vector2 offset = Random.insideUnitCircle * clusterSpread;
             float x = clusterOrigin.x + offset.x;
             float z = clusterOrigin.z + offset.y;
@@ -294,6 +298,10 @@ public class ClusterController : MonoBehaviour
             }
 
             Vector3 candidate = new(x, y, z);
+
+
+            if (worldBorder != null && !worldBorder.IsInsideWorld(candidate))
+                continue;
 
             if (overlapAvoid && overlapAvoidanceRadius > 0f && grid != null)
             {
