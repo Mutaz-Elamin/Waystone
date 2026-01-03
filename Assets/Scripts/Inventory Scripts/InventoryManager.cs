@@ -295,11 +295,11 @@ public class InventoryManager : MonoBehaviour
         var slotRef = GetClosestSlotRef();
         if (slotRef == null) return false;
 
-        sourceSlot = slotRef.Value.slot;          //  remember source
+        sourceSlot = slotRef.Value.slot;        
         if (sourceSlot.GetItem() == null) return false;
 
-        movingSlot = new SlotClass(sourceSlot);   // cursor copy
-        sourceSlot.Clear();                       // remove from source
+        movingSlot = new SlotClass(sourceSlot);   
+        sourceSlot.Clear();                       
         isMovingItem = true;
 
         RefreshUI();
@@ -376,6 +376,8 @@ public class InventoryManager : MonoBehaviour
         // If closing inventory, always close crafting too
         if (!IsOpen)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             if (craftingUI != null)
                 craftingUI.SetActive(false);
 
@@ -414,7 +416,7 @@ public class InventoryManager : MonoBehaviour
     {
         int remaining = quantity;
 
-        // hotbar first
+        
         for (int i = 0; i < hotbarItems.Length && remaining > 0; i++)
         {
             if (hotbarItems[i].GetItem() != item) continue;
@@ -463,9 +465,9 @@ public class InventoryManager : MonoBehaviour
         }
         return true;
     }
-    [SerializeField] private CraftingMenu craftingMenu;   // drag your CraftingMenu object here in Inspector
+    [SerializeField] private CraftingMenu craftingMenu;   
 
-    // Add this method anywhere inside InventoryManager:
+    
     public void OpenInventoryAndCrafting(CraftingMenu.StationType stationType)
     {
         IsOpen = true;
