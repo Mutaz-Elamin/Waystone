@@ -4,11 +4,17 @@ using UnityEngine;
 public class Dagger : Weapon
 {
     [Header("Dagger Settings")]
-    public float comboResetTime = 1f; 
+    public float comboResetTime = 1f;
     private int comboStep = 0;
     private bool canAttack = true;
     private float lastAttackTime;
     private bool isDefending = false;
+
+    [Header("SFX Reference")]
+    public WeaponSFX sfx; // assign PlayerSFX in inspector
+
+    // Expose combo step for hitbox
+    public int ComboStep => comboStep;
 
     public override void LightAttack()
     {
@@ -20,13 +26,32 @@ public class Dagger : Weapon
         comboStep++;
         ResetAllAttackTriggers();
 
-        if (comboStep == 1) animator.SetTrigger("LightAttack1");
-        else if (comboStep == 2) animator.SetTrigger("LightAttack2");
-        else if (comboStep == 3) animator.SetTrigger("LightAttack3");
-        else if (comboStep == 4) animator.SetTrigger("LightAttack4");
-        else { comboStep = 1; animator.SetTrigger("LightAttack1"); }
+        switch (comboStep)
+        {
+            case 1:
+                animator.SetTrigger("LightAttack1");
+                sfx?.Dagger_Light1SwingPlay();
+                break;
+            case 2:
+                animator.SetTrigger("LightAttack2");
+                sfx?.Dagger_Light2SwingPlay();
+                break;
+            case 3:
+                animator.SetTrigger("LightAttack3");
+                sfx?.Dagger_Light3SwingPlay();
+                break;
+            case 4:
+                animator.SetTrigger("LightAttack4");
+                sfx?.Dagger_Light4SwingPlay();
+                break;
+            default:
+                comboStep = 1;
+                animator.SetTrigger("LightAttack1");
+                sfx?.Dagger_Light1SwingPlay();
+                break;
+        }
 
-        StartCoroutine(AttackWindow(0.15f)); 
+        StartCoroutine(AttackWindow(0.15f));
         lastAttackTime = Time.time;
     }
 
@@ -39,6 +64,7 @@ public class Dagger : Weapon
     {
         isDefending = true;
         animator.SetBool("IsDefending", true);
+        sfx?.Dagger_DefendPlay();
     }
 
     public override void StopDefend()
@@ -53,7 +79,14 @@ public class Dagger : Weapon
         attackCollider.enabled = true;
         yield return new WaitForSeconds(duration);
         attackCollider.enabled = false;
-        yield return new WaitForSeconds(0.05f); 
+        switch (comboStep)
+        {
+            case 1: sfx?.Dagger_Light1HitPlay(); break;
+            case 2: sfx?.Dagger_Light2HitPlay(); break;
+            case 3: sfx?.Dagger_Light3HitPlay(); break;
+            case 4: sfx?.Dagger_Light4HitPlay(); break;
+        }
+        yield return new WaitForSeconds(0.05f);
         canAttack = true;
     }
 
@@ -63,5 +96,23 @@ public class Dagger : Weapon
         animator.ResetTrigger("LightAttack2");
         animator.ResetTrigger("LightAttack3");
         animator.ResetTrigger("LightAttack4");
+    }
+
+    public override void ResetWeapon()
+    {
+        comboStep = 0;
+
+        animator.ResetTrigger("LightAttack1");
+        animator.ResetTrigger("LightAttack2");
+        animator.ResetTrigger("LightAttack3");
+        animator.ResetTrigger("LightAttack4");
+        animator.SetBool("IsDefending", false);
+
+        if (attackCollider != null)
+            attackCollider.enabled = false;
+
+        canAttack = true;
+        isDefending = false;
+
     }
 }

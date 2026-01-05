@@ -10,6 +10,9 @@ public class DaggerHitbox : MonoBehaviour
     [Header("Dagger Damage Settings")]
     public int damage = 1; // weaker than spear
 
+    [Header("SFX Reference")]
+    public WeaponSFX sfx; // assign PlayerSFX in inspector
+
     private void OnTriggerEnter(Collider other)
     {
         if (!canHit) return;
@@ -18,6 +21,20 @@ public class DaggerHitbox : MonoBehaviour
         {
             Debug.Log("Dagger hit: " + other.gameObject.name);
             other.GetComponent<GeneralNPC>()?.TakeDamage(damage, DamageCause.EnemyAttack);
+
+            // Play hit SFX depending on combo step
+            Dagger dagger = GetComponentInParent<Dagger>();
+            if (dagger != null)
+            {
+                switch (dagger.ComboStep)
+                {
+                    case 1: sfx?.Dagger_Light1HitPlay(); break;
+                    case 2: sfx?.Dagger_Light2HitPlay(); break;
+                    case 3: sfx?.Dagger_Light3HitPlay(); break;
+                    case 4: sfx?.Dagger_Light4HitPlay(); break;
+                    default: sfx?.Dagger_Light1HitPlay(); break;
+                }
+            }
         }
 
         canHit = false;

@@ -32,6 +32,9 @@ public class Club : Weapon
 
     private ClubHitbox hitbox;
 
+    [Header("SFX Reference")]
+    public WeaponSFX sfx; // assign PlayerSFX in inspector
+
     private void Awake()
     {
         hitbox = attackCollider.GetComponent<ClubHitbox>();
@@ -49,10 +52,26 @@ public class Club : Weapon
         comboStep++;
         ResetLightTriggers();
 
-        if (comboStep == 1) animator.SetTrigger("LightAttack1");
-        else if (comboStep == 2) animator.SetTrigger("LightAttack2");
-        else if (comboStep == 3) animator.SetTrigger("LightAttack3");
-        else { comboStep = 1; animator.SetTrigger("LightAttack1"); }
+        switch (comboStep)
+        {
+            case 1:
+                animator.SetTrigger("LightAttack1");
+                sfx?.Club_LightSwingPlay();
+                break;
+            case 2:
+                animator.SetTrigger("LightAttack2");
+                sfx?.Club_Light2SwingPlay();
+                break;
+            case 3:
+                animator.SetTrigger("LightAttack3");
+                sfx?.Club_Light3SwingPlay();
+                break;
+            default:
+                comboStep = 1;
+                animator.SetTrigger("LightAttack1");
+                sfx?.Club_LightSwingPlay();
+                break;
+        }
 
         StartCoroutine(LightAttackRoutine());
         lastAttackTime = Time.time;
@@ -60,16 +79,11 @@ public class Club : Weapon
 
     private void ForceSlam()
     {
-        // If already slamming or not charging, ignore
         if (heavyState == HeavyState.Slamming) return;
 
-        Debug.Log("[Club] ForceSlam called. heavyState -> Slamming");
         heavyState = HeavyState.Slamming;
-
-        // Keep IsChargingHeavy true until slam ends, so animator can stay in the windup->slam flow.
-        // Trigger the slam animation. Slam cleanup will turn off IsChargingHeavy.
         animator.SetTrigger("HeavyRelease");
-
+        sfx?.Club_HeavySwing1Play(); // Slam sound
         StartCoroutine(SlamHit());
     }
 
@@ -78,16 +92,15 @@ public class Club : Weapon
     {
         if (!canAttack || isDefending || heavyState != HeavyState.None) return;
 
-        Debug.Log("[Club] StartHeavyCharge");
         canAttack = false;
         heavyState = HeavyState.Charging;
-
         chargeStartTime = Time.time;
         releaseBuffered = false;
         releaseAllowed = false;
 
         animator.SetBool("IsChargingHeavy", true);
         animator.SetTrigger("HeavyWindup");
+        sfx?.Club_HeavySwing1Play(); // Windup sound
 
         StartCoroutine(WindupHit());
     }
@@ -97,16 +110,12 @@ public class Club : Weapon
     {
         if (heavyState != HeavyState.Charging) return;
 
-        Debug.Log("[Club] ReleaseHeavyAttack called. releaseAllowed=" + releaseAllowed);
-
-        // If player releases too early, buffer it
         if (!releaseAllowed)
         {
             releaseBuffered = true;
             return;
         }
 
-        // If release allowed, then slam immediately
         ForceSlam();
     }
 
@@ -114,6 +123,7 @@ public class Club : Weapon
     {
         isDefending = true;
         animator.SetBool("IsDefending", true);
+        sfx?.Club_DefendPlay();
     }
 
     public override void StopDefend()
@@ -128,6 +138,7 @@ public class Club : Weapon
     {
         canAttack = false;
 
+        // Set hitbox damage
         hitbox.damage = lightDamage;
         yield return new WaitForSeconds(0.1f);
 
@@ -135,54 +146,54 @@ public class Club : Weapon
         yield return new WaitForSeconds(lightDuration);
         attackCollider.enabled = false;
 
+        // Play hit sound
+        switch (comboStep)
+        {
+            case 1: sfx?.Club_Light1HitPlay(); break;
+            case 2: sfx?.Club_Light2HitPlay(); break;
+            case 3: sfx?.Club_Light3HitPlay(); break;
+            default: sfx?.Club_Light1HitPlay(); break;
+        }
+
         yield return new WaitForSeconds(recoveryTime * 0.4f);
         canAttack = true;
     }
 
     private IEnumerator WindupHit()
     {
-        // Wait the small minimum charge time before doing windup hit (gives the feel of wind-up)
         yield return new WaitForSeconds(minChargeTime);
 
-        // Windup hit
         hitbox.damage = windupDamage;
         attackCollider.enabled = true;
         yield return new WaitForSeconds(windupDuration);
         attackCollider.enabled = false;
 
-        // Now allow release (the forgiving window begins)
-        releaseAllowed = true;
-        Debug.Log("[Club] releaseAllowed = true");
+        sfx?.Club_HeavyHit1Play(); // Windup hit sound
 
-        // If player already released early, slam immediately
+        releaseAllowed = true;
+
         if (releaseBuffered)
         {
-            Debug.Log("[Club] release was buffered -> ForceSlam now");
             releaseBuffered = false;
             ForceSlam();
-            yield break; // slam started, stop this coroutine
+            yield break;
         }
 
-        // Otherwise wait until max charge time or until ForceSlam/Release triggers slam
         float endTime = chargeStartTime + maxChargeTime;
         while (Time.time < endTime)
         {
-            // If ForceSlam was called elsewhere, exit
             if (heavyState == HeavyState.Slamming) yield break;
             yield return null;
         }
 
-        // Auto-slam if player never released
         if (heavyState == HeavyState.Charging)
         {
-            Debug.Log("[Club] maxChargeTime reached -> ForceSlam");
             ForceSlam();
         }
     }
 
     private IEnumerator SlamHit()
     {
-        // Small delay so the animation can start and line up with hit window
         yield return new WaitForSeconds(0.1f);
 
         hitbox.damage = slamDamage;
@@ -191,15 +202,14 @@ public class Club : Weapon
         yield return new WaitForSeconds(slamDuration);
         attackCollider.enabled = false;
 
-        // Slam finished, clear charging visuals/state
+        sfx?.Club_HeavyHit2Play(); // Slam impact sound
+
         heavyState = HeavyState.None;
         animator.SetBool("IsChargingHeavy", false);
         animator.ResetTrigger("HeavyRelease");
 
         yield return new WaitForSeconds(recoveryTime);
         canAttack = true;
-
-        Debug.Log("[Club] Slam finished, canAttack = true");
     }
 
     private void ResetLightTriggers()
@@ -207,5 +217,27 @@ public class Club : Weapon
         animator.ResetTrigger("LightAttack1");
         animator.ResetTrigger("LightAttack2");
         animator.ResetTrigger("LightAttack3");
+    }
+
+    public override void ResetWeapon()
+    {
+        comboStep = 0;
+        heavyState = HeavyState.None;
+        releaseBuffered = false;
+        releaseAllowed = false;
+
+        animator.ResetTrigger("LightAttack1");
+        animator.ResetTrigger("LightAttack2");
+        animator.ResetTrigger("LightAttack3");
+        animator.ResetTrigger("HeavyWindup");
+        animator.ResetTrigger("HeavyRelease");
+        animator.SetBool("IsChargingHeavy", false);
+        animator.SetBool("IsDefending", false);
+
+        if (attackCollider != null)
+            attackCollider.enabled = false;
+
+        canAttack = true;
+        isDefending = false;
     }
 }

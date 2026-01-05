@@ -2,39 +2,29 @@ using UnityEngine;
 
 public class WeaponsManager : MonoBehaviour
 {
-    public Transform weaponHolder;
-    public PlayerAttack playerAttack;
+    [Header("Setup")]
+    public Transform weaponHolder;        // where weapons spawn
+    public PlayerAttack playerAttack;     // reference to player attack script
 
-    [Header("Default Weapon to Toggle")]
-    public Weapon defaultWeaponPrefab; // assign in Inspector
+    [Header("Test Weapon Prefabs")]
+    public Weapon stickPrefab;            // example test weapon
 
     private Weapon currentWeapon;
 
-    void Start()
-    {
-        if (defaultWeaponPrefab != null)
-        {
-            // Instantiate once and keep it disabled
-            currentWeapon = Instantiate(defaultWeaponPrefab, weaponHolder);
-            currentWeapon.gameObject.SetActive(false);
-            playerAttack.EquipWeapon(null); // no weapon equipped initially
-        }
-    }
 
-    // Toggle equip/unequip
-    public void ToggleWeapon()
+    public void SpawnTestWeapon(Weapon weaponPrefab)
     {
-        if (currentWeapon == null) return;
-
-        if (!currentWeapon.gameObject.activeSelf)
+        // Remove old weapon
+        if (currentWeapon != null)
         {
-            currentWeapon.Equip();
-            playerAttack.EquipWeapon(currentWeapon);
-        }
-        else
-        {
-            currentWeapon.Unequip();
             playerAttack.UnequipWeapon();
+            Destroy(currentWeapon.gameObject);
         }
+
+        // Spawn new weapon
+        currentWeapon = Instantiate(weaponPrefab, weaponHolder);
+        currentWeapon.Equip();            // equip immediately for testing
+        playerAttack.SetWeapon(currentWeapon);
+        playerAttack.ToggleWeaponDraw();
     }
 }

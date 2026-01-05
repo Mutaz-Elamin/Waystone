@@ -40,7 +40,8 @@ public class InputManager : MonoBehaviour
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
 
-        onFoot.Jump.performed += ctx => movement.Jump();
+       // onFoot.Jump.performed += ctx => movement.Jump();
+        onFoot.Jump.performed += ctx => weaponsManager.SpawnTestWeapon(weaponsManager.stickPrefab);
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
 
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
@@ -52,7 +53,7 @@ public class InputManager : MonoBehaviour
 
         onFoot.Defend.performed += ctx => attack.StartDefend();
         onFoot.Defend.canceled += ctx => attack.StopDefend();
-        onFoot.ToggleWeapon.performed += ctx => weaponsManager.ToggleWeapon();
+        onFoot.ToggleWeapon.performed += ctx => attack.ToggleWeaponDraw();
 
         onFoot.Interact.performed += ctx =>
         {

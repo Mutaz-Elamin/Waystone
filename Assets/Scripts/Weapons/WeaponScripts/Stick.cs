@@ -16,10 +16,19 @@ public class Stick : Weapon
     private bool isDefending = false;
 
     private StickHitbox hitbox;
+    public WeaponSFX sfx;
 
-    private void Awake()
+    private void OnEnable()
     {
-        hitbox = attackCollider.GetComponent<StickHitbox>();
+        if (attackCollider != null)
+        {
+            hitbox = attackCollider.GetComponent<StickHitbox>();
+            attackCollider.enabled = false;
+        }
+        else
+        {
+            Debug.LogError("Stick: AttackCollider is not assigned!");
+        }
     }
 
     // -------- LIGHT ATTACK --------
@@ -34,6 +43,7 @@ public class Stick : Weapon
 
     private IEnumerator LightRoutine()
     {
+        sfx.Stick_Light1SwingPlay();
         hitbox.damage = lightDamage;
         yield return new WaitForSeconds(0.1f);
 
@@ -57,6 +67,7 @@ public class Stick : Weapon
 
     private IEnumerator HeavyRoutine()
     {
+        sfx.Stick_HeavySwingPlay();
         hitbox.damage = heavyDamage;
         yield return new WaitForSeconds(0.15f);
 
@@ -80,4 +91,27 @@ public class Stick : Weapon
         isDefending = false;
         animator.SetBool("IsDefending", false);
     }
+
+    // -------- RESET WEAPON --------
+    public override void ResetWeapon()
+    {
+        animator.ResetTrigger("LightAttack");
+        animator.ResetTrigger("HeavyAttack");
+        animator.SetBool("IsDefending", false);
+
+        if (attackCollider != null)
+            attackCollider.enabled = false;
+
+        canAttack = true;
+        isDefending = false;
+
+    }
 }
+
+
+
+
+
+
+
+

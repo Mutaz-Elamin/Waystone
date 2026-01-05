@@ -4,6 +4,8 @@ public class StickHitbox : MonoBehaviour
 {
     [HideInInspector]
     public int damage;
+    
+
 
     private void OnTriggerEnter(Collider other)
  
@@ -12,5 +14,14 @@ public class StickHitbox : MonoBehaviour
 
         other.GetComponent<GeneralNPC>()
             ?.TakeDamage(damage, DamageCause.EnemyAttack);
+
+        Weapon weapon = GetComponentInParent<Weapon>();
+        if (weapon is Stick stick)
+        {
+            if (damage == stick.lightDamage)
+                stick.sfx.Stick_LightHitPlay();
+            else if (damage == stick.heavyDamage)
+                stick.sfx.Stick_HeavyHitPlay();
+        }
     }
 }

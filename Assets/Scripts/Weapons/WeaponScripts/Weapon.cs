@@ -7,8 +7,16 @@ public abstract class Weapon : MonoBehaviour
     public Collider attackCollider;
 
 
-    public virtual void Equip() => gameObject.SetActive(true);
-    public virtual void Unequip() => gameObject.SetActive(false);
+    public virtual void Equip()
+    {
+        gameObject.SetActive(true);
+        attackCollider.enabled = false;
+    }
+
+    public virtual void Unequip()
+    {
+        attackCollider.enabled = false;
+    }
 
 
     public virtual void LightAttack() { }          
@@ -19,4 +27,6 @@ public abstract class Weapon : MonoBehaviour
     public virtual void StopDefend() { }
     //for pickaxe only
     public virtual void StopLightAttack() { }
+    public abstract void ResetWeapon();
+
 }
