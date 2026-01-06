@@ -58,6 +58,9 @@ public class RandomTerrain : MonoBehaviour
     private float minWorldHeight;
     private float maxWorldHeight;
 
+    [Header("Landmark Generation")]
+    [SerializeField] protected GameObject landmarkGeneration;
+
     // References to Terrain and TerrainData components data
     protected Terrain terrain;
     protected TerrainData terrainData;
@@ -296,6 +299,16 @@ public class RandomTerrain : MonoBehaviour
         }
 
         worldBorder.GenerateBorderAssets(worldGrid, prefabPool);
+
+        if (landmarkGeneration != null)
+        {
+            var generators = landmarkGeneration.GetComponentsInChildren<GenericLandmark>(true);
+            for (int i = 0; i < generators.Length; i++)
+            {
+                generators[i].GenerateLocation(seed * i * i);
+            }
+        }
+
     }
 
     // Finds the highest y value on the curve - biggest height multiplier on the terrain/highest point

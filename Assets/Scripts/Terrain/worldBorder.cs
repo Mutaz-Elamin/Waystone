@@ -437,7 +437,7 @@ public class WorldBorder : MonoBehaviour
     }
 
 
-    private bool TryGetBorderPointWorld(float theta01, float insetMeters, out Vector3 pos)
+    public bool TryGetBorderPointWorld(float theta01, float insetMeters, out Vector3 pos)
     {
         pos = default;
 
