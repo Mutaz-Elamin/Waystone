@@ -143,6 +143,60 @@ MonoBehaviour:
   distanceMultiplier: 1
   padding: 50
   maxFarClip: 3000
+--- !u!1 &1015596765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1015596766}
+  - component: {fileID: 1015596767}
+  m_Layer: 0
+  m_Name: Boss Landmark Gen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1015596766
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015596765}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -327.2851, y: -80.17275, z: -457.04852}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1830103006}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1015596767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015596765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1630a1f6f92f3e541b999ed34794553b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  landmarkPrefab: {fileID: 6562397307556914449, guid: 6f4ab105fc7b5244aaf5b6ed2eeba5cb, type: 3}
+  minHeight: 0.1
+  maxHeight: 0.3
+  borderDistance: 50
+  centreDistance: 50
+  borderSamples: 128
+  maxAttempts: 200
+  mapGenerator: {fileID: 0}
+  terrain: {fileID: 0}
+  worldBorder: {fileID: 2074702419}
 --- !u!1001 &1064131333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -201,7 +255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: useMountains
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: borderMaxYRot
@@ -233,7 +287,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: useBorderAssets
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: extraBehindCount
@@ -272,6 +326,10 @@ PrefabInstance:
       value: Map Generator Test
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: seed
+      value: 123
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1406031168}
@@ -281,7 +339,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: spawnAssets
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: worldBorder
@@ -291,6 +349,10 @@ PrefabInstance:
       propertyPath: gridCellSize
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: landmarkGeneration
+      value: 
+      objectReference: {fileID: 1830103005}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: regions.Array.data[4].blend
       value: 14
@@ -487,6 +549,93 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 487705490}
   m_SourcePrefab: {fileID: 100100000, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+--- !u!1 &1830103005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1830103006}
+  m_Layer: 0
+  m_Name: Landmark Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1830103006
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830103005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 327.2851, y: 80.17275, z: 457.04852}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1942651720}
+  - {fileID: 1015596766}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1942651718
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1942651720}
+  - component: {fileID: 1942651719}
+  m_Layer: 0
+  m_Name: Portal Landmark Gen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1942651719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942651718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1630a1f6f92f3e541b999ed34794553b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  landmarkPrefab: {fileID: 8006400646985059455, guid: 66d0f709fcc7b60408fd87a8cd120f85, type: 3}
+  minHeight: 0.05
+  maxHeight: 0.28
+  borderDistance: 200
+  centreDistance: 0
+  borderSamples: 128
+  maxAttempts: 200
+  mapGenerator: {fileID: 0}
+  terrain: {fileID: 0}
+  worldBorder: {fileID: 2074702419}
+--- !u!4 &1942651720
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942651718}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -327.2851, y: -80.17275, z: -457.04852}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1830103006}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2074702419 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1780368354484054787, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
@@ -505,3 +654,4 @@ SceneRoots:
   - {fileID: 1429145720}
   - {fileID: 1064131333}
   - {fileID: 1818316205}
+  - {fileID: 1830103006}

@@ -336,6 +336,12 @@ public class RandomTerrain : MonoBehaviour
         Material material = terrain.materialTemplate;
         material.SetFloat("minHeight", minWorldHeight);
         material.SetFloat("maxHeight", maxWorldHeight);
+
+        var landmarks = landmarkGeneration.GetComponentsInChildren<GenericLandmark>(true);
+        foreach (var l in landmarks)
+        {
+            l.setWorldHeights(minWorldHeight, maxWorldHeight);
+        }
     }
 
     // Updated colouring of terrain mesh using custom shader - new colour method

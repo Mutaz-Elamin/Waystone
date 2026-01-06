@@ -3,20 +3,31 @@ using UnityEngine;
 
 public class GenericLandmark : MonoBehaviour
 {
+    [Header("Landmark Settings")]
+    [Header("Prefab")]
     [SerializeField] protected GameObject landmarkPrefab;
 
+    [Header("Height Range (0-1)")]
+    [SerializeField] protected float minHeight = 0f;
+    [SerializeField] protected float maxHeight = 0f;
+
+    [Header("Distance from Features")]
     [SerializeField] protected float borderDistance = 50f;
     [SerializeField] protected float centreDistance = 50f;
 
+    [Header("Location Attempts")]
     [SerializeField] protected int borderSamples = 128;
     [SerializeField] protected int maxAttempts = 200;
 
+    [Header("Related Scripts")]
     [SerializeField] protected RandomTerrain mapGenerator;
     [SerializeField] protected Terrain terrain;
     [SerializeField] protected WorldBorder worldBorder;
 
     protected Vector3 landmarkLocation;
     protected GameObject landmarkInstance;
+    protected float worldMinHeight;
+    protected float worldMaxHeight;
 
     public virtual void GenerateLocation(int seed)
     {
@@ -76,6 +87,10 @@ public class GenericLandmark : MonoBehaviour
                     continue;
             }
 
+            float yLerped = Mathf.InverseLerp(worldMinHeight, worldMaxHeight, y);
+            if (yLerped < minHeight || yLerped > maxHeight)
+                continue;
+
             return candidate;
         }
 
@@ -100,5 +115,11 @@ public class GenericLandmark : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void setWorldHeights(float minWorldHeight, float maxWorldHeight)
+    {
+        worldMinHeight = minWorldHeight;
+        worldMaxHeight = maxWorldHeight;
     }
 }
