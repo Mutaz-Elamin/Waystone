@@ -1,141 +1,76 @@
 using UnityEngine;
 using TMPro;
-using System.Collections;
 
-public class DayNightManager : MonoBehaviour
+public class DayNightCycle : MonoBehaviour
 {
-    [Header("Celestial References")]
-    [SerializeField] private Light sun;
-    [SerializeField] private Light moon;
-    [SerializeField] private ParticleSystem starField;
+    [Header("Lights")]
+    public Light sunLight;
+    public Light moonLight;
 
-    [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI clockText;
-    [SerializeField] private TextMeshProUGUI dayAlertText;
-    [SerializeField] private CanvasGroup dayAlertCanvasGroup;
+    [Header("Visual Orbs")]
+    public GameObject sunOrb;
+    public GameObject moonOrb;
 
-    [Header("Cycle Settings")]
-    [SerializeField] private float dayLengthInSeconds = 60f;
-    [SerializeField] private int totalDaysInGame = 4;
+    [Header("Time Control")]
+    public float daySpeed = 20f; 
+    [Range(0, 24)] public float currentHour = 6f;
 
-    private float _currentTime = 0f;
-    private int _currentDay = 1;
-
-    // FIX: Optimized check to see if the sun is below the horizon line
-    public bool IsNight => sun != null && (sun.transform.localEulerAngles.x > 175 || sun.transform.localEulerAngles.x < 5);
+    [Header("UI")]
+    public TextMeshProUGUI clockText;
 
     private void Start()
     {
-        if (dayAlertCanvasGroup != null) dayAlertCanvasGroup.alpha = 0;
-        
-        // Ensure initial lighting state
-        UpdateCelestialVisuals();
-        ShowDayAlert();
+        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
     }
 
     private void Update()
     {
-        if (sun == null) return;
+        currentHour += (Time.deltaTime * daySpeed) / 60f; 
+        if (currentHour >= 24f) currentHour = 0f;
 
-        HandleTimeAndRotation();
-        UpdateCelestialVisuals();
-        UpdateUI();
+        float sunAngle = (currentHour / 24f) * 360f - 90f;
+        float moonAngle = sunAngle + 180f;
+
+        if (sunLight != null) sunLight.transform.localRotation = Quaternion.Euler(sunAngle, 0f, 0f);
+        if (moonLight != null) moonLight.transform.localRotation = Quaternion.Euler(moonAngle, 0f, 0f);
+
+        bool isDay = currentHour >= 6f && currentHour < 18f;
+        UpdateAtmosphere(isDay);
+        UpdateClockUI();
     }
 
-    private void HandleTimeAndRotation()
+    void UpdateAtmosphere(bool isDay)
     {
-        float rotationPerSecond = 360f / dayLengthInSeconds;
-        sun.transform.Rotate(Vector3.right * rotationPerSecond * Time.deltaTime);
+        sunLight.enabled = isDay;
+        moonLight.enabled = !isDay;
 
-        if (moon != null)
-        {
-            // Keeps moon exactly opposite to the sun
-            moon.transform.rotation = sun.transform.rotation * Quaternion.Euler(180f, 0f, 0f);
-        }
+        if (sunOrb != null) sunOrb.SetActive(isDay);
+        if (moonOrb != null) moonOrb.SetActive(!isDay);
 
-        _currentTime += Time.deltaTime;
+        // --- THE SMOOTH FADE LOGIC ---
+        // Get the current exposure. We want to "Lerp" (Linear Interpolate)
+        // toward the target brightness so it doesn't just snap.
+        float currentExposure = RenderSettings.skybox.GetFloat("_Exposure");
+        float targetExposure = isDay ? 1.0f : 0.05f;
+        
+        // This line creates the "Fade" effect over time
+        float smoothExposure = Mathf.Lerp(currentExposure, targetExposure, Time.deltaTime * 2f);
+        RenderSettings.skybox.SetFloat("_Exposure", smoothExposure);
 
-        if (_currentTime >= dayLengthInSeconds)
-        {
-            _currentTime = 0;
-            _currentDay++;
-            if (_currentDay <= totalDaysInGame) ShowDayAlert();
-        }
+        // Smoothly fade the ambient light color too
+        Color targetAmbient = isDay ? Color.white : new Color(0.1f, 0.1f, 0.25f);
+        RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, targetAmbient, Time.deltaTime * 2f);
+        
+        RenderSettings.sun = isDay ? sunLight : moonLight;
     }
 
-    private void UpdateCelestialVisuals()
+    void UpdateClockUI()
     {
-        bool isNight = IsNight;
-
-        // 1. Toggle the Light Objects
-        sun.enabled = !isNight;
-        if (moon != null) moon.enabled = isNight;
-
-        // 2. Toggle the Stars
-        if (starField != null)
+        if (clockText != null)
         {
-            var emission = starField.emission;
-            emission.enabled = isNight;
-        }
-
-        // 3. FORCE DARKNESS (The Brightness Fix)
-        if (isNight)
-        {
-            // This forces the skybox to follow the moon's position instead of the sun
-            RenderSettings.sun = moon; 
-            
-            // This kills the 'Skybox Glow' that was keeping your scene bright in the video
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.01f, 0.01f, 0.03f); // Very dark blue/black
-            RenderSettings.ambientIntensity = 0f; 
-        }
-        else
-        {
-            // Restore daylight settings
-            RenderSettings.sun = sun;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Skybox;
-            RenderSettings.ambientIntensity = 1.0f;
-        }
-
-        // 4. Update the actual environment visuals
-        DynamicGI.UpdateEnvironment();
-    }
-
-    private void UpdateUI()
-    {
-        if (clockText == null) return;
-        float dayPercent = _currentTime / dayLengthInSeconds;
-        int hours = Mathf.FloorToInt(dayPercent * 24);
-        int minutes = Mathf.FloorToInt((dayPercent * 1440) % 60);
-        clockText.text = string.Format("{0:00}:{1:00}", hours, minutes);
-    }
-
-    private void ShowDayAlert()
-    {
-        if (dayAlertCanvasGroup == null) return;
-        StopAllCoroutines();
-        StartCoroutine(AnimateDayAlert());
-    }
-
-    private IEnumerator AnimateDayAlert()
-    {
-        dayAlertText.text = "DAY " + _currentDay;
-        float duration = 0.5f;
-        float timer = 0f;
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            dayAlertCanvasGroup.alpha = timer / duration;
-            dayAlertText.transform.localScale = Vector3.Lerp(Vector3.one * 0.5f, Vector3.one, timer / duration);
-            yield return null;
-        }
-        yield return new WaitForSeconds(2f);
-        timer = 0f;
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            dayAlertCanvasGroup.alpha = 1f - (timer / duration);
-            yield return null;
+            int h = Mathf.FloorToInt(currentHour);
+            int m = Mathf.FloorToInt((currentHour - h) * 60);
+            clockText.text = string.Format("{0:00}:{1:00}", h, m);
         }
     }
 }
