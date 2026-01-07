@@ -32,10 +32,10 @@ public class WolfPounceAttack : NpcAttack
     private void Awake()
     {
         attackCollider = GetComponentInChildren<BoxCollider>();
-        wolfAnimator = transform.root.GetComponent<Animator>();
+        wolfAnimator = transform.parent.parent.parent.parent.parent.parent.GetComponent<Animator>();
 
         // Ignore collisions between the attack hitbox and all colliders on the same NPC
-        var ownerCols = transform.root.GetComponentsInChildren<Collider>(true);
+        var ownerCols = transform.parent.parent.parent.parent.parent.parent.GetComponentsInChildren<Collider>(true);
         foreach (var c in ownerCols)
         {
             if (c && attackCollider && c != attackCollider)
@@ -98,7 +98,7 @@ public class WolfPounceAttack : NpcAttack
         agent.updatePosition = false;
         agent.updateRotation = false;
 
-        startPos = transform.root.position;
+        startPos = transform.parent.parent.parent.parent.parent.parent.position;
         Vector3 endPos = GetFrontGroundPoint(player.transform, 1.6f, agent);
         if (multiplier == 1f)
         {
@@ -108,7 +108,7 @@ public class WolfPounceAttack : NpcAttack
 
         if (player != null)
         {
-            transform.root.LookAt(player.transform);
+            transform.parent.parent.parent.parent.parent.parent.LookAt(player.transform);
         }
 
         wolfAnimator.SetFloat("Pounce Speed", 2f * (1/multiplier));
@@ -129,14 +129,14 @@ public class WolfPounceAttack : NpcAttack
         {
             t += Time.deltaTime / (activeDuration/2);
             
-            transform.root.position = Vector3.Lerp(startPos, midPosition, t);
+            transform.parent.parent.parent.parent.parent.parent.position = Vector3.Lerp(startPos, midPosition, t);
             yield return null;
         }
         t = 0f;
         while (t < 1f)
         {
             t += Time.deltaTime / (activeDuration/2);
-            transform.root.position = Vector3.Lerp(midPosition, endPos, t);
+            transform.parent.parent.parent.parent.parent.parent.position = Vector3.Lerp(midPosition, endPos, t);
             yield return null;
         }
         wolfAnimator.SetFloat("Pounce Speed", 3f * (1/multiplier));
@@ -170,7 +170,7 @@ public class WolfPounceAttack : NpcAttack
 
     private Vector3 GetFrontGroundPoint(Transform target, float stopDistanceFront, NavMeshAgent agent)
     {
-        Vector3 direction = transform.root.position - target.position;
+        Vector3 direction = transform.parent.parent.parent.parent.parent.parent.position - target.position;
 
         direction.Normalize();
 
