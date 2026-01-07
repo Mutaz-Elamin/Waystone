@@ -195,7 +195,13 @@ public class ClusterController : MonoBehaviour
             ? Vector3.Distance(grid.Player.position, clusterOrigin)
             : float.PositiveInfinity;
 
-        int live = transform.childCount;
+        int live = 0;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform c = transform.GetChild(i);
+            if (c != null && c.gameObject.activeInHierarchy) live++;
+        }
+
 
         if (live < targetCount)
         {
@@ -222,6 +228,10 @@ public class ClusterController : MonoBehaviour
         GameObject instance = pool != null
             ? pool.Get(prefab, spawnPos, rot, transform)
             : Instantiate(prefab, spawnPos, rot, transform);
+
+        ClusterMember member = instance.GetComponent<ClusterMember>();
+        if (member == null) member = instance.AddComponent<ClusterMember>();
+        member.Initialise(this, pool);
 
         float sc = Random.Range(minScale, maxScale);
         instance.transform.localScale *= sc;
@@ -316,4 +326,9 @@ public class ClusterController : MonoBehaviour
 
         return false;
     }
+    public void ReduceTargetCount(int amount)
+    {
+        targetCount = Mathf.Max(0, targetCount - Mathf.Max(0, amount));
+    }
+
 }
