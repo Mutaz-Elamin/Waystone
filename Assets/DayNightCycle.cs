@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement; // Required to restart the game
-using UnityEngine.UI; // Required if you use a standard Button
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class DayNightCycle : MonoBehaviour
 {
@@ -10,15 +10,17 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Light moonLight;
 
     [Header("Time Settings")]
-    [Tooltip("1.2 = 20 minute real-time day.")]
     private float daySpeed = 1.2f; 
     [Range(0, 24)] [SerializeField] private float currentHour = 0f;
     private int dayCount = 1;
     private int maxDays = 4;
 
+    // --- Added this so the Hunger Disaster can "see" the time ---
+    public float CurrentHour => currentHour; 
+
     [Header("UI & Animation")]
     [SerializeField] private TextMeshProUGUI clockText;
-    [SerializeField] private GameObject restartButton; // Assign a UI Button here
+    [SerializeField] private GameObject restartButton; 
     [SerializeField] private float animationDuration = 3f; 
 
     private bool isAnimating = false;
@@ -34,7 +36,6 @@ public class DayNightCycle : MonoBehaviour
         if (restartButton != null) restartButton.SetActive(false);
         if (clockText != null) originalTextScale = clockText.transform.localScale;
 
-        // Lighting setup
         if (RenderSettings.skybox != null)
             RenderSettings.skybox.SetFloat("_Exposure", 0.05f);
         
@@ -47,7 +48,6 @@ public class DayNightCycle : MonoBehaviour
     {
         if (gameEnded) return;
 
-        // Force speed to 1.2 for the 20-minute cycle
         daySpeed = 1.2f;
 
         if (!isAnimating)
@@ -69,32 +69,25 @@ public class DayNightCycle : MonoBehaviour
             currentHour = 0f;
             dayCount++;
 
-            if (dayCount > maxDays)
-            {
-                TriggerEndGame();
-            }
-            else
-            {
-                StartCoroutine(PlayDayAnimation());
-            }
+            if (dayCount > maxDays) TriggerEndGame();
+            else StartCoroutine(PlayDayAnimation());
         }
     }
 
     private void TriggerEndGame()
     {
         gameEnded = true;
-        clockText.text = "END";
-        clockText.color = Color.red;
-        clockText.transform.localScale = originalTextScale * 2f;
+        if (clockText != null)
+        {
+            clockText.text = "END";
+            clockText.color = Color.red;
+            clockText.transform.localScale = originalTextScale * 2f;
+        }
         
         if (restartButton != null) restartButton.SetActive(true);
     }
 
-    // Call this function from your UI Button "OnClick" event
-    public void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    public void RestartGame() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
     private void UpdateLightRotation()
     {
@@ -123,10 +116,8 @@ public class DayNightCycle : MonoBehaviour
     System.Collections.IEnumerator PlayDayAnimation()
     {
         if (clockText == null) yield break;
-
         isAnimating = true;
         float elapsed = 0f;
-
         clockText.text = "DAY " + dayCount;
         clockText.color = new Color(1f, 0.85f, 0f); 
 
