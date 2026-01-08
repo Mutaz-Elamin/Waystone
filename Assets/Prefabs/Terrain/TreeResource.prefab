@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6062058718310749323}
   - component: {fileID: 7280373891896132176}
-  - component: {fileID: 1738376110062018776}
   - component: {fileID: 3732037846804424013}
+  - component: {fileID: 2140831578251613677}
   m_Layer: 0
   m_Name: TreeResource
   m_TagString: Untagged
@@ -58,24 +58,6 @@ CapsuleCollider:
   m_Height: 8.2
   m_Direction: 1
   m_Center: {x: 0, y: 3.9, z: 0}
---- !u!114 &1738376110062018776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6431014246117360264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42add0da546ac8142b4ca376b917737d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scriptActionInterval: 0
-  maxTiltAngle: 3
-  swaySpeed: 1
-  swaySpeedRandomRange: 0.1
-  gustSpeed: 0.4
-  windAxis: {x: 1, y: 0, z: 0.3}
 --- !u!114 &3732037846804424013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,6 +74,24 @@ MonoBehaviour:
   DamageWeakness: 6
   DamageResistance: 6
   resourcesDroppedOnDeath: []
+--- !u!114 &2140831578251613677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6431014246117360264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bad406e3c2037c44ac5f27f6041eb2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1724900310289392492}
+  duration: 0.3
+  shrinkAmount: 0.1
+  tiltDegrees: 4
+  usePositionShake: 1
+  positionShake: 0.05
 --- !u!1001 &1187449245007856775
 PrefabInstance:
   m_ObjectHideFlags: 0

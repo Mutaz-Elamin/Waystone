@@ -14,9 +14,19 @@ public class GeneralResourceAsset : HealthBasedAsset
         health = StartHealth;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            this.TakeDamage(1, DamageCause.Other);
+        }
+    }
 
     public override void TakeDamage(int damage, DamageCause cause)
     {
+        HitFeedback fx = GetComponent<HitFeedback>();
+        if (fx != null) fx.Play();
+
         if (DamageWeakness != DamageCause.None && cause == DamageWeakness)
         {
             damage *= 2;
