@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c29199f68f6874489738fa217dd15f9, type: 3}
+  m_Name: Dagger Recipe
+  m_EditorClassIdentifier: 
+  inputItems:
+  - item: {fileID: 11400000, guid: ed9cb30dda8debd469569ebd7ed95982, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: bca480a3b4db25d4489ba0597f417fa0, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 78b8d73b37d23a741bdc8695611a1905, type: 2}
+    quantity: 5
+  outputItem:
+    item: {fileID: 11400000, guid: 9dca1e6714a6c02469e2f9e6fdde58a7, type: 2}
+    quantity: 1
