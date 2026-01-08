@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5276e2049c6e34a4680704a0639e7590, type: 3}
-  m_Name: Cloth
+  m_Script: {fileID: 11500000, guid: f7df1d35cc22d434480e83f47a1f97a0, type: 3}
+  m_Name: BossCore
   m_EditorClassIdentifier: 
-  itemName: Cloth
-  itemIcon: {fileID: 21300000, guid: 5b27d79527d59f5459f543550425a1b5, type: 3}
-  isStackable: 1
+  itemName: BossCore
+  itemIcon: {fileID: 21300000, guid: 1200fd4c89ff9654483fdc0805358f5e, type: 3}
+  isStackable: 0

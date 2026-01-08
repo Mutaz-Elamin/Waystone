@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c29199f68f6874489738fa217dd15f9, type: 3}
-  m_Name: Pickaxe Recipe
+  m_Name: PortalStone Recipe
   m_EditorClassIdentifier: 
   inputItems:
-  - item: {fileID: 11400000, guid: bca480a3b4db25d4489ba0597f417fa0, type: 2}
-    quantity: 3
-  - item: {fileID: 11400000, guid: f1557671adabdbb4abd422e3d2625956, type: 2}
-    quantity: 3
-  - item: {fileID: 11400000, guid: 4033ff0d40b306346a0dcc055ba0ba8b, type: 2}
+  - item: {fileID: 11400000, guid: c740d2021d770ea4983b25a45f42dd1a, type: 2}
     quantity: 1
+  - item: {fileID: 11400000, guid: f1557671adabdbb4abd422e3d2625956, type: 2}
+    quantity: 10
+  - item: {fileID: 11400000, guid: ed9cb30dda8debd469569ebd7ed95982, type: 2}
+    quantity: 5
+  - item: {fileID: 11400000, guid: 4033ff0d40b306346a0dcc055ba0ba8b, type: 2}
+    quantity: 2
   outputItem:
-    item: {fileID: 11400000, guid: 4866b5a7648d68e43bddf31bc0c0dbb3, type: 2}
+    item: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
     quantity: 1
