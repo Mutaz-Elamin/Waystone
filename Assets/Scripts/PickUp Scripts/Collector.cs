@@ -11,6 +11,8 @@ public class PlayerCollector : MonoBehaviour
     private int collectedCount = 0;
     private CraftingStation stationInRange;
     private SummonBossLandmark bossLandmark;
+    private OpenPortalLandmark portalLandmark;
+
     void Start()
     {
         if (inventory == null)
@@ -22,6 +24,13 @@ public class PlayerCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        OpenPortalLandmark portal = other.GetComponent<OpenPortalLandmark>();
+        if (portal != null)
+        {
+            portalLandmark = portal;
+            portalLandmark.OpenPortal();
+        }
+
         CraftingStation station = other.GetComponent<CraftingStation>();
         if (station != null)
         {
