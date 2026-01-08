@@ -48,12 +48,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 16.79, y: 16.4, z: 18.28}
-  m_Center: {x: 6.9, y: -13.16, z: -7.21}
+  m_Size: {x: 9.04, y: 9.3, z: 8.08}
+  m_Center: {x: 6.9, y: -8.4, z: -4.9}
 --- !u!114 &2509959215952339031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,6 +68,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canHit: 0
   damage: 2
+  sfx: {fileID: 0}
+  bloodPrefab: {fileID: 5573792894572939204, guid: 98d26191501eb6742814606d8b4415eb, type: 3}
+  enemiesOnHit: {fileID: 0}
 --- !u!1 &7032525697885226930
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +81,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6535467307830674772}
   - component: {fileID: 8770351707805726778}
-  m_Layer: 0
+  - component: {fileID: 1026562432179740921}
+  m_Layer: 15
   m_Name: BaseAxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,6 +122,8 @@ MonoBehaviour:
   animator: {fileID: 5229341349793230380}
   attackCollider: {fileID: 2925375777657677986}
   comboResetTime: 1.2
+  comboStep: 0
+  currentAttack: 0
   lightDuration: 0.3
   heavyWindupDuration: 0.25
   heavyDuration: 0.6
@@ -127,6 +133,23 @@ MonoBehaviour:
   maxAttackSpeed: 1.6
   lightDamage: 2
   heavyDamage: 5
+  sfx: {fileID: 0}
+  hitbox: {fileID: 0}
+--- !u!114 &1026562432179740921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032525697885226930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121c05fe8dc64d94fb0cb252d7634796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackForce: 3
+  deathParticlesPrefab: {fileID: 0}
+  flashDuration: 0.1
 --- !u!1001 &3123567184723040895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -178,6 +201,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: efdf31001cbd6e949897a7a6c840ea6c, type: 3}
       propertyPath: m_Name
       value: Axe
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: efdf31001cbd6e949897a7a6c840ea6c, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

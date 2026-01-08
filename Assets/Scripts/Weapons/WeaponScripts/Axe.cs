@@ -3,15 +3,19 @@ using UnityEngine;
 
 public class Axe : Weapon
 {
+    public enum AttackType { None, Light, Heavy }
+
     [Header("Combo Settings")]
-    public float comboResetTime = 2.2f;
-    private int comboStep = 0;
-    private float lastAttackTime;
+    public float comboResetTime = 1f;
+
+    [Header("State")]
+    public int comboStep = 0;
+    public AttackType currentAttack = AttackType.None;
 
     [Header("Timing")]
-    public float lightDuration = 0.3f;
-    public float heavyWindupDuration = 0.25f;
-    public float heavyDuration = 0.6f;
+    public float lightDuration = 0.3f;               // Hit window length (at base speed)
+    public float heavyWindupDuration = 2.55f;        // fallback/time-budget only
+    public float heavyDuration = 0.6f;               // heavy hit window length
     public float recoveryTime = 0.5f;
     public float baseAttackSpeed = 1f;
     public float speedIncreasePerHit = 0.3f;
@@ -21,34 +25,50 @@ public class Axe : Weapon
     public int lightDamage = 2;
     public int heavyDamage = 5;
 
+    [Header("References")]
+    public WeaponSFX sfx; // optional: will try to find in parent
+    [HideInInspector] public AxeHitbox hitbox;
+
+    [Header("Animation sync (tweak if needed)")]
+    [Tooltip("Normalized time in the light attack animation where the hit should happen (0..1).")]
+    public float lightHitNormalizedTime = 0.25f;
+    [Tooltip("Normalized time in the heavy windup/release flow where the heavy hit should occur (0..1).")]
+    public float heavyHitNormalizedTime = 0.65f;
+    [Tooltip("Maximum seconds to wait for the expected animation state before falling back.")]
+    public float animationWaitTimeout = 1.5f;
+
     private bool canAttack = true;
     private bool isDefending = false;
     private bool isChargingHeavy = false;
-
-    private AxeHitbox hitbox;
-
-    [Header("SFX Reference")]
-    public WeaponSFX sfx; // assign PlayerSFX in inspector
+    private float lastAttackTime;
 
     private void Awake()
     {
-        hitbox = attackCollider.GetComponent<AxeHitbox>();
-        if (hitbox == null) Debug.LogWarning("Axe: No AxeHitbox found on attackCollider.");
+        // try to resolve references
+        if (sfx == null) sfx = GetComponentInParent<WeaponSFX>();
+        if (attackCollider != null)
+            hitbox = attackCollider.GetComponent<AxeHitbox>();
+
+        if (hitbox == null)
+            Debug.LogWarning("Axe: No AxeHitbox found on attackCollider.", this);
+        if (sfx == null)
+            Debug.LogWarning("Axe: WeaponSFX not found in parents.", this);
     }
 
-    // -------- LIGHT COMBO (3 HITS) --------
+    // ---------------- LIGHT ATTACK ----------------
     public override void LightAttack()
     {
-        if (!canAttack || isDefending) return;
+        if (!canAttack || isDefending || isChargingHeavy) return;
+
+        currentAttack = AttackType.Light;
 
         float timeSinceLast = Time.time - lastAttackTime;
-        if (timeSinceLast > comboResetTime)
-            comboStep = 0;
+        if (timeSinceLast > comboResetTime) comboStep = 0;
 
         comboStep++;
         ResetLightTriggers();
 
-        // ---- SPEED RAMP ----
+        // speed ramp (animation)
         float attackSpeed = baseAttackSpeed + (comboStep - 1) * speedIncreasePerHit;
         attackSpeed = Mathf.Min(attackSpeed, maxAttackSpeed);
         animator.speed = attackSpeed;
@@ -79,7 +99,35 @@ public class Axe : Weapon
         lastAttackTime = Time.time;
     }
 
-    // -------- HEAVY ATTACK --------
+    private IEnumerator LightAttackRoutine(float attackSpeed)
+    {
+        canAttack = false;
+
+        if (hitbox != null) hitbox.damage = lightDamage;
+
+        // Determine target state name (store locally since comboStep may change)
+        int step = comboStep;
+        string stateName = $"LightAttack{step}";
+
+        // Wait for the animator to enter that state and reach threshold normalized time
+        yield return StartCoroutine(WaitForAnimationStateAndNormalizedTime(stateName, lightHitNormalizedTime, animationWaitTimeout));
+
+        // Enable hitbox for the configured window (scaled by attackSpeed)
+        EnableHitbox(true);
+        yield return new WaitForSeconds(lightDuration / attackSpeed);
+        EnableHitbox(false);
+
+        // restore animator speed & state
+        animator.speed = baseAttackSpeed;
+        currentAttack = AttackType.None;
+
+        // small recovery then allow next attack
+        yield return new WaitForSeconds(recoveryTime / Mathf.Max(0.0001f, attackSpeed));
+        canAttack = true;
+    }
+
+    // ---------------- HEAVY ATTACK ----------------
+    // For this axe we keep the single windup->attack flow (no release mechanic)
     public override void StartHeavyCharge()
     {
         if (!canAttack || isDefending) return;
@@ -89,16 +137,47 @@ public class Axe : Weapon
 
         animator.SetBool("IsChargingHeavy", true);
         animator.SetTrigger("HeavyWindup");
-        sfx?.Axe_HeavySwingPlay(); // heavy windup sound
+        sfx?.Axe_HeavySwingPlay(); // windup/charge sound
 
         StartCoroutine(HeavyAttackRoutine());
     }
 
     public override void ReleaseHeavyAttack()
     {
-        // For this Axe, we do not have a charge release mechanic
+        // This axe uses automatic windup flow; implement release behavior here if you later add it.
     }
 
+    private IEnumerator HeavyAttackRoutine()
+    {
+        currentAttack = AttackType.Heavy;
+
+        // Wait for the animation to actually get to the release/hit portion.
+        // Prefer to wait for the windup state to reach heavyHitNormalizedTime.
+        // Use timeout fallback so coroutine never loops forever.
+        yield return StartCoroutine(WaitForAnimationStateAndNormalizedTime("HeavyWindup", heavyHitNormalizedTime, animationWaitTimeout));
+
+        // set heavy damage and enable hit
+        if (hitbox != null) hitbox.damage = heavyDamage;
+        EnableHitbox(true);
+
+        // keep hitbox for heavyDuration
+        yield return new WaitForSeconds(heavyDuration);
+
+        EnableHitbox(false);
+
+        // play heavy hit (hitbox or hitbox.OnHit should also attempt sfx)
+        sfx?.Axe_HeavyHitPlay();
+
+        isChargingHeavy = false;
+        animator.SetBool("IsChargingHeavy", false);
+
+        // recovery
+        yield return new WaitForSeconds(recoveryTime);
+        currentAttack = AttackType.None;
+        canAttack = true;
+    }
+
+    // ---------------- DEFEND ----------------
     public override void StartDefend()
     {
         isDefending = true;
@@ -112,50 +191,52 @@ public class Axe : Weapon
         animator.SetBool("IsDefending", false);
     }
 
-    // ---------------- ROUTINES ----------------
-
-    private IEnumerator LightAttackRoutine(float attackSpeed)
+    // ---------------- HELPERS ----------------
+    private void EnableHitbox(bool enabled)
     {
-        canAttack = false;
+        if (attackCollider == null) return;
 
-        hitbox.damage = lightDamage;
-        attackCollider.enabled = true;
-
-        yield return new WaitForSeconds(lightDuration / attackSpeed);
-
-        attackCollider.enabled = false;
-
-        // Play hit sound for this swing
-        switch (comboStep)
-        {
-            case 1: sfx?.Axe_Light1HitPlay(); break;
-            case 2: sfx?.Axe_Light2HitPlay(); break;
-            case 3: sfx?.Axe_Light3HitPlay(); break;
-            default: sfx?.Axe_Light1HitPlay(); break;
-        }
-
-        yield return new WaitForSeconds(recoveryTime / attackSpeed);
-
-        animator.speed = baseAttackSpeed;
-        canAttack = true;
+        attackCollider.enabled = enabled;
+        if (hitbox != null) hitbox.canHit = enabled;
     }
 
-    private IEnumerator HeavyAttackRoutine()
+    private IEnumerator WaitForAnimationStateAndNormalizedTime(string stateName, float normalizedThreshold, float timeout)
     {
-        yield return new WaitForSeconds(heavyWindupDuration);
+        if (animator == null || string.IsNullOrEmpty(stateName))
+        {
+            yield break;
+        }
 
-        hitbox.damage = heavyDamage;
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(heavyDuration);
-        attackCollider.enabled = false;
+        float timer = 0f;
 
-        sfx?.Axe_HeavyHitPlay(); // heavy hit sound
+        // Wait for the animator to enter the expected state
+        while (timer < timeout)
+        {
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            if (info.IsName(stateName))
+                break;
 
-        isChargingHeavy = false;
-        animator.SetBool("IsChargingHeavy", false);
+            timer += Time.deltaTime;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(recoveryTime);
-        canAttack = true;
+        // If state didn't appear, bail out
+        if (timer >= timeout)
+            yield break;
+
+        // Now wait until the normalized time passes threshold (or timeout)
+        timer = 0f;
+        while (timer < timeout)
+        {
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            if (info.IsName(stateName) && info.normalizedTime >= normalizedThreshold)
+                break;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        yield break;
     }
 
     private void ResetLightTriggers()
@@ -169,10 +250,9 @@ public class Axe : Weapon
     {
         comboStep = 0;
         isChargingHeavy = false;
+        currentAttack = AttackType.None;
 
-        animator.ResetTrigger("LightAttack1");
-        animator.ResetTrigger("LightAttack2");
-        animator.ResetTrigger("LightAttack3");
+        ResetLightTriggers();
         animator.ResetTrigger("HeavyWindup");
         animator.ResetTrigger("HeavyAttack");
         animator.SetBool("IsChargingHeavy", false);
@@ -181,6 +261,10 @@ public class Axe : Weapon
         if (attackCollider != null)
             attackCollider.enabled = false;
 
+        if (hitbox != null)
+            hitbox.canHit = false;
+
+        animator.speed = baseAttackSpeed;
         canAttack = true;
         isDefending = false;
     }

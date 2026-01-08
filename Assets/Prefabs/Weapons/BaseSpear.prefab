@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3212782613096247408}
   - component: {fileID: 7583506254689687003}
-  m_Layer: 0
+  - component: {fileID: 1849461966240487611}
+  m_Layer: 15
   m_Name: BaseSpear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +51,20 @@ MonoBehaviour:
   animator: {fileID: 1414911602776802658}
   attackCollider: {fileID: 1971706244424651741}
   comboResetTime: 1.5
-  animator: {fileID: 1414911602776802658}
+  comboStep: 0
+  currentAttack: 0
+--- !u!114 &1849461966240487611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4886971969442270434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121c05fe8dc64d94fb0cb252d7634796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5927530406495036061
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,7 +75,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6333521598490936285}
   - component: {fileID: 1971706244424651741}
-  - component: {fileID: 198206215939461102}
   - component: {fileID: 2971085771841110789}
   m_Layer: 15
   m_Name: SpearAttackZone
@@ -102,23 +115,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 19.77, y: 15.2, z: 15.7}
-  m_Center: {x: 2, y: -2.25, z: -2.68}
---- !u!114 &198206215939461102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5927530406495036061}
   m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbbbadcfab1e4f94fa9656c126b56990, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canHit: 0
+  serializedVersion: 3
+  m_Size: {x: 19.77, y: 9.3, z: -26.3}
+  m_Center: {x: 2, y: -2.25, z: -17.6}
 --- !u!114 &2971085771841110789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canHit: 0
-  damage: 2
+  bloodPrefab: {fileID: 5573792894572939204, guid: 98d26191501eb6742814606d8b4415eb, type: 3}
 --- !u!1001 &1752225536700574924
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -198,6 +198,10 @@ PrefabInstance:
       value: Spear 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 588161759deac794ebc41ae2bfcfbe74, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 588161759deac794ebc41ae2bfcfbe74, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -208,6 +212,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 588161759deac794ebc41ae2bfcfbe74, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1414911602776802658}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 588161759deac794ebc41ae2bfcfbe74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5488536947419813419}
   m_SourcePrefab: {fileID: 100100000, guid: 588161759deac794ebc41ae2bfcfbe74, type: 3}
 --- !u!1 &1481770066917380509 stripped
 GameObject:
@@ -236,6 +243,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5488536947419813419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481770066917380509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121c05fe8dc64d94fb0cb252d7634796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2295602892215323431 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 588161759deac794ebc41ae2bfcfbe74, type: 3}

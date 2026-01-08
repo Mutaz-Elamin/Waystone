@@ -1,80 +1,107 @@
 using System.Collections;
 using UnityEngine;
+
 public class Spear : Weapon
 {
+    public enum AttackType
+    {
+        None,
+        Light,
+        Heavy
+    }
+
     [Header("Spear Settings")]
     public float comboResetTime = 1.5f;
-    private int comboStep = 0;
+
+    [Header("State")]
+    public int comboStep = 0;
+    public AttackType currentAttack = AttackType.None;
+
     private bool canAttack = true;
-    private float lastAttackTime;
     private bool isDefending = false;
+    private bool isChargingHeavy = false;
+    private float lastAttackTime;
 
-    [Header("SFX Reference")]
-    public WeaponSFX sfx; // assign PlayerSFX in inspector
+    [Header("SFX")]
+    private WeaponSFX sfx;
 
-    // Expose combo step to hitbox
-    public int ComboStep => comboStep;
+    private void Awake()
+    {
+        sfx = GetComponentInParent<WeaponSFX>();
 
+        if (sfx == null)
+            Debug.LogWarning("WeaponSFX not found for Spear", this);
+    }
+
+    // =========================
+    // LIGHT ATTACK
+    // =========================
     public override void LightAttack()
     {
-        if (!canAttack || isDefending) return;
+        if (!canAttack || isDefending || isChargingHeavy) return;
+
+        currentAttack = AttackType.Light;
 
         float timeSinceLast = Time.time - lastAttackTime;
-        if (timeSinceLast > comboResetTime) comboStep = 0;
+        if (timeSinceLast > comboResetTime)
+            comboStep = 0;
 
         comboStep++;
         ResetAllAttackTriggers();
 
-        if (comboStep == 1)
+        switch (comboStep)
         {
-            animator.SetTrigger("LightAttack1");
-            sfx?.Spear_Light1SwingPlay();
-        }
-        else if (comboStep == 2)
-        {
-            animator.SetTrigger("LightAttack2");
-            sfx?.Spear_Light2SwingPlay();
-        }
-        else
-        {
-            comboStep = 1;
-            animator.SetTrigger("LightAttack1");
-            sfx?.Spear_Light1SwingPlay();
+            case 1:
+                animator.SetTrigger("LightAttack1");
+                sfx?.Spear_Light1SwingPlay();
+                break;
+            case 2:
+                animator.SetTrigger("LightAttack2");
+                sfx?.Spear_Light2SwingPlay();
+                break;
+            default:
+                comboStep = 1;
+                animator.SetTrigger("LightAttack1");
+                sfx?.Spear_Light1SwingPlay();
+                break;
         }
 
-        StartCoroutine(AttackWindow(0.35f));
+        StartCoroutine(LightAttackWindow(0.75f));
         lastAttackTime = Time.time;
     }
 
-    public override void HeavyAttack()
-    {
-        if (!canAttack || isDefending) return;
-        animator.SetTrigger("HeavyWindup");
-        sfx?.Spear_HeavySwingPlay();
-        StartCoroutine(HeavyAttackWindow());
-    }
-
+    // =========================
+    // HEAVY ATTACK
+    // =========================
     public override void StartHeavyCharge()
     {
         if (!canAttack || isDefending) return;
 
         canAttack = false;
-        animator.ResetTrigger("HeavyRelease");
-        animator.SetTrigger("HeavyWindup");
+        isChargingHeavy = true;
+
         animator.SetBool("IsChargingHeavy", true);
+        animator.SetTrigger("HeavyWindup");
         sfx?.Spear_HeavyChargePlay();
     }
 
     public override void ReleaseHeavyAttack()
     {
-        if (isDefending) return;
+        if (!isChargingHeavy || isDefending) return;
+
+        isChargingHeavy = false;
+        currentAttack = AttackType.Heavy;
 
         animator.SetBool("IsChargingHeavy", false);
         animator.SetTrigger("HeavyRelease");
-        StartCoroutine(HeavyAttackWindow());
+
         sfx?.Spear_HeavySwingPlay();
+        StartCoroutine(HeavyAttackWindow());
     }
 
+    // =========================
+    // DEFENSE
+    // =========================
     public override void StartDefend()
     {
         isDefending = true;
@@ -88,17 +115,19 @@ public class Spear : Weapon
         animator.SetBool("IsDefending", false);
     }
 
-    private IEnumerator AttackWindow(float duration)
+    // =========================
+    // ATTACK WINDOWS
+    // =========================
+    private IEnumerator LightAttackWindow(float duration)
     {
         canAttack = false;
-        attackCollider.enabled = true;
+        yield return new WaitForSeconds(0.85f);
+        EnableHitbox(true);
         yield return new WaitForSeconds(duration);
-        attackCollider.enabled = false;
-        switch (comboStep)
-        {
-            case 1: sfx?.Spear_Light1HitPlay(); break;
-            case 2: sfx?.Spear_Light2HitPlay(); break;
-        }
+        EnableHitbox(false);
+
+        currentAttack = AttackType.None;
+
         yield return new WaitForSeconds(0.15f);
         canAttack = true;
     }
@@ -106,11 +135,30 @@ public class Spear : Weapon
     private IEnumerator HeavyAttackWindow()
     {
         canAttack = false;
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(0.5f);
-        attackCollider.enabled = false;
+
+        yield return new WaitForSeconds(0.45f); 
+
+        EnableHitbox(true);
         yield return new WaitForSeconds(0.3f);
+        EnableHitbox(false);
+
+        currentAttack = AttackType.None;
+
+        yield return new WaitForSeconds(0.25f);
         canAttack = true;
+    }
+
+    // =========================
+    // HELPERS
+    // =========================
+    private void EnableHitbox(bool enabled)
+    {
+        if (attackCollider == null) return;
+
+        attackCollider.enabled = enabled;
+        SpearHitbox hitbox = attackCollider.GetComponent<SpearHitbox>();
+        if (hitbox != null)
+            hitbox.canHit = enabled;
     }
 
     private void ResetAllAttackTriggers()
@@ -124,20 +172,16 @@ public class Spear : Weapon
     public override void ResetWeapon()
     {
         comboStep = 0;
+        currentAttack = AttackType.None;
 
-        animator.ResetTrigger("LightAttack1");
-        animator.ResetTrigger("LightAttack2");
-        animator.ResetTrigger("HeavyWindup");
-        animator.ResetTrigger("HeavyRelease");
+        ResetAllAttackTriggers();
         animator.SetBool("IsDefending", false);
+        animator.SetBool("IsChargingHeavy", false);
 
-        if (attackCollider != null)
-            attackCollider.enabled = false;
+        EnableHitbox(false);
 
         canAttack = true;
         isDefending = false;
-
+        isChargingHeavy = false;
     }
-
-
 }

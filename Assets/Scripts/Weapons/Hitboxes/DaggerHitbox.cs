@@ -1,42 +1,85 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DaggerHitbox : MonoBehaviour
 {
-    [HideInInspector]
-    public bool canHit = false;
+    [HideInInspector] public bool canHit = false;
+    public int damage = 1;
+    public WeaponSFX sfx;
+    public GameObject bloodPrefab;
 
-    [Header("Dagger Damage Settings")]
-    public int damage = 1; // weaker than spear
+    [SerializeField] private EnemiesOnHit enemiesOnHit;
 
-    [Header("SFX Reference")]
-    public WeaponSFX sfx; // assign PlayerSFX in inspector
+    private void Awake()
+    {
+        enemiesOnHit = GetComponentInParent<EnemiesOnHit>();
+        sfx ??= GetComponentInParent<WeaponSFX>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!canHit) return;
+        if (!canHit || !other.CompareTag("npc")) return;
+        canHit = false;
 
-        if (other.CompareTag("npc"))
+        Dagger dagger = GetComponentInParent<Dagger>();
+        if (dagger == null) return;
+
+        // Apply damage
+        other.GetComponent<GeneralNPC>()?.TakeDamage(damage, DamageCause.EnemyAttack);
+
+        // Play hit SFX depending on combo step
+        switch (dagger.comboStep)
         {
-            Debug.Log("Dagger hit: " + other.gameObject.name);
-            other.GetComponent<GeneralNPC>()?.TakeDamage(damage, DamageCause.EnemyAttack);
-
-            // Play hit SFX depending on combo step
-            Dagger dagger = GetComponentInParent<Dagger>();
-            if (dagger != null)
-            {
-                switch (dagger.ComboStep)
-                {
-                    case 1: sfx?.Dagger_Light1HitPlay(); break;
-                    case 2: sfx?.Dagger_Light2HitPlay(); break;
-                    case 3: sfx?.Dagger_Light3HitPlay(); break;
-                    case 4: sfx?.Dagger_Light4HitPlay(); break;
-                    default: sfx?.Dagger_Light1HitPlay(); break;
-                }
-            }
+            case 1: sfx?.Dagger_Light1HitPlay(); break;
+            case 2: sfx?.Dagger_Light2HitPlay(); break;
+            case 3: sfx?.Dagger_Light3HitPlay(); break;
+            case 4: sfx?.Dagger_Light4HitPlay(); break;
+            default: sfx?.Dagger_Light1HitPlay(); break;
         }
 
-        canHit = false;
+        // HITSTOP
+        enemiesOnHit?.ApplyHitStop(dagger, 0.08f);
+
+        // FLASH
+        Renderer rend = other.GetComponentInChildren<Renderer>();
+        if (rend != null)
+            dagger.StartCoroutine(enemiesOnHit.FlashEnemy(rend, Color.red, Color.black, 0.15f));
+
+        // KNOCKBACK
+        enemiesOnHit?.ApplyKnockback(other, transform, 1f);
+
+        // BLOOD
+        SpawnBlood(other, dagger);
+    }
+
+    private void SpawnBlood(Collider enemyCollider, Dagger dagger)
+    {
+        if (bloodPrefab == null) return;
+
+        // Use the closest point to the weapon on the enemy collider
+        Vector3 hitPoint = enemyCollider.ClosestPoint(transform.position);
+
+        GameObject blood = Instantiate(bloodPrefab, hitPoint, Quaternion.identity);
+
+        // Orient the blood away from the enemy center
+        Vector3 direction = (hitPoint - enemyCollider.transform.position).normalized;
+        if (direction.sqrMagnitude < 0.001f) direction = transform.forward;
+        blood.transform.rotation = Quaternion.LookRotation(direction);
+
+        // Scale blood by enemy size
+        float scale = enemyCollider.transform.localScale.magnitude / 3f;
+        blood.transform.localScale = Vector3.one * scale;
+
+        // Destroy particle after its lifetime
+        ParticleSystem ps = blood.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            var main = ps.main;
+            main.startLifetime = Mathf.Clamp(main.startLifetime.constant * scale, 0.1f, 0.5f);
+            Destroy(blood, (main.duration + main.startLifetime.constantMax) * 0.5f);
+        }
+        else
+        {
+            Destroy(blood, 0.5f);
+        }
     }
 }

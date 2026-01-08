@@ -3,22 +3,50 @@ using UnityEngine;
 
 public class Dagger : Weapon
 {
+    public enum AttackType { None, Light }
+
     [Header("Dagger Settings")]
     public float comboResetTime = 1f;
-    private int comboStep = 0;
+    public int comboStep = 0;
     private bool canAttack = true;
-    private float lastAttackTime;
+    private bool isAttacking = false;
     private bool isDefending = false;
+    private float lastAttackTime;
 
-    [Header("SFX Reference")]
-    public WeaponSFX sfx; // assign PlayerSFX in inspector
+    [Header("References")]
+    public WeaponSFX sfx;
+    public GameObject bloodPrefab;
 
-    // Expose combo step for hitbox
-    public int ComboStep => comboStep;
+    [Header("State")]
+    public AttackType currentAttack = AttackType.None;
 
+    private DaggerHitbox hitbox;
+
+    private void Awake()
+    {
+        if (attackCollider != null)
+        {
+            hitbox = attackCollider.GetComponent<DaggerHitbox>();
+            attackCollider.enabled = false;
+            if (hitbox != null)
+                hitbox.canHit = false;
+        }
+        else
+        {
+            Debug.LogError("Dagger: AttackCollider is not assigned!");
+        }
+
+        sfx ??= GetComponentInParent<WeaponSFX>();
+    }
+
+    // ---------------- LIGHT ATTACK ----------------
     public override void LightAttack()
     {
-        if (!canAttack || isDefending) return;
+        if (!canAttack || isAttacking || isDefending) return;
+
+        currentAttack = AttackType.Light;
+        canAttack = false;
+        isAttacking = true;
 
         float timeSinceLast = Time.time - lastAttackTime;
         if (timeSinceLast > comboResetTime) comboStep = 0;
@@ -28,38 +56,36 @@ public class Dagger : Weapon
 
         switch (comboStep)
         {
-            case 1:
-                animator.SetTrigger("LightAttack1");
-                sfx?.Dagger_Light1SwingPlay();
-                break;
-            case 2:
-                animator.SetTrigger("LightAttack2");
-                sfx?.Dagger_Light2SwingPlay();
-                break;
-            case 3:
-                animator.SetTrigger("LightAttack3");
-                sfx?.Dagger_Light3SwingPlay();
-                break;
-            case 4:
-                animator.SetTrigger("LightAttack4");
-                sfx?.Dagger_Light4SwingPlay();
-                break;
-            default:
-                comboStep = 1;
-                animator.SetTrigger("LightAttack1");
-                sfx?.Dagger_Light1SwingPlay();
-                break;
+            case 1: animator.SetTrigger("LightAttack1"); sfx?.Dagger_Light1SwingPlay(); break;
+            case 2: animator.SetTrigger("LightAttack2"); sfx?.Dagger_Light2SwingPlay(); break;
+            case 3: animator.SetTrigger("LightAttack3"); sfx?.Dagger_Light3SwingPlay(); break;
+            case 4: animator.SetTrigger("LightAttack4"); sfx?.Dagger_Light4SwingPlay(); break;
+            default: comboStep = 1; animator.SetTrigger("LightAttack1"); sfx?.Dagger_Light1SwingPlay(); break;
         }
 
-        StartCoroutine(AttackWindow(0.15f));
+        StartCoroutine(LightAttackRoutine());
         lastAttackTime = Time.time;
     }
 
-    // Daggers have no heavy attack
-    public override void HeavyAttack() { }
-    public override void StartHeavyCharge() { }
-    public override void ReleaseHeavyAttack() { }
+    private IEnumerator LightAttackRoutine()
+    {
+        if (hitbox != null) hitbox.canHit = true;
+        yield return new WaitForSeconds(0.55f);
+        attackCollider.enabled = true;
+        yield return new WaitForSeconds(0.15f); // sync with animation
+        attackCollider.enabled = false;
+        if (hitbox != null) hitbox.canHit = false;
 
+        // Optional: spawn blood when hit happens inside DaggerHitbox
+        // Blood handled there, no need to do it here
+
+        currentAttack = AttackType.None;
+        yield return new WaitForSeconds(0.05f); // recovery buffer
+        canAttack = true;
+        isAttacking = false;
+    }
+
+    // ---------------- DEFENSE ----------------
     public override void StartDefend()
     {
         isDefending = true;
@@ -73,23 +99,7 @@ public class Dagger : Weapon
         animator.SetBool("IsDefending", false);
     }
 
-    private IEnumerator AttackWindow(float duration)
-    {
-        canAttack = false;
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(duration);
-        attackCollider.enabled = false;
-        switch (comboStep)
-        {
-            case 1: sfx?.Dagger_Light1HitPlay(); break;
-            case 2: sfx?.Dagger_Light2HitPlay(); break;
-            case 3: sfx?.Dagger_Light3HitPlay(); break;
-            case 4: sfx?.Dagger_Light4HitPlay(); break;
-        }
-        yield return new WaitForSeconds(0.05f);
-        canAttack = true;
-    }
-
+    // ---------------- HELPERS ----------------
     private void ResetAllAttackTriggers()
     {
         animator.ResetTrigger("LightAttack1");
@@ -101,18 +111,19 @@ public class Dagger : Weapon
     public override void ResetWeapon()
     {
         comboStep = 0;
+        currentAttack = AttackType.None;
 
-        animator.ResetTrigger("LightAttack1");
-        animator.ResetTrigger("LightAttack2");
-        animator.ResetTrigger("LightAttack3");
-        animator.ResetTrigger("LightAttack4");
+        ResetAllAttackTriggers();
         animator.SetBool("IsDefending", false);
 
         if (attackCollider != null)
             attackCollider.enabled = false;
 
-        canAttack = true;
-        isDefending = false;
+        if (hitbox != null)
+            hitbox.canHit = false;
 
+        canAttack = true;
+        isAttacking = false;
+        isDefending = false;
     }
 }

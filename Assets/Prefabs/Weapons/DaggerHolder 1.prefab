@@ -48,11 +48,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 14.73, y: 11.1, z: 7.99}
+  m_Size: {x: 8.35, y: 7.9, z: 7.99}
   m_Center: {x: 5.4, y: -17.42, z: -7.4}
 --- !u!114 &6576886082003710750
 MonoBehaviour:
@@ -68,6 +68,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canHit: 0
   damage: 1
+  sfx: {fileID: 0}
+  bloodPrefab: {fileID: 5573792894572939204, guid: 98d26191501eb6742814606d8b4415eb, type: 3}
+  enemiesOnHit: {fileID: 0}
 --- !u!1 &5397069016849034924
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,7 +82,8 @@ GameObject:
   - component: {fileID: 1347254988495201604}
   - component: {fileID: 6400037114319032992}
   - component: {fileID: 4446429655244078529}
-  m_Layer: 0
+  - component: {fileID: 810562641353002085}
+  m_Layer: 15
   m_Name: DaggerHolder 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,6 +145,25 @@ MonoBehaviour:
   animator: {fileID: 1969602053815517545}
   attackCollider: {fileID: 4591256759826696010}
   comboResetTime: 1
+  comboStep: 0
+  sfx: {fileID: 0}
+  bloodPrefab: {fileID: 0}
+  currentAttack: 0
+--- !u!114 &810562641353002085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5397069016849034924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121c05fe8dc64d94fb0cb252d7634796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackForce: 3
+  deathParticlesPrefab: {fileID: 0}
+  flashDuration: 0.1
 --- !u!1001 &363488703043675751
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -192,6 +215,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
       propertyPath: m_Name
       value: Dagger
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d6e3d7d663ee1154589e026d8a2905ab, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

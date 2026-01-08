@@ -48,12 +48,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 16.79, y: 16.4, z: 10.8}
-  m_Center: {x: 6.9, y: -13.16, z: -5.8}
+  m_Size: {x: 11.39, y: 10.1, z: 6.5}
+  m_Center: {x: 6.9, y: -4.8, z: -5.8}
 --- !u!114 &1704857590105211134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,6 +67,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
+  canHit: 0
+  enemiesOnHit: {fileID: 0}
 --- !u!1 &7691162287025031378
 GameObject:
   m_ObjectHideFlags: 0
@@ -77,7 +79,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2843510777549617920}
   - component: {fileID: 1952619077901076381}
-  m_Layer: 0
+  - component: {fileID: 1603599576891817782}
+  m_Layer: 15
   m_Name: BaseStick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,6 +124,23 @@ MonoBehaviour:
   recoveryTime: 0.4
   lightDamage: 1
   heavyDamage: 2
+  currentAttack: 0
+  sfx: {fileID: 0}
+--- !u!114 &1603599576891817782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7691162287025031378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121c05fe8dc64d94fb0cb252d7634796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackForce: 3
+  deathParticlesPrefab: {fileID: 0}
+  flashDuration: 0.1
 --- !u!1001 &3683245420877009509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -181,9 +201,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5568371526223589888, guid: db14ac1cd28c1084390443dc9d0c1690, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: db14ac1cd28c1084390443dc9d0c1690, type: 3}
       propertyPath: m_Name
       value: Stick
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: db14ac1cd28c1084390443dc9d0c1690, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

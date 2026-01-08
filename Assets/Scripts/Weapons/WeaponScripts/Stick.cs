@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Stick : Weapon
 {
+    public enum AttackType { None, Light, Heavy }
+
     [Header("Timing")]
     public float lightDuration = 0.3f;
     public float heavyDuration = 0.5f;
@@ -12,50 +14,68 @@ public class Stick : Weapon
     public int lightDamage = 1;
     public int heavyDamage = 2;
 
-    private bool canAttack = true;
-    private bool isDefending = false;
+    [Header("State")]
+    public AttackType currentAttack = AttackType.None;
 
-    private StickHitbox hitbox;
+    [Header("References")]
     public WeaponSFX sfx;
 
-    private void OnEnable()
+    private bool canAttack = true;
+    private bool isDefending = false;
+    private bool isAttacking = false;
+
+    private StickHitbox hitbox;
+
+    private void Awake()
     {
         if (attackCollider != null)
         {
             hitbox = attackCollider.GetComponent<StickHitbox>();
             attackCollider.enabled = false;
+            if (hitbox != null) hitbox.canHit = false;
         }
         else
         {
             Debug.LogError("Stick: AttackCollider is not assigned!");
         }
+
+        sfx ??= GetComponentInParent<WeaponSFX>();
     }
 
-    // -------- LIGHT ATTACK --------
+    // ---------------- LIGHT ATTACK ----------------
     public override void LightAttack()
     {
-        if (!canAttack || isDefending) return;
+        if (!canAttack || isDefending || isAttacking) return; 
 
+        currentAttack = AttackType.Light;
         canAttack = false;
+        isAttacking = true;
+
         animator.SetTrigger("LightAttack");
         StartCoroutine(LightRoutine());
     }
 
+
     private IEnumerator LightRoutine()
     {
-        sfx.Stick_Light1SwingPlay();
-        hitbox.damage = lightDamage;
-        yield return new WaitForSeconds(0.1f);
+        if (hitbox != null) hitbox.damage = lightDamage;
 
-        attackCollider.enabled = true;
+        // Align hit with animation (adjust delay as needed)
+        yield return new WaitForSeconds(0.55f);
+
+        sfx?.Stick_Light1SwingPlay();
+
+        EnableHitbox(true);
         yield return new WaitForSeconds(lightDuration);
-        attackCollider.enabled = false;
+        EnableHitbox(false);
 
+        currentAttack = AttackType.None;
         yield return new WaitForSeconds(recoveryTime);
         canAttack = true;
+        isAttacking = false;
     }
 
-    // -------- HEAVY ATTACK --------
+    // ---------------- HEAVY ATTACK ----------------
     public override void StartHeavyCharge()
     {
         if (!canAttack || isDefending) return;
@@ -67,19 +87,30 @@ public class Stick : Weapon
 
     private IEnumerator HeavyRoutine()
     {
-        sfx.Stick_HeavySwingPlay();
-        hitbox.damage = heavyDamage;
+        if (hitbox != null) hitbox.damage = heavyDamage;
+
+        // First hit
         yield return new WaitForSeconds(0.15f);
+        sfx?.Stick_HeavySwingPlay();
+        EnableHitbox(true);
+        yield return new WaitForSeconds(heavyDuration / 2f);
+        EnableHitbox(false);
 
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(heavyDuration);
-        attackCollider.enabled = false;
+        // Gap between hits
+        yield return new WaitForSeconds(0.7f);
 
+        // Second hit
+        sfx?.Stick_HeavySwingPlay();
+        EnableHitbox(true);
+        yield return new WaitForSeconds(heavyDuration / 2f);
+        EnableHitbox(false);
+
+        currentAttack = AttackType.None;
         yield return new WaitForSeconds(recoveryTime);
         canAttack = true;
     }
 
-    // -------- DEFEND --------
+    // ---------------- DEFENSE ----------------
     public override void StartDefend()
     {
         isDefending = true;
@@ -92,26 +123,26 @@ public class Stick : Weapon
         animator.SetBool("IsDefending", false);
     }
 
-    // -------- RESET WEAPON --------
+    // ---------------- HELPERS ----------------
+    private void EnableHitbox(bool enabled)
+    {
+        if (attackCollider != null)
+            attackCollider.enabled = enabled;
+
+        if (hitbox != null)
+            hitbox.canHit = enabled;
+    }
+
     public override void ResetWeapon()
     {
         animator.ResetTrigger("LightAttack");
         animator.ResetTrigger("HeavyAttack");
         animator.SetBool("IsDefending", false);
 
-        if (attackCollider != null)
-            attackCollider.enabled = false;
+        EnableHitbox(false);
 
         canAttack = true;
         isDefending = false;
-
+        currentAttack = AttackType.None;
     }
 }
-
-
-
-
-
-
-
-

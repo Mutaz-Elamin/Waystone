@@ -1,86 +1,117 @@
 using System.Collections;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class Sword : Weapon
 {
+    public enum AttackType
+    {
+        None,
+        Light,
+        Heavy
+    }
+
+
+
     [Header("Sword Settings")]
     public float comboResetTime = 1f;
 
+    [Header("State")]
     public int comboStep = 0;
+    public AttackType currentAttack = AttackType.None;
+
     private bool canAttack = true;
-    private float lastAttackTime;
     private bool isDefending = false;
+    private bool isChargingHeavy = false;
+    private float lastAttackTime;
+
+    [Header("Particles")]
+    public ParticleSystem swingParticles;
 
     [Header("Sword SFX")]
-    public WeaponSFX sfx; // assign your PlayerSFX here in inspector
+    private WeaponSFX sfx;
 
+    private void Awake()
+    {
+        // Find WeaponSFX on player / parent / root
+        sfx = GetComponentInParent<WeaponSFX>();
+
+        if (sfx == null)
+            Debug.LogWarning("WeaponSFX not found for SwordHitbox", this);
+    }
+
+    // =========================
+    // LIGHT ATTACK
+    // =========================
     public override void LightAttack()
     {
-        if (!canAttack || isDefending) return;
+        if (!canAttack || isDefending || isChargingHeavy) return;
+
+        currentAttack = AttackType.Light;
 
         float timeSinceLast = Time.time - lastAttackTime;
-        if (timeSinceLast > comboResetTime) comboStep = 0;
+        if (timeSinceLast > comboResetTime)
+            comboStep = 0;
 
         comboStep++;
         ResetAllAttackTriggers();
 
-        if (comboStep == 1)
+        switch (comboStep)
         {
-            animator.SetTrigger("LightAttack");
-            sfx?.Sword_Light1SwingPlay();
-        }
-        else if (comboStep == 2)
-        {
-            animator.SetTrigger("LightAttack2");
-            sfx?.Sword_Light2SwingPlay();
-        }
-        else if (comboStep == 3)
-        {
-            animator.SetTrigger("LightAttack3");
-            sfx?.Sword_Light3SwingPlay();
-        }
-        else
-        {
-            comboStep = 1;
-            animator.SetTrigger("LightAttack");
-            sfx?.Sword_Light1SwingPlay();
+            case 1:
+                animator.SetTrigger("LightAttack");
+                sfx?.Sword_Light1SwingPlay();
+                break;
+            case 2:
+                animator.SetTrigger("LightAttack2");
+                sfx?.Sword_Light2SwingPlay();
+                break;
+            case 3:
+                animator.SetTrigger("LightAttack3");
+                sfx?.Sword_Light3SwingPlay();
+                break;
+            default:
+                comboStep = 1;
+                animator.SetTrigger("LightAttack");
+                sfx?.Sword_Light1SwingPlay();
+                break;
         }
 
-        StartCoroutine(AttackWindow(0.25f));
+        StartCoroutine(LightAttackWindow(0.25f));
         lastAttackTime = Time.time;
     }
 
-    public override void HeavyAttack()
-    {
-        if (!canAttack || isDefending) return;
-        animator.SetTrigger("HeavyWindup");
-        sfx?.Sword_HeavyChargePlay();
-        StartCoroutine(HeavyAttackWindow());
-    }
-
+    // =========================
+    // HEAVY ATTACK
+    // =========================
     public override void StartHeavyCharge()
     {
         if (!canAttack || isDefending) return;
 
         canAttack = false;
-        animator.ResetTrigger("HeavyRelease");
-        animator.SetTrigger("HeavyWindup");
+        isChargingHeavy = true;
+
         animator.SetBool("IsChargingHeavy", true);
+        animator.SetTrigger("HeavyWindup");
         sfx?.Sword_HeavyChargePlay();
     }
 
     public override void ReleaseHeavyAttack()
     {
-        if (isDefending) return;
+        if (isDefending || !isChargingHeavy) return;
+
+        isChargingHeavy = false;
+        currentAttack = AttackType.Heavy;
 
         animator.SetBool("IsChargingHeavy", false);
         animator.SetTrigger("HeavyRelease");
-        sfx?.Sword_HeavySwingPlay(); // swing sound
+
+        sfx?.Sword_HeavySwingPlay();
         StartCoroutine(HeavyAttackWindow());
-        // Note: hit sound should be called from Hitbox or animation event
     }
 
+    // =========================
+    // DEFENSE
+    // =========================
     public override void StartDefend()
     {
         isDefending = true;
@@ -94,21 +125,18 @@ public class Sword : Weapon
         animator.SetBool("IsDefending", false);
     }
 
-    // --- Internal Coroutines ---
-    private IEnumerator AttackWindow(float duration)
+    // =========================
+    // ATTACK WINDOWS
+    // =========================
+    private IEnumerator LightAttackWindow(float duration)
     {
         canAttack = false;
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(duration);
 
-        attackCollider.enabled = false;
-        // Play hit sounds here if you want them to trigger on contact
-        switch (comboStep)
-        {
-            case 1: sfx?.Sword_Light1HitPlay(); break;
-            case 2: sfx?.Sword_Light2HitPlay(); break;
-            case 3: sfx?.Sword_Light3HitPlay(); break;
-        }
+        EnableHitbox(true);
+        yield return new WaitForSeconds(duration);
+        EnableHitbox(false);
+
+        currentAttack = AttackType.None;
 
         yield return new WaitForSeconds(0.1f);
         canAttack = true;
@@ -117,14 +145,30 @@ public class Sword : Weapon
     private IEnumerator HeavyAttackWindow()
     {
         canAttack = false;
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(0.3f);
 
-        attackCollider.enabled = false;
-        sfx?.Sword_HeavyHitPlay(); // play heavy hit when collider disables
+        yield return new WaitForSeconds(0.4f); // windup
+
+        EnableHitbox(true);
+        yield return new WaitForSeconds(0.3f);
+        EnableHitbox(false);
+
+        currentAttack = AttackType.None;
 
         yield return new WaitForSeconds(0.2f);
         canAttack = true;
+    }
+
+    // =========================
+    // HELPERS
+    // =========================
+    private void EnableHitbox(bool enabled)
+    {
+        if (attackCollider == null) return;
+
+        attackCollider.enabled = enabled;
+        SwordHitbox hitbox = attackCollider.GetComponent<SwordHitbox>();
+        if (hitbox != null)
+            hitbox.canHit = enabled;
     }
 
     private void ResetAllAttackTriggers()
@@ -138,22 +182,20 @@ public class Sword : Weapon
 
     public override void ResetWeapon()
     {
-
         comboStep = 0;
+        currentAttack = AttackType.None;
 
-
-        animator.ResetTrigger("LightAttack");
-        animator.ResetTrigger("LightAttack2");
-        animator.ResetTrigger("LightAttack3");
-        animator.ResetTrigger("HeavyWindup");
-        animator.ResetTrigger("HeavyRelease");
-
+        ResetAllAttackTriggers();
         animator.SetBool("IsDefending", false);
+        animator.SetBool("IsChargingHeavy", false);
 
-        if (attackCollider != null)
-            attackCollider.enabled = false;
+        EnableHitbox(false);
 
         canAttack = true;
         isDefending = false;
+        isChargingHeavy = false;
+
+        if (swingParticles != null)
+            swingParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 }

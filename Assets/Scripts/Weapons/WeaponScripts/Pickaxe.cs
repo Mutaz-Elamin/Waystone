@@ -1,31 +1,43 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class Pickaxe : Weapon
 {
     [Header("Combo Settings")]
-    public float lightInitialSpeed = 1f;
-    public float lightMaxSpeed = 2.5f;
-    public float lightRampTime = 2f;
+    public float lightInitialSpeed = 1f;       // animation start speed
+    public float lightMaxSpeed = 2.5f;         // animation max speed while holding
+    public float lightRampTime = 2f;           // how long to ramp animation speed
+
+    [Header("Hold / hit timing")]
+    public float startupDelay = 0.15f;         // delay from hold start -> first possible hit
+    public float hitInterval = 0.25f;          // time between successive hits while holding
+    public float releaseCooldown = 0.12f;      // small cooldown after releasing before you can start again
 
     private bool canAttack = true;
     private bool isDefending = false;
     private bool isHoldingLight = false;
     private float holdStartTime;
 
-    private PickaxeHitbox hitbox;
+    [HideInInspector] public PickaxeHitbox hitbox;
     public WeaponSFX sfx;
 
     [Header("SFX")]
     public AudioSource lightLoopSource;
     public AudioClip pickaxeLoopClip;
-    public float soundInitialPitch = 0.8f;   // starting pitch of loop
-    public float soundMaxPitch = 1.5f;       // max pitch
-    public float soundRampTime = 2f;         // how fast sound ramps
+    public float soundInitialPitch = 0.8f;
+    public float soundMaxPitch = 1.5f;
+    public float soundRampTime = 2f;
+
+    // expose hold state so hitbox can query timing
+    public bool IsHoldingLight => isHoldingLight;
+    public float HoldElapsed => isHoldingLight ? Time.time - holdStartTime : 0f;
+
+    // heavy flag so hitbox can treat the collision as a single heavy hit
+    public bool IsPerformingHeavy { get; private set; } = false;
 
     private void Awake()
     {
-        hitbox = attackCollider.GetComponent<PickaxeHitbox>();
+        hitbox = attackCollider != null ? attackCollider.GetComponent<PickaxeHitbox>() : null;
 
         // Setup looped AudioSource
         if (lightLoopSource != null && pickaxeLoopClip != null)
@@ -33,30 +45,56 @@ public class Pickaxe : Weapon
             lightLoopSource.clip = pickaxeLoopClip;
             lightLoopSource.loop = true;
         }
+
+        // try to resolve sfx if not assigned
+        sfx ??= GetComponentInParent<WeaponSFX>();
+
+        // ensure collider starts disabled
+        if (attackCollider != null)
+            attackCollider.enabled = false;
     }
 
     // -------- LIGHT ATTACK LOOP --------
     public override void LightAttack()
     {
-        if (!canAttack || isDefending) return;
+        if (!canAttack || isDefending || isHoldingLight) return;
 
+        // lock starting new holds to avoid spam at startup
+        canAttack = false;
         isHoldingLight = true;
         holdStartTime = Time.time;
 
         animator.SetFloat("LightSpeed", lightInitialSpeed);
         animator.SetBool("LightHold", true);
-        attackCollider.enabled = true;
-        hitbox.canHit = true;
 
-        // Play looping sound
+        // do not enable collider immediately — use startupDelay so animation lines up
+        StartCoroutine(HoldStartupCoroutine());
+
+        // Start looped sound
         if (lightLoopSource != null)
         {
             lightLoopSource.pitch = soundInitialPitch;
             lightLoopSource.Play();
         }
 
-        // Play one-shot swing SFX
+        // One-shot accent SFX
         sfx?.Pickaxe_Light1Play();
+    }
+
+    private IEnumerator HoldStartupCoroutine()
+    {
+        // wait for the small startup delay (animation leads)
+        yield return new WaitForSeconds(startupDelay);
+
+        // if player already released, do nothing
+        if (!isHoldingLight) yield break;
+
+        if (attackCollider != null) attackCollider.enabled = true;
+        if (hitbox != null)
+        {
+            hitbox.canHit = true;
+            hitbox.SetHitInterval(hitInterval); // inform hitbox of cadence
+        }
     }
 
     public override void StopLightAttack()
@@ -64,15 +102,25 @@ public class Pickaxe : Weapon
         if (!isHoldingLight) return;
 
         isHoldingLight = false;
-        attackCollider.enabled = false;
-        hitbox.canHit = false;
+
+        if (attackCollider != null) attackCollider.enabled = false;
+        if (hitbox != null) hitbox.canHit = false;
 
         animator.SetBool("LightHold", false);
         animator.SetTrigger("LightRelease");
 
-        // Stop looped sound
-        if (lightLoopSource != null)
+        // stop looped sound
+        if (lightLoopSource != null && lightLoopSource.isPlaying)
             lightLoopSource.Stop();
+
+        // small cooldown before allowing next LightAttack to prevent spam
+        StartCoroutine(ReleaseCooldownRoutine());
+    }
+
+    private IEnumerator ReleaseCooldownRoutine()
+    {
+        yield return new WaitForSeconds(releaseCooldown);
+        canAttack = true;
     }
 
     private void Update()
@@ -94,11 +142,12 @@ public class Pickaxe : Weapon
         }
         else
         {
-            animator.SetFloat("LightSpeed", 1f); // reset when not attacking
+            // Reset animator speed when not holding
+            animator.SetFloat("LightSpeed", 1f);
         }
     }
 
-    // -------- HEAVY ATTACK --------
+    // -------- HEAVY ATTACK (single hit via OnTriggerEnter) --------
     public override void StartHeavyCharge()
     {
         if (!canAttack || isDefending) return;
@@ -107,20 +156,29 @@ public class Pickaxe : Weapon
         animator.SetTrigger("HeavyAttack");
         StartCoroutine(HeavyRoutine());
 
-        // One-shot heavy swing SFX
         sfx?.Pickaxe_HeavySwingPlay();
     }
 
     private IEnumerator HeavyRoutine()
     {
-        hitbox.damage = 3;
-        attackCollider.enabled = true;
-        hitbox.canHit = true;
-        yield return new WaitForSeconds(0.5f);
-        attackCollider.enabled = false;
-        hitbox.canHit = false;
+        // mark heavy so hitbox uses OnTriggerEnter immediate behavior
+        IsPerformingHeavy = true;
 
-        // Play heavy hit sound on impact (optional, e.g., on collider trigger instead)
+        if (hitbox != null) hitbox.damage = 3;
+        if (attackCollider != null) attackCollider.enabled = true;
+        if (hitbox != null) hitbox.canHit = true;
+
+        // wait briefly to allow OnTriggerEnter to fire for overlapping enemies
+        yield return new WaitForSeconds(0.5f);
+
+        // disable
+        if (attackCollider != null) attackCollider.enabled = false;
+        if (hitbox != null) hitbox.canHit = false;
+
+        // finish heavy
+        IsPerformingHeavy = false;
+
+        // Play heavy hit sound (optional fallback)
         sfx?.Pickaxe_HeavyHitPlay();
 
         yield return new WaitForSeconds(0.3f);
@@ -131,8 +189,6 @@ public class Pickaxe : Weapon
     {
         isDefending = true;
         animator.SetBool("IsDefending", true);
-
-        // Play defend SFX
         sfx?.Pickaxe_DefendPlay();
     }
 
@@ -163,9 +219,14 @@ public class Pickaxe : Weapon
         if (attackCollider != null)
             attackCollider.enabled = false;
 
-        hitbox.canHit = false;
+        if (hitbox != null)
+        {
+            hitbox.canHit = false;
+            hitbox.ClearLastHitTimes();
+        }
+
         isHoldingLight = false;
         canAttack = true;
+        IsPerformingHeavy = false;
     }
-
 }
