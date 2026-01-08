@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
-  m_Name: Sword
+  m_Name: Bronze Spear
   m_EditorClassIdentifier: 
-  itemName: Sword
-  itemIcon: {fileID: 21300000, guid: 08d5ec2d201ece949a5e428ba3ea0e63, type: 3}
+  itemName: Bronze SPear
+  itemIcon: {fileID: 21300000, guid: 5b0566823077fdd4c9bde83bf660a8f0, type: 3}
   isStackable: 0
-  weaponPrefab: {fileID: 6884670967486755781, guid: 97e1045fb6a6443458748c362ce1d267, type: 3}
+  weaponPrefab: {fileID: 4886971969442270434, guid: 89beadbb689e09645a303cac090e11d4, type: 3}

@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Spear
   itemIcon: {fileID: 21300000, guid: 68a53bad3f9be9a41b17f65f4c396831, type: 3}
   isStackable: 0
+  weaponPrefab: {fileID: 4886971969442270434, guid: b4bc80a08c83e5f41850f19024573626, type: 3}

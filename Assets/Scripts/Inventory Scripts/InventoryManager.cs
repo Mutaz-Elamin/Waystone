@@ -511,6 +511,19 @@ public class InventoryManager : MonoBehaviour
         BuildPlacer placer = GetComponent<BuildPlacer>();
         if (placer != null)
             placer.Equip(selected);
+        if (selected is WeaponItems)
+        {
+            selected.Equip(gameObject);
+        }
+        else
+        {
+                       // unequip weapon
+            var weaponsManager = GetComponent<WeaponsManager>();
+            if (weaponsManager != null)
+                weaponsManager.RemoveCurrentWeapon();
+               
+        }
+        
     }
     public void UseSelectedHotbarItem()
     {
@@ -648,8 +661,13 @@ public class InventoryManager : MonoBehaviour
 
         // Remove from that specific slot (NOT global Remove(item, qty))
         slot.RemoveQuantity(dropQty);
-        if (slot.GetQuantity() <= 0) slot.Clear();
-
+        if (slot.GetQuantity() <= 0)
+        {
+            slot.Clear();
+             var weaponsManager = GetComponent<WeaponsManager>();
+            if (weaponsManager != null)
+                 weaponsManager.RemoveCurrentWeapon();
+        }
         RefreshUI();
     }
 

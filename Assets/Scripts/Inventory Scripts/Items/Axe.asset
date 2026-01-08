@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Axe
   itemIcon: {fileID: 21300000, guid: f9080caee48d4c84885ba4f25d561467, type: 3}
   isStackable: 0
+  weaponPrefab: {fileID: 7032525697885226930, guid: 0c26704e0d7540146b70a2f281c908ae, type: 3}

@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Pickaxe
   itemIcon: {fileID: 21300000, guid: b54b94da5cee5c046bf327246ac181e6, type: 3}
   isStackable: 0
+  weaponPrefab: {fileID: 4265006021029003443, guid: 24424fdc552e7e842be53adb3ee6f564, type: 3}

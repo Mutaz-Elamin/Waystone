@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Dagger
   itemIcon: {fileID: 21300000, guid: a332f9cc2040f6042a04c65fa9e4a000, type: 3}
   isStackable: 0
+  weaponPrefab: {fileID: 5397069016849034924, guid: c8a91a02614449644930a1bfc7f7bdf6, type: 3}

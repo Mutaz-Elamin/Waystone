@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Material", menuName = "Inventory/Materials")]
-public class Material : ItemClass
+public class MaterialItems : ItemClass
 {
 
     // Start is called before the first frame update

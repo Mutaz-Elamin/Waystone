@@ -29,11 +29,8 @@ public class InputManager : MonoBehaviour
         inventory = playerInput.Inventory;
         inventoryManager = GetComponent<InventoryManager>();
         collector = GetComponent<PlayerCollector>();
-
-        hotbars = playerInput.Hotbar;
-
         weaponsManager = GetComponent<WeaponsManager>();
-
+        hotbars = playerInput.Hotbar;
 
         if (movement == null || camLook == null)
         {
@@ -46,9 +43,9 @@ public class InputManager : MonoBehaviour
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
 
-       // onFoot.Jump.performed += ctx => movement.Jump();
-        onFoot.Jump.performed += ctx => weaponsManager.SpawnTestWeapon(weaponsManager.stickPrefab);
-        onFoot.Sprint.performed += ctx => movement.ToggleSprint();
+       onFoot.Jump.performed += ctx => movement.Jump();
+        
+        onFoot.Sprint.performed += ctx => movement. ToggleSprint();
 
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
@@ -82,13 +79,7 @@ public class InputManager : MonoBehaviour
         hotbars.Hotbar6.performed += ctx => TryUseHotbar(5);
         BuildPlacer placer = GetComponent<BuildPlacer>();
 
-        hotbars.Use.performed += ctx =>
-        {
-            if (inventoryManager == null) return;
-            if (inventoryManager.IsOpen) return;
-
-            inventoryManager.UseSelectedHotbarItem();
-        };
+        
         inventory.Drop.performed += ctx =>
         {
             if (inventoryManager == null) return;
@@ -169,12 +160,8 @@ private void HandleInventoryToggle()
 
     void LateUpdate()
     {
-<<<<<<< HEAD:Assets/Scripts/InputManager.cs
         if (inventoryManager != null && inventoryManager.IsOpen)
             return;
-=======
- 
->>>>>>> TieredItemsAndMusic:Assets/Scripts/MiscManager/InputManager.cs
         camLook.Look(onFoot.Look.ReadValue<Vector2>());
     }
 

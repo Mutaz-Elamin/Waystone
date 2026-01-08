@@ -15,3 +15,4 @@ MonoBehaviour:
   itemName: Stick
   itemIcon: {fileID: 21300000, guid: 985522aa310769847adff8a288ac92ca, type: 3}
   isStackable: 0
+  weaponPrefab: {fileID: 7691162287025031378, guid: 80e22860b7d049a47ab60cb5cb3e09b1, type: 3}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CraftingMenu : MonoBehaviour
 {
@@ -12,10 +13,13 @@ public class CraftingMenu : MonoBehaviour
     public void Open(StationType type)
     {
         menuRoot.SetActive(true);
-
+        
         defaultList.SetActive(type == StationType.Default);
         workbenchList.SetActive(type == StationType.Workbench);
         forgeList.SetActive(type == StationType.Forge);
+        menuRoot.GetComponent<ScrollRect>().content = type == StationType.Default ? defaultList.GetComponent<RectTransform>() :
+                                              type == StationType.Workbench ? workbenchList.GetComponent<RectTransform>() :
+                                              forgeList.GetComponent<RectTransform>();
     }
 
     public void Close()
