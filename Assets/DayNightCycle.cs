@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
-using System.Collections;
+using UnityEngine.SceneManagement; // Required to restart the game
+using UnityEngine.UI; // Required if you use a standard Button
 
 public class DayNightCycle : MonoBehaviour
 {
@@ -9,30 +10,34 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Light moonLight;
 
     [Header("Time Settings")]
-    [Tooltip("3 = 8 minute real-time day.")]
-    [SerializeField] private float daySpeed = 3f; 
+    [Tooltip("1.2 = 20 minute real-time day.")]
+    private float daySpeed = 1.2f; 
     [Range(0, 24)] [SerializeField] private float currentHour = 0f;
     private int dayCount = 1;
+    private int maxDays = 4;
 
     [Header("UI & Animation")]
     [SerializeField] private TextMeshProUGUI clockText;
-    [SerializeField] private float animationDuration = 2.5f; 
+    [SerializeField] private GameObject restartButton; // Assign a UI Button here
+    [SerializeField] private float animationDuration = 3f; 
 
     private bool isAnimating = false;
+    private bool gameEnded = false;
     private Vector3 originalTextScale;
 
     private void Start()
     {
-        // Reset everything to start at Day 1, Midnight
         dayCount = 1;
         currentHour = 0f;
-        
+        gameEnded = false;
+
+        if (restartButton != null) restartButton.SetActive(false);
         if (clockText != null) originalTextScale = clockText.transform.localScale;
 
-        // Initial atmosphere setup
+        // Lighting setup
         if (RenderSettings.skybox != null)
             RenderSettings.skybox.SetFloat("_Exposure", 0.05f);
-            
+        
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
 
         StartCoroutine(PlayDayAnimation());
@@ -40,11 +45,11 @@ public class DayNightCycle : MonoBehaviour
 
     private void Update()
     {
-        // FIX 1: Hard-override speed to 3 every frame to prevent Inspector bugs
-        daySpeed = 3f;
+        if (gameEnded) return;
 
-        // FIX 2: Only advance time if we aren't showing the "Day X" popup
-        // This keeps the timer at 00:00 until the animation ends
+        // Force speed to 1.2 for the 20-minute cycle
+        daySpeed = 1.2f;
+
         if (!isAnimating)
         {
             UpdateTime();
@@ -61,17 +66,39 @@ public class DayNightCycle : MonoBehaviour
 
         if (currentHour >= 24f) 
         {
-            currentHour = 0f; // Snap to exactly midnight
+            currentHour = 0f;
             dayCount++;
-            StartCoroutine(PlayDayAnimation());
+
+            if (dayCount > maxDays)
+            {
+                TriggerEndGame();
+            }
+            else
+            {
+                StartCoroutine(PlayDayAnimation());
+            }
         }
+    }
+
+    private void TriggerEndGame()
+    {
+        gameEnded = true;
+        clockText.text = "END";
+        clockText.color = Color.red;
+        clockText.transform.localScale = originalTextScale * 2f;
+        
+        if (restartButton != null) restartButton.SetActive(true);
+    }
+
+    // Call this function from your UI Button "OnClick" event
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void UpdateLightRotation()
     {
-        // Calculates rotation based on time (6:00 is sunrise)
         float sunRotation = (currentHour - 6f) * 15f;
-        
         if (sunLight) sunLight.transform.localRotation = Quaternion.Euler(sunRotation, 0f, 0f);
         if (moonLight) moonLight.transform.localRotation = Quaternion.Euler(sunRotation + 180f, 0f, 0f);
     }
@@ -83,7 +110,6 @@ public class DayNightCycle : MonoBehaviour
         float exposure = Mathf.Lerp(0.05f, 1.0f, Mathf.Clamp01(sunHeight * 2.0f));
 
         bool isDay = currentHour >= 6f && currentHour < 18f;
-
         if (sunLight) sunLight.enabled = isDay;
         if (moonLight) moonLight.enabled = !isDay;
 
@@ -94,30 +120,25 @@ public class DayNightCycle : MonoBehaviour
         DynamicGI.UpdateEnvironment();
     }
 
-    IEnumerator PlayDayAnimation()
+    System.Collections.IEnumerator PlayDayAnimation()
     {
         if (clockText == null) yield break;
 
         isAnimating = true;
         float elapsed = 0f;
 
-        // Show ONLY "DAY X" - no timer next to it
         clockText.text = "DAY " + dayCount;
-        clockText.color = new Color(1f, 0.85f, 0f); // Nice Game-Gold
+        clockText.color = new Color(1f, 0.85f, 0f); 
 
         while (elapsed < animationDuration)
         {
             elapsed += Time.deltaTime;
             float percent = elapsed / animationDuration;
-
-            // Simple pulse animation
             float scaleCurve = Mathf.Sin(percent * Mathf.PI) * 1.2f + 1f;
             clockText.transform.localScale = originalTextScale * scaleCurve;
-
             yield return null;
         }
 
-        // Return everything to normal gameplay state
         clockText.transform.localScale = originalTextScale;
         clockText.color = Color.white;
         isAnimating = false;
@@ -126,7 +147,6 @@ public class DayNightCycle : MonoBehaviour
     private void UpdateClockUI()
     {
         if (clockText == null) return;
-
         int h = Mathf.FloorToInt(currentHour);
         int m = Mathf.FloorToInt((currentHour - h) * 60);
         clockText.text = string.Format("Day {0} - {1:00}:{2:00}", dayCount, h, m);
