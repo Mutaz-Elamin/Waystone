@@ -3,37 +3,30 @@ using UnityEngine;
 
 public class EnemiesOnHit : MonoBehaviour
 {
-    /// <summary>
-    /// Flashes the renderer firstColor -> secondColor then restores whatever property block existed before.
-    /// Uses real-time waits so hitstop (timeScale changes) won't freeze the visual timing.
-    /// </summary>
+
     public IEnumerator FlashEnemy(Renderer renderer, Color firstColor, Color secondColor, float duration)
     {
         if (renderer == null) yield break;
 
-        // Save existing property block (so we can restore it afterwards)
         MaterialPropertyBlock original = new MaterialPropertyBlock();
         renderer.GetPropertyBlock(original);
 
-        // Create a property block to set color; use "_Color" which works for standard/unlit shaders.
-        // If your shader uses a different property (e.g. "_BaseColor"), you can add a fallback check.
         MaterialPropertyBlock block = new MaterialPropertyBlock();
 
-        // First color
         block.SetColor("_Color", firstColor);
-        renderer.SetPropertyBlock(block);
 
-        // Wait half duration (real-time, not game-time)
+        if (renderer != null) renderer.SetPropertyBlock(block);
+
         yield return new WaitForSecondsRealtime(duration * 0.5f);
 
-        // Second color
+
         block.SetColor("_Color", secondColor);
-        renderer.SetPropertyBlock(block);
+        if (renderer != null) renderer.SetPropertyBlock(block);
 
         yield return new WaitForSecondsRealtime(duration * 0.5f);
 
-        // Restore original block (this returns whatever the renderer used before)
-        renderer.SetPropertyBlock(original);
+   
+        if (renderer != null) renderer.SetPropertyBlock(original);
     }
 
     // Keep your ApplyHitStop/ApplyKnockback helpers here (unchanged)

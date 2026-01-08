@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3ab576f493c7c44b1ab3c4d2ed9ec4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Stone Pickaxe
   animator: {fileID: 7755550777929571492}
   attackCollider: {fileID: 1135974738682250458}
+  baseDamage: 0.4
+  materialType: 0
+  heavyAttackMultiplier: 1.5
   lightInitialSpeed: 1
   lightMaxSpeed: 2.5
   lightRampTime: 2

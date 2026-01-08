@@ -116,9 +116,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488318438cf91054283cc6d6764f3a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Gold Sword
   animator: {fileID: 3940306857172479651}
   attackCollider: {fileID: 8822199203055388672}
+  baseDamage: 1.9
+  materialType: 3
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1
   comboStep: 0
   currentAttack: 0

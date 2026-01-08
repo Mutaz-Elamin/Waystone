@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 859ed498d7025b945875e3990eb34bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: 'Bronze Spear '
   animator: {fileID: 1414911602776802658}
   attackCollider: {fileID: 1971706244424651741}
+  baseDamage: 1.9
+  materialType: 1
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1.5
   comboStep: 0
   currentAttack: 0

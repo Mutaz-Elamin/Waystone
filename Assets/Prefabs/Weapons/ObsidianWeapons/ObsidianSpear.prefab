@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7583506254689687003}
   - component: {fileID: 1849461966240487611}
   m_Layer: 15
-  m_Name: GoldSpear
+  m_Name: ObsidianSpear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 859ed498d7025b945875e3990eb34bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Obsidian Spear
   animator: {fileID: 1414911602776802658}
   attackCollider: {fileID: 1971706244424651741}
+  baseDamage: 3.5
+  materialType: 4
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1.5
   comboStep: 0
   currentAttack: 0

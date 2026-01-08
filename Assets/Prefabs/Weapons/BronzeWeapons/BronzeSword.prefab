@@ -119,6 +119,9 @@ MonoBehaviour:
   weaponName: 
   animator: {fileID: 3940306857172479651}
   attackCollider: {fileID: 8822199203055388672}
+  baseDamage: 1.4
+  materialType: 1
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1
   comboStep: 0
   currentAttack: 0

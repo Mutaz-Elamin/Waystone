@@ -84,7 +84,7 @@ GameObject:
   - component: {fileID: 4446429655244078529}
   - component: {fileID: 810562641353002085}
   m_Layer: 15
-  m_Name: GoldDagger
+  m_Name: ObsidianDagger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,9 +141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 134a6c8cb4e24f64d98de790a493b705, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Obsidian Dagger
   animator: {fileID: 1969602053815517545}
   attackCollider: {fileID: 4591256759826696010}
+  baseDamage: 1.9
+  materialType: 4
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1
   comboStep: 0
   sfx: {fileID: 0}

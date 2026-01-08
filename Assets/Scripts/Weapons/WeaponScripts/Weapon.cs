@@ -6,6 +6,19 @@ public abstract class Weapon : MonoBehaviour
     public Animator animator;
     public Collider attackCollider;
 
+    [Header("Damage Settings")]
+    public float baseDamage = 1.0f;
+    public MaterialType materialType = MaterialType.Stone;
+    public float heavyAttackMultiplier = 1.5f;
+
+    // Compute damage for light or heavy attack
+    public virtual int CalculateDamage(bool isHeavy = false)
+    {
+        float tier = WeaponBalance.GetMultiplier(materialType);
+        float dmg = baseDamage * tier * (isHeavy ? heavyAttackMultiplier : 1f);
+        return Mathf.RoundToInt(dmg);
+    }
+
 
     public virtual void Equip()
     {

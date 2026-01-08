@@ -33,7 +33,17 @@ public class SwordHitbox : MonoBehaviour
         Debug.Log("Sword hit: " + other.name);
 
 
-        other.GetComponent<GeneralNPC>()?.TakeDamage(1, DamageCause.EnemyAttack);
+        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        if (npc != null)
+        {
+            if (sword != null)
+            {
+                bool isHeavy = sword.currentAttack == Sword.AttackType.Heavy;
+                int damage = sword.CalculateDamage(isHeavy);
+                npc.TakeDamage(damage, DamageCause.EnemyAttack);
+            }
+        }
+
 
 
         if (sword.currentAttack == Sword.AttackType.Light)

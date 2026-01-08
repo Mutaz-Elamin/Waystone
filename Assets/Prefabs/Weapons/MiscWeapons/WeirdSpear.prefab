@@ -49,7 +49,12 @@ MonoBehaviour:
   weaponName: Weird Spear
   animator: {fileID: 0}
   attackCollider: {fileID: 1971706244424651741}
+  baseDamage: 5
+  materialType: 7
+  heavyAttackMultiplier: 3
   comboResetTime: 1.5
+  comboStep: 0
+  currentAttack: 0
 --- !u!1 &5927530406495036061
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canHit: 0
+  bloodPrefab: {fileID: 0}
+  enemiesOnHit: {fileID: 0}
 --- !u!114 &2971085771841110789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canHit: 0
-  damage: 2
+  bloodPrefab: {fileID: 0}
 --- !u!1001 &1829488526345790158
 PrefabInstance:
   m_ObjectHideFlags: 0

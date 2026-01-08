@@ -116,9 +116,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488318438cf91054283cc6d6764f3a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Slime Sword
   animator: {fileID: 3940306857172479651}
   attackCollider: {fileID: 8822199203055388672}
+  baseDamage: 2.9
+  materialType: 6
+  heavyAttackMultiplier: 1
   comboResetTime: 1
   comboStep: 0
   currentAttack: 0

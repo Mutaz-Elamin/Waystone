@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb440236d56c9b498c462bc04e4c37c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: 'Ice Club '
   animator: {fileID: 8525899208345576284}
   attackCollider: {fileID: 7820912319089362091}
+  baseDamage: 2.4
+  materialType: 8
+  heavyAttackMultiplier: 3
   comboResetTime: 1.2
   comboStep: 0
   currentAttack: 0

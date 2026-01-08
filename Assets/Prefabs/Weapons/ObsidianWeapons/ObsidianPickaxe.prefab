@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9163539119645178505}
   - component: {fileID: 8052875878415950741}
   m_Layer: 15
-  m_Name: GoldPickaxe
+  m_Name: ObsidianPickaxe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,9 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3ab576f493c7c44b1ab3c4d2ed9ec4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Obsidian Pickaxe
   animator: {fileID: 7755550777929571492}
   attackCollider: {fileID: 1135974738682250458}
+  baseDamage: 1.6
+  materialType: 4
+  heavyAttackMultiplier: 1.5
   lightInitialSpeed: 1
   lightMaxSpeed: 2.5
   lightRampTime: 2

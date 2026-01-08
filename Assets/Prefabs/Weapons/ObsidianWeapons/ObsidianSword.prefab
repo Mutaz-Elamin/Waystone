@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 8166795340451917027}
   - component: {fileID: 6959811606835922323}
   m_Layer: 0
-  m_Name: GoldSword
+  m_Name: ObsidianSword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,9 +116,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488318438cf91054283cc6d6764f3a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Obsidian Sword
   animator: {fileID: 3940306857172479651}
   attackCollider: {fileID: 8822199203055388672}
+  baseDamage: 2.5
+  materialType: 4
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1
   comboStep: 0
   currentAttack: 0

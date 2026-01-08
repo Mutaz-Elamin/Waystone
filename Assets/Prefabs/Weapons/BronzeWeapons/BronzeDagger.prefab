@@ -141,9 +141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 134a6c8cb4e24f64d98de790a493b705, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Bronze Dagger
   animator: {fileID: 1969602053815517545}
   attackCollider: {fileID: 4591256759826696010}
+  baseDamage: 0.9
+  materialType: 1
+  heavyAttackMultiplier: 1.5
   comboResetTime: 1
   comboStep: 0
   sfx: {fileID: 0}
