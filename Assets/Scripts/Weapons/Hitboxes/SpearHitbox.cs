@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class SpearHitbox : MonoBehaviour
 {
@@ -29,10 +30,17 @@ public class SpearHitbox : MonoBehaviour
         Spear spear = GetComponentInParent<Spear>();
         if (spear == null) return;
 
-        Debug.Log("Spear hit: " + other.name);
+        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        if (npc != null)
+        {
+            if (spear != null)
+            {
+                bool isHeavy = spear.currentAttack == Spear.AttackType.Heavy;
+                int damage = spear.CalculateDamage(isHeavy);
+                npc.TakeDamage(damage, DamageCause.EnemyAttack);
+            }
+        }
 
-
-        other.GetComponent<GeneralNPC>()?.TakeDamage(1, DamageCause.EnemyAttack);
 
         if (spear.currentAttack == Spear.AttackType.Light)
         {

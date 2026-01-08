@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEditor.IMGUI.Controls.PrimitiveBoundsHandle;
 
 public class ClubHitbox : MonoBehaviour
 {
@@ -26,12 +27,21 @@ public class ClubHitbox : MonoBehaviour
  
         Vector3 hitPoint = other.ClosestPoint(transform.position);
 
-
-        other.GetComponent<GeneralNPC>()?.TakeDamage(damage, DamageCause.EnemyAttack);
-
-
         Club club = GetComponentInParent<Club>();
-        Club.AttackType dummy = Club.AttackType.None;
+
+        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        if (npc != null)
+        {
+            if (club != null)
+            {
+                bool isHeavy = club.currentAttack == Club.AttackType.Heavy;
+                int damage = club.CalculateDamage(isHeavy);
+                npc.TakeDamage(damage, DamageCause.EnemyAttack);
+            }
+        }
+
+        
+        
   
         if (sfx == null) sfx = GetComponentInParent<WeaponSFX>();
 

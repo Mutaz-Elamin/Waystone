@@ -20,7 +20,19 @@ public class StickHitbox : MonoBehaviour
         if (!canHit || !other.CompareTag("npc")) return;
         canHit = false;
 
-        other.GetComponent<GeneralNPC>()?.TakeDamage(damage, DamageCause.EnemyAttack);
+        Stick stick = GetComponentInParent<Stick>();
+        if (stick == null) return;
+
+        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        if (npc != null)
+        {
+            if (stick != null)
+            {
+                bool isHeavy = stick.currentAttack == Stick.AttackType.Heavy;
+                int damage = stick.CalculateDamage(isHeavy);
+                npc.TakeDamage(damage, DamageCause.EnemyAttack);
+            }
+        }
         if (sfx != null)
         {
             if (damage == 1) sfx.Stick_LightHitPlay();

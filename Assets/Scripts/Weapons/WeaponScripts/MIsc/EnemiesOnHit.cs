@@ -29,7 +29,6 @@ public class EnemiesOnHit : MonoBehaviour
         if (renderer != null) renderer.SetPropertyBlock(original);
     }
 
-    // Keep your ApplyHitStop/ApplyKnockback helpers here (unchanged)
     public IEnumerator HitStopCoroutine(float duration)
     {
         float originalTimeScale = Time.timeScale;
@@ -44,7 +43,7 @@ public class EnemiesOnHit : MonoBehaviour
         runner.StartCoroutine(HitStopCoroutine(hitStopDuration));
     }
 
-    // Example knockback - adjust to your NPC movement / rigidbody setup
+
     public void ApplyKnockback(Collider enemyCollider, Transform source, float force = 1f)
     {
         if (enemyCollider == null || source == null) return;
@@ -53,7 +52,7 @@ public class EnemiesOnHit : MonoBehaviour
         if (rb == null) return;
 
         Vector3 dir = (enemyCollider.transform.position - source.position).normalized;
-        dir.y = Mathf.Max(dir.y, 0.1f); // small upward component if desired
+        dir.y = Mathf.Max(dir.y, 0.1f); 
 
         rb.AddForce(dir * force, ForceMode.Impulse);
     }

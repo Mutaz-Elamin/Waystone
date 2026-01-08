@@ -3,7 +3,6 @@ using UnityEngine;
 public class DaggerHitbox : MonoBehaviour
 {
     [HideInInspector] public bool canHit = false;
-    public int damage = 1;
     public WeaponSFX sfx;
     public GameObject bloodPrefab;
 
@@ -23,8 +22,15 @@ public class DaggerHitbox : MonoBehaviour
         Dagger dagger = GetComponentInParent<Dagger>();
         if (dagger == null) return;
 
-        // Apply damage
-        other.GetComponent<GeneralNPC>()?.TakeDamage(damage, DamageCause.EnemyAttack);
+        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        if (npc != null)
+        {
+            if (dagger != null)
+            {
+                int damage = dagger.CalculateDamage();
+                npc.TakeDamage(damage, DamageCause.EnemyAttack);
+            }
+        }
 
         // Play hit SFX depending on combo step
         switch (dagger.comboStep)

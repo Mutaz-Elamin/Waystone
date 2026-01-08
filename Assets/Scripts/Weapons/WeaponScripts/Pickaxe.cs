@@ -4,14 +4,14 @@ using UnityEngine;
 public class Pickaxe : Weapon
 {
     [Header("Combo Settings")]
-    public float lightInitialSpeed = 1f;       // animation start speed
-    public float lightMaxSpeed = 2.5f;         // animation max speed while holding
-    public float lightRampTime = 2f;           // how long to ramp animation speed
+    public float lightInitialSpeed = 1f;       
+    public float lightMaxSpeed = 2.5f;        
+    public float lightRampTime = 2f;           
 
     [Header("Hold / hit timing")]
-    public float startupDelay = 0.15f;         // delay from hold start -> first possible hit
-    public float hitInterval = 0.25f;          // time between successive hits while holding
-    public float releaseCooldown = 0.12f;      // small cooldown after releasing before you can start again
+    public float startupDelay = 0.15f;         
+    public float hitInterval = 0.25f;          
+    public float releaseCooldown = 0.12f;      
 
     private bool canAttack = true;
     private bool isDefending = false;
@@ -28,28 +28,26 @@ public class Pickaxe : Weapon
     public float soundMaxPitch = 1.5f;
     public float soundRampTime = 2f;
 
-    // expose hold state so hitbox can query timing
     public bool IsHoldingLight => isHoldingLight;
     public float HoldElapsed => isHoldingLight ? Time.time - holdStartTime : 0f;
 
-    // heavy flag so hitbox can treat the collision as a single heavy hit
+
     public bool IsPerformingHeavy { get; private set; } = false;
 
     private void Awake()
     {
         hitbox = attackCollider != null ? attackCollider.GetComponent<PickaxeHitbox>() : null;
 
-        // Setup looped AudioSource
+
         if (lightLoopSource != null && pickaxeLoopClip != null)
         {
             lightLoopSource.clip = pickaxeLoopClip;
             lightLoopSource.loop = true;
         }
 
-        // try to resolve sfx if not assigned
         sfx ??= GetComponentInParent<WeaponSFX>();
 
-        // ensure collider starts disabled
+
         if (attackCollider != null)
             attackCollider.enabled = false;
     }
@@ -59,7 +57,7 @@ public class Pickaxe : Weapon
     {
         if (!canAttack || isDefending || isHoldingLight) return;
 
-        // lock starting new holds to avoid spam at startup
+
         canAttack = false;
         isHoldingLight = true;
         holdStartTime = Time.time;
@@ -67,33 +65,32 @@ public class Pickaxe : Weapon
         animator.SetFloat("LightSpeed", lightInitialSpeed);
         animator.SetBool("LightHold", true);
 
-        // do not enable collider immediately — use startupDelay so animation lines up
         StartCoroutine(HoldStartupCoroutine());
 
-        // Start looped sound
+
         if (lightLoopSource != null)
         {
             lightLoopSource.pitch = soundInitialPitch;
             lightLoopSource.Play();
         }
 
-        // One-shot accent SFX
+
         sfx?.Pickaxe_Light1Play();
     }
 
     private IEnumerator HoldStartupCoroutine()
     {
-        // wait for the small startup delay (animation leads)
+
         yield return new WaitForSeconds(startupDelay);
 
-        // if player already released, do nothing
+
         if (!isHoldingLight) yield break;
 
         if (attackCollider != null) attackCollider.enabled = true;
         if (hitbox != null)
         {
             hitbox.canHit = true;
-            hitbox.SetHitInterval(hitInterval); // inform hitbox of cadence
+            hitbox.SetHitInterval(hitInterval);
         }
     }
 
@@ -109,11 +106,10 @@ public class Pickaxe : Weapon
         animator.SetBool("LightHold", false);
         animator.SetTrigger("LightRelease");
 
-        // stop looped sound
+
         if (lightLoopSource != null && lightLoopSource.isPlaying)
             lightLoopSource.Stop();
 
-        // small cooldown before allowing next LightAttack to prevent spam
         StartCoroutine(ReleaseCooldownRoutine());
     }
 
@@ -127,13 +123,12 @@ public class Pickaxe : Weapon
     {
         if (isHoldingLight)
         {
-            // Ramp animation speed
+
             float elapsed = Time.time - holdStartTime;
             float t = Mathf.Clamp01(elapsed / lightRampTime);
             float speed = Mathf.Lerp(lightInitialSpeed, lightMaxSpeed, t);
             animator.SetFloat("LightSpeed", speed);
 
-            // Ramp looped sound pitch
             if (lightLoopSource != null)
             {
                 float st = Mathf.Clamp01(elapsed / soundRampTime);
@@ -142,7 +137,7 @@ public class Pickaxe : Weapon
         }
         else
         {
-            // Reset animator speed when not holding
+
             animator.SetFloat("LightSpeed", 1f);
         }
     }
@@ -161,24 +156,24 @@ public class Pickaxe : Weapon
 
     private IEnumerator HeavyRoutine()
     {
-        // mark heavy so hitbox uses OnTriggerEnter immediate behavior
+
         IsPerformingHeavy = true;
 
         if (hitbox != null) hitbox.damage = 3;
         if (attackCollider != null) attackCollider.enabled = true;
         if (hitbox != null) hitbox.canHit = true;
 
-        // wait briefly to allow OnTriggerEnter to fire for overlapping enemies
+
         yield return new WaitForSeconds(0.5f);
 
-        // disable
+
         if (attackCollider != null) attackCollider.enabled = false;
         if (hitbox != null) hitbox.canHit = false;
 
-        // finish heavy
+
         IsPerformingHeavy = false;
 
-        // Play heavy hit sound (optional fallback)
+
         sfx?.Pickaxe_HeavyHitPlay();
 
         yield return new WaitForSeconds(0.3f);
@@ -200,14 +195,14 @@ public class Pickaxe : Weapon
 
     public override void ResetWeapon()
     {
-        // Stop the looped sound
+
         if (lightLoopSource != null && lightLoopSource.isPlaying)
         {
             lightLoopSource.Stop();
             lightLoopSource.pitch = soundInitialPitch;
         }
 
-        // Reset animator
+ 
         if (animator != null)
         {
             animator.SetBool("LightHold", false);
@@ -215,7 +210,6 @@ public class Pickaxe : Weapon
             animator.ResetTrigger("LightRelease");
         }
 
-        // Reset collider and flags
         if (attackCollider != null)
             attackCollider.enabled = false;
 
