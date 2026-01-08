@@ -179,7 +179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 195.00003
+      value: 194.99974
       objectReference: {fileID: 0}
     - target: {fileID: 877308280712176136, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1023,7 +1023,9 @@ MonoBehaviour:
   craftingUIButton: {fileID: 673501386}
   exitButton: {fileID: 673501387}
   IsOpen: 0
-  startingItems: []
+  startingItems:
+  - item: {fileID: 11400000, guid: 6cd5a2ffd2cea0d479eb4974a6fa7ab4, type: 2}
+    quantity: 1
   armorSlotUI: {fileID: 673501384}
   emptyArmorIcon: {fileID: 21300000, guid: 5e4fd323ee92bc04c80fbfd9d5724f40, type: 3}
   buildPlacer: {fileID: 1818316207}
@@ -1042,6 +1044,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af14d965bb8d90419dadedfaf4a20d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portalStoneItem: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
 --- !u!1 &1830103005
 GameObject:
   m_ObjectHideFlags: 0

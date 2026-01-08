@@ -13,13 +13,15 @@ public class PlayerCollector : MonoBehaviour
     private SummonBossLandmark bossLandmark;
     private OpenPortalLandmark portalLandmark;
 
+    // Add a reference to the PortalStoneItem ScriptableObject in the inspector
+    [SerializeField] private ItemClass portalStoneItem;
+
     void Start()
     {
         if (inventory == null)
         {
             inventory = FindFirstObjectByType<InventoryManager>();
         }
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,7 +30,11 @@ public class PlayerCollector : MonoBehaviour
         if (portal != null)
         {
             portalLandmark = portal;
-            portalLandmark.OpenPortal();
+            if (inventory.Contains(portalStoneItem) != null)
+            {
+                portalLandmark.OpenPortal();
+                inventory.Remove(portalStoneItem, 1);
+            }
         }
 
         CraftingStation station = other.GetComponent<CraftingStation>();
@@ -52,6 +58,12 @@ public class PlayerCollector : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        OpenPortalLandmark portal = other.GetComponent<OpenPortalLandmark>();
+        if (portal != null && portal == portalLandmark)
+        {
+            portalLandmark = null;
+        }
+
         CraftingStation station = other.GetComponent<CraftingStation>();
         if (station != null && station == stationInRange)
         {
@@ -74,6 +86,11 @@ public class PlayerCollector : MonoBehaviour
     // Called by InputManager when Interact (E) is pressed
     public void TryCollect()
     {
+        if (portalLandmark != null && portalLandmark.IsPortalOpened())
+        {
+            // Use portal to go to next level logic here
+        }
+
         if (bossLandmark != null)
         {
             bossLandmark.SummonBoss();
