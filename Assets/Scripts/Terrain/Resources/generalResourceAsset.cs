@@ -9,11 +9,6 @@ public class GeneralResourceAsset : HealthBasedAsset
     [SerializeField] private DamageCause DamageResistance;
     [SerializeField] private GameObject[] resourcesDroppedOnDeath;
 
-    protected virtual void OnEnable()
-    {
-        health = StartHealth;
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.X))
@@ -37,19 +32,5 @@ public class GeneralResourceAsset : HealthBasedAsset
         }
 
         base.TakeDamage(damage, cause);
-    }
-
-    protected override void Die()
-    {
-        ClusterMember clusterMember = GetComponent<ClusterMember>();
-        if (clusterMember != null)
-        {
-            DropResources();
-            clusterMember.Despawn();
-        }
-        else
-        {
-            base.Die();
-        }
     }
 }

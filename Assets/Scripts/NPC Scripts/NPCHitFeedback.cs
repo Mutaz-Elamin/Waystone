@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UMaterial = UnityEngine.Material;
+
 
 [DisallowMultipleComponent]
 public sealed class NpcHitFeedback : MonoBehaviour
@@ -74,12 +76,12 @@ public sealed class NpcHitFeedback : MonoBehaviour
             Renderer r = renderers[i];
             if (r == null) continue;
 
-            Material[] mats = r.sharedMaterials;
+            UMaterial[] mats = r.sharedMaterials;
             if (mats == null) continue;
 
             for (int mi = 0; mi < mats.Length; mi++)
             {
-                Material mat = mats[mi];
+                UMaterial mat = mats[mi];
                 if (mat == null) continue;
 
                 int propId = FindFirstColorProp(mat);
@@ -98,7 +100,7 @@ public sealed class NpcHitFeedback : MonoBehaviour
         }
     }
 
-    private int FindFirstColorProp(Material mat)
+    private int FindFirstColorProp(UMaterial mat)
     {
         for (int i = 0; i < colorProperties.Length; i++)
         {

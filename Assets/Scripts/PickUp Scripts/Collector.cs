@@ -10,6 +10,7 @@ public class PlayerCollector : MonoBehaviour
     private readonly List<Collectible> nearbyItems = new List<Collectible>();
     private int collectedCount = 0;
     private CraftingStation stationInRange;
+    private SummonBossLandmark bossLandmark;
     void Start()
     {
         if (inventory == null)
@@ -33,6 +34,11 @@ public class PlayerCollector : MonoBehaviour
             nearbyItems.Add(item);
             item.ShowPrompt();
         }
+        SummonBossLandmark landmark = other.GetComponent<SummonBossLandmark>();
+        if (landmark != null)
+        {
+            bossLandmark = landmark;
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -49,11 +55,21 @@ public class PlayerCollector : MonoBehaviour
             nearbyItems.Remove(item);
             item.HidePrompt();
         }
+        SummonBossLandmark landmark = other.GetComponent<SummonBossLandmark>();
+        if (landmark != null && landmark == bossLandmark)
+        {
+            bossLandmark = null;
+        }
     }
 
     // Called by InputManager when Interact (E) is pressed
     public void TryCollect()
     {
+        if (bossLandmark != null)
+        {
+            bossLandmark.SummonBoss();
+            return;
+        }
 
         if (stationInRange != null)
         {

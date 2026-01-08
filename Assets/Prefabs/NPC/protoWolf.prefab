@@ -400,7 +400,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043bc0b6f78347d48acf66712f668bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 10
+  startHealth: 5
+  visualRoot: {fileID: 530372791475843810}
+  playSpawnFx: 1
+  spawnFxPrefab: {fileID: 6551685341991220029, guid: c268957be136e0943954e437950b1144, type: 3}
+  spawnFxScale: 1.5
+  spawnDuration: 0.2
+  spawnCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  disableGameplayDuringSpawn: 1
+  playDeathFx: 1
+  deathFxPrefab: {fileID: 7471376931746031955, guid: 2613c80a61b9a1e4abeaceb9b55b29b8, type: 3}
+  deathFxScale: 6
+  deathDuration: 0.2
+  deathCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  disableGameplayDuringDeath: 1
   speed: 3
   startChaseRange: 10
   stopChaseRange: 50
@@ -429,10 +488,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4284cc8c6f00134883eb543ae770c7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleTarget: {fileID: 530372791475843810}
   renderers: []
   duration: 0.2
-  shrinkAmount: 0.106
   flashStrength: 0.6
   flashColor: {r: 0.990566, g: 0, b: 0, a: 1}
   colorProperties:

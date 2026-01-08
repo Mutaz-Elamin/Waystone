@@ -6,6 +6,8 @@ using Unity.AI.Navigation;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.VFX;
+using UMaterial = UnityEngine.Material;
+
 
 public class RandomTerrain : MonoBehaviour
 {
@@ -51,7 +53,7 @@ public class RandomTerrain : MonoBehaviour
 
     // Fields for terrain types and colours - can be expanded for biomes
     [Header("Terrain Texturing")]
-    [SerializeField] protected Material terrainMaterial;
+    [SerializeField] protected UMaterial terrainMaterial;
     protected Texture2D terrainHeightTexture;
     [SerializeField] protected TerrainType[] regions;
     private float maxMultiplier;
@@ -87,7 +89,7 @@ public class RandomTerrain : MonoBehaviour
 
         if (terrainMaterial != null)
         {
-            terrain.materialTemplate = new Material(terrainMaterial);
+            terrain.materialTemplate = new UMaterial(terrainMaterial);
         }
 
         if (worldGrid == null)
@@ -333,7 +335,7 @@ public class RandomTerrain : MonoBehaviour
         minWorldHeight = terrain.transform.position.y;
         maxWorldHeight = minWorldHeight + maxMultiplier * terrainData.size.y;
 
-        Material material = terrain.materialTemplate;
+        UMaterial material = terrain.materialTemplate;
         material.SetFloat("minHeight", minWorldHeight);
         material.SetFloat("maxHeight", maxWorldHeight);
 
@@ -350,7 +352,7 @@ public class RandomTerrain : MonoBehaviour
         if (terrain == null || terrain.materialTemplate == null || regions == null || regions.Length == 0)
             return;
 
-        Material mat = terrain.materialTemplate;
+        UMaterial mat = terrain.materialTemplate;
 
         int regionCount = Mathf.Min(regions.Length, 8);
 

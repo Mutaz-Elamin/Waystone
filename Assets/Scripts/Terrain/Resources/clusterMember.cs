@@ -11,7 +11,7 @@ public sealed class ClusterMember : MonoBehaviour
         this.pool = pool;
     }
 
-    public void Despawn()
+    public void Despawn(bool reduceTarget)
     {
         if (pool != null)
             pool.Release(gameObject);
@@ -24,6 +24,6 @@ public sealed class ClusterMember : MonoBehaviour
         if (owner != null)
             owner.ReduceTargetCount(1);
 
-        Despawn();
+        Despawn(false);
     }
 }

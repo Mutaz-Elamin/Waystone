@@ -77,7 +77,7 @@ public class OgreBasicAttack : NpcAttack
         }
 
         if (activeDuration > 0f)
-            yield return new WaitForSeconds(activeDuration * 0.166f);
+            yield return new WaitForSeconds(activeDuration * 0.175f);
         else
             yield return null;
 
@@ -88,7 +88,7 @@ public class OgreBasicAttack : NpcAttack
         }
 
         if (activeDuration > 0f)
-            yield return new WaitForSeconds(activeDuration * 0.833f);
+            yield return new WaitForSeconds(activeDuration * 0.825f);
         else
             yield return null;
         StopAttack();
