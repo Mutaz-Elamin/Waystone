@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3425927869308737719}
   - component: {fileID: 8689963826381095261}
   m_Layer: 0
-  m_Name: BaseClub
+  m_Name: StoneClub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
