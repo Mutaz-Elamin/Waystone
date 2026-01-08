@@ -25,6 +25,7 @@ public class DebugDamageRaycast : MonoBehaviour
         HealthBasedAsset asset = hit.collider.GetComponentInParent<HealthBasedAsset>();
         if (asset != null)
         {
+            Debug.Log($"DebugDamageRaycast: Hitting {asset.name} for {damage} damage.");
             asset.TakeDamage(damage, cause);
         }
     }

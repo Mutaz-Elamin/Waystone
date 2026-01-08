@@ -28,4 +28,13 @@ public class GeneralNPC : HealthBasedAsset
         // State Machine logic for movement mode would go here
         // Each npc type will have different state machines
     }
+
+    public override void TakeDamage(int damage, DamageCause cause)
+    {
+        NpcHitFeedback fx = GetComponentInChildren<NpcHitFeedback>(true);
+        if (fx != null) fx.Play();
+
+
+        base.TakeDamage(damage, cause);
+    }
 }
