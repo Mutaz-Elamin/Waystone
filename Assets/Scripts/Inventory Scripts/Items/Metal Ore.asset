@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5276e2049c6e34a4680704a0639e7590, type: 3}
   m_Name: Metal Ore
   m_EditorClassIdentifier: 
-  itemName: 
-  itemIcon: {fileID: 0}
+  itemName: Metal Ore
+  itemIcon: {fileID: 21300000, guid: d5cf2e09efd715e4d8bc33ce1836dcaf, type: 3}
   isStackable: 1

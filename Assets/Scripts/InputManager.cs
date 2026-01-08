@@ -50,6 +50,22 @@ public class InputManager : MonoBehaviour
         hotbars.Hotbar4.performed += ctx => TryUseHotbar(3);
         hotbars.Hotbar5.performed += ctx => TryUseHotbar(4);
         hotbars.Hotbar6.performed += ctx => TryUseHotbar(5);
+        BuildPlacer placer = GetComponent<BuildPlacer>();
+
+        hotbars.Use.performed += ctx =>
+        {
+            if (inventoryManager == null) return;
+            if (inventoryManager.IsOpen) return;
+
+            inventoryManager.UseSelectedHotbarItem();
+        };
+        inventory.Drop.performed += ctx =>
+        {
+            if (inventoryManager == null) return;
+            if (!inventoryManager.IsOpen) return;
+
+            inventoryManager.DropClosestSlot(1); // drop 1
+        };
 
 
 

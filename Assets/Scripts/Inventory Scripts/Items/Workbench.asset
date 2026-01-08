@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d79cc4b93961d94fb34f66b6e49a26a, type: 3}
   m_Name: Workbench
   m_EditorClassIdentifier: 
-  itemName: 
-  itemIcon: {fileID: 0}
-  isStackable: 1
+  itemName: Workbench
+  itemIcon: {fileID: 21300000, guid: bc03cd30232a2f641b79f034f096c20b, type: 3}
+  isStackable: 0
+  worldPrefab: {fileID: 3287029870090810738, guid: 785e1f5a40e3d3d4d87c72373ccb4e03, type: 3}
+  previewPrefab: {fileID: 4373968930459788695, guid: e6e287d166bcb6647a48f6b29bde1836, type: 3}

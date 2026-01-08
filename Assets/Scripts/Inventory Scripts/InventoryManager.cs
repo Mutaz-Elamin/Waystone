@@ -32,6 +32,12 @@ public class InventoryManager : MonoBehaviour
     private GameObject[] slots ;
     private GameObject[] hotbarSlots ;
     private SlotClass sourceSlot;
+    
+    [SerializeField] private GameObject armorSlotUI; 
+    private SlotClass armorSlot = new SlotClass();
+    [SerializeField] private Sprite emptyArmorIcon;
+
+    private Armor equippedArmor; 
 
 
     void Start()
@@ -43,6 +49,9 @@ public class InventoryManager : MonoBehaviour
         slots = new GameObject[slotHolder.transform.childCount];
         items = new SlotClass[slots.Length];
         hotbarSlots = new GameObject[hotbarslotHolder.transform.childCount];
+        armorSlot = new SlotClass();
+        
+
 
 
         for (int i = 0; i < hotbarSlots.Length; i++)
@@ -121,14 +130,19 @@ public class InventoryManager : MonoBehaviour
             }
         }
         RefreshHotbarUI();
+        RefreshArmorSlotUI();
+
 
     }
     private struct SlotRef
     {
-        public bool isHotbar;
-        public int index;
+        public SlotType type;  // Hotbar, Inventory, Armor
+        public int index;      // only for hotbar/inv
         public SlotClass slot;
     }
+
+    private enum SlotType { Hotbar, Inventory, Armor }
+
 
     public void RefreshHotbarUI()
     {
@@ -152,6 +166,35 @@ public class InventoryManager : MonoBehaviour
             }
         }
     }
+    private void RefreshArmorSlotUI()
+    {
+        if (armorSlotUI == null) return;
+
+        try
+        {
+            var icon = armorSlotUI.transform.GetChild(0).GetComponent<Image>();
+            var qtyText = armorSlotUI.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+
+            if (armorSlot.GetItem() != null)
+            {
+                icon.enabled = true;
+                icon.sprite = armorSlot.GetItem().itemIcon;
+
+              
+            }
+            else
+            {
+                icon.sprite = emptyArmorIcon;
+                
+               
+            }
+        }
+        catch
+        {
+            // ignore
+        }
+    }
+
 
 
 
@@ -244,6 +287,7 @@ public class InventoryManager : MonoBehaviour
 
         return null;
     }
+
     void Update()
     {
         itemCursor.SetActive(isMovingItem);
@@ -267,12 +311,19 @@ public class InventoryManager : MonoBehaviour
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
-        // Check hotbar first
+        // Armor slot check 
+        if (armorSlotUI != null && Vector2.Distance(mousePos, armorSlotUI.transform.position) <= 50f)
+        {
+            return new SlotRef { type = SlotType.Armor, index = -1, slot = armorSlot };
+        }
+
+
+        // Check hotbar 
         for (int i = 0; i < hotbarSlots.Length; i++)
         {
             if (Vector2.Distance(mousePos, hotbarSlots[i].transform.position) <= 50f)
             {
-                return new SlotRef { isHotbar = true, index = i, slot = hotbarItems[i] };
+                return new SlotRef { type = SlotType.Hotbar, index = i, slot = hotbarItems[i] };
             }
         }
 
@@ -281,7 +332,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (Vector2.Distance(mousePos, slots[i].transform.position) <= 32f)
             {
-                return new SlotRef { isHotbar = false, index = i, slot = items[i] };
+                return new SlotRef { type = SlotType.Inventory, index = i, slot = items[i] };
             }
         }
 
@@ -304,6 +355,10 @@ public class InventoryManager : MonoBehaviour
 
         RefreshUI();
         return true;
+    }
+    private bool IsArmor(ItemClass item)
+    {
+        return item != null && item is Armor;
     }
 
 
@@ -332,6 +387,44 @@ public class InventoryManager : MonoBehaviour
             RefreshUI();
             return true;
         }
+        
+        if (slotRef.Value.type == SlotType.Armor)
+        {
+            // drop onto the armor slot.
+            
+            if (!IsArmor(movingSlot.GetItem()))
+            {
+                // reject -> return to source slot
+                sourceSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+                movingSlot.Clear();
+                isMovingItem = false;
+                RefreshUI();
+                return false;
+            }
+
+         
+        }
+        else
+        {
+     
+
+            bool sourceWasArmor = (sourceSlot == armorSlot); // if you have armorSlot variable
+            if (sourceWasArmor)
+            {
+             
+                if (targetSlot.GetItem() != null && !IsArmor(targetSlot.GetItem()))
+                {
+                    // reject -> return armor back to armor slot
+                    sourceSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
+                    movingSlot.Clear();
+                    isMovingItem = false;
+                    RefreshUI();
+                    return false;
+                }
+            }
+        }
+
+
 
         // If target has item
         if (targetSlot.GetItem() != null)
@@ -344,6 +437,11 @@ public class InventoryManager : MonoBehaviour
             }
             else
             {
+                if (slotRef.Value.type == SlotType.Armor)
+                {
+                    OnArmorChanged();
+                }
+                
                 //  REAL swap: target gets moving, source gets target's old
                 tempSlot = new SlotClass(targetSlot);
 
@@ -359,10 +457,19 @@ public class InventoryManager : MonoBehaviour
             targetSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
             movingSlot.Clear();
         }
+        bool armorChanged = false;
+
+        // if target is armor slot OR source is armor slot, armorChanged = true
+        if (slotRef.Value.type == SlotType.Armor) armorChanged = true;
+        if (sourceSlot == armorSlot) armorChanged = true;
 
         isMovingItem = false;
         RefreshUI();
+
+        if (armorChanged) OnArmorChanged();
         return true;
+
+
     }
 
 
@@ -392,10 +499,40 @@ public class InventoryManager : MonoBehaviour
         if (!isMovingItem) BeginItemMove();
         else EndItemMove();
     }
+
+    [SerializeField] private BuildPlacer buildPlacer;
+
     public void SelectHotbar(int index)
     {
         selectedHotbarIndex = index;
+
+        ItemClass selected = hotbarItems[selectedHotbarIndex].GetItem();
+
+        BuildPlacer placer = GetComponent<BuildPlacer>();
+        if (placer != null)
+            placer.Equip(selected);
     }
+    public void UseSelectedHotbarItem()
+    {
+        if (IsOpen) return;
+
+        ItemClass selected = hotbarItems[selectedHotbarIndex].GetItem();
+        if (selected == null) return;
+
+        // If it's a placeable, place via BuildPlacer
+        if (selected is CraftedWorkbenches)
+        {
+            BuildPlacer placer = GetComponent<BuildPlacer>();
+            if (placer != null) placer.TryPlace();
+            return;
+        }
+
+        // Otherwise use the item normally (FoodItem will remove 1 in Use)
+        selected.UseItem(gameObject);
+
+        RefreshUI();
+    }
+
 
     public int GetItemCount(ItemClass item)
     {
@@ -477,11 +614,74 @@ public class InventoryManager : MonoBehaviour
 
         if (craftingMenu != null)
             craftingMenu.Open(stationType);
+
+    }
+    [SerializeField] private GameObject worldPickupPrefab;
+    [SerializeField] private Transform dropPoint; // optional: empty in front of player/camera
+
+    public void DropClosestSlot(int qty)
+    {
+        if (!IsOpen) return;
+        if (Mouse.current == null) return;
+
+        var slotRef = GetClosestSlotRef();
+        if (slotRef == null) return;
+
+        SlotClass slot = slotRef.Value.slot;
+        if (slot == null || slot.GetItem() == null) return;
+
+        ItemClass item = slot.GetItem();
+        int dropQty = Mathf.Clamp(qty, 1, slot.GetQuantity());
+
+        // Spawn pickup in world
+        Vector3 pos =  transform.position + transform.forward * 1.5f;
+
+        GameObject go = Instantiate(worldPickupPrefab, pos, Quaternion.identity);
+
+        // Fill pickup data
+        var pickup = go.GetComponent<Collectible>();
+        if (pickup != null)
+        {
+            pickup.itemData = item;
+            pickup.quantity = dropQty;
+        }
+
+        // Remove from that specific slot (NOT global Remove(item, qty))
+        slot.RemoveQuantity(dropQty);
+        if (slot.GetQuantity() <= 0) slot.Clear();
+
+        RefreshUI();
     }
 
- 
 
-    
+    private void OnArmorChanged()
+    {
+        // Remove old bonuses
+        if (equippedArmor != null)
+        {
+            // TODO: call functions
+            // Stats.RemoveArmor(equippedArmor.armorBonus);
+            // Stats.RemoveMaxHealth(equippedArmor.healthBonus);
+        }
+
+        // Apply new bonuses
+        equippedArmor = armorSlot.GetItem() as Armor;
+
+        if (equippedArmor != null)
+        {
+            // TODO: call functions
+            // Stats.AddArmor(equippedArmor.armorBonus);
+            // Stats.AddMaxHealth(equippedArmor.healthBonus);
+        }
+
+        RefreshArmorSlotUI();
+    }
+
+
+
+
+
+
 
 
 

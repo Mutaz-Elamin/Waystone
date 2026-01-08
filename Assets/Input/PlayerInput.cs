@@ -315,6 +315,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Drop"",
+                    ""type"": ""Button"",
+                    ""id"": ""825a75f3-e745-4950-92ca-5e38b19da92d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -337,6 +346,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""PickSwap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2179cfba-9a66-421e-8014-d2a04b7688d7"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -395,6 +415,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""name"": ""Hotbar6"",
                     ""type"": ""Button"",
                     ""id"": ""78b00c71-7376-4a7b-8aa2-31fc91979ec6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Use"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7a00d78-a8a1-4b8f-964f-efb41296b7de"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -467,6 +496,17 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Hotbar6"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1703789c-672f-45d1-9d69-b110a50aebf1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -485,6 +525,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_ToggleInventory = m_Inventory.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Inventory_PickSwap = m_Inventory.FindAction("PickSwap", throwIfNotFound: true);
+        m_Inventory_Drop = m_Inventory.FindAction("Drop", throwIfNotFound: true);
         // Hotbar
         m_Hotbar = asset.FindActionMap("Hotbar", throwIfNotFound: true);
         m_Hotbar_Hotbar1 = m_Hotbar.FindAction("Hotbar1", throwIfNotFound: true);
@@ -493,6 +534,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Hotbar_Hotbar4 = m_Hotbar.FindAction("Hotbar4", throwIfNotFound: true);
         m_Hotbar_Hotbar5 = m_Hotbar.FindAction("Hotbar5", throwIfNotFound: true);
         m_Hotbar_Hotbar6 = m_Hotbar.FindAction("Hotbar6", throwIfNotFound: true);
+        m_Hotbar_Use = m_Hotbar.FindAction("Use", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -642,12 +684,14 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
     private readonly InputAction m_Inventory_ToggleInventory;
     private readonly InputAction m_Inventory_PickSwap;
+    private readonly InputAction m_Inventory_Drop;
     public struct InventoryActions
     {
         private @PlayerInput m_Wrapper;
         public InventoryActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @ToggleInventory => m_Wrapper.m_Inventory_ToggleInventory;
         public InputAction @PickSwap => m_Wrapper.m_Inventory_PickSwap;
+        public InputAction @Drop => m_Wrapper.m_Inventory_Drop;
         public InputActionMap Get() { return m_Wrapper.m_Inventory; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -663,6 +707,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @PickSwap.started += instance.OnPickSwap;
             @PickSwap.performed += instance.OnPickSwap;
             @PickSwap.canceled += instance.OnPickSwap;
+            @Drop.started += instance.OnDrop;
+            @Drop.performed += instance.OnDrop;
+            @Drop.canceled += instance.OnDrop;
         }
 
         private void UnregisterCallbacks(IInventoryActions instance)
@@ -673,6 +720,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @PickSwap.started -= instance.OnPickSwap;
             @PickSwap.performed -= instance.OnPickSwap;
             @PickSwap.canceled -= instance.OnPickSwap;
+            @Drop.started -= instance.OnDrop;
+            @Drop.performed -= instance.OnDrop;
+            @Drop.canceled -= instance.OnDrop;
         }
 
         public void RemoveCallbacks(IInventoryActions instance)
@@ -700,6 +750,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Hotbar_Hotbar4;
     private readonly InputAction m_Hotbar_Hotbar5;
     private readonly InputAction m_Hotbar_Hotbar6;
+    private readonly InputAction m_Hotbar_Use;
     public struct HotbarActions
     {
         private @PlayerInput m_Wrapper;
@@ -710,6 +761,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Hotbar4 => m_Wrapper.m_Hotbar_Hotbar4;
         public InputAction @Hotbar5 => m_Wrapper.m_Hotbar_Hotbar5;
         public InputAction @Hotbar6 => m_Wrapper.m_Hotbar_Hotbar6;
+        public InputAction @Use => m_Wrapper.m_Hotbar_Use;
         public InputActionMap Get() { return m_Wrapper.m_Hotbar; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -737,6 +789,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Hotbar6.started += instance.OnHotbar6;
             @Hotbar6.performed += instance.OnHotbar6;
             @Hotbar6.canceled += instance.OnHotbar6;
+            @Use.started += instance.OnUse;
+            @Use.performed += instance.OnUse;
+            @Use.canceled += instance.OnUse;
         }
 
         private void UnregisterCallbacks(IHotbarActions instance)
@@ -759,6 +814,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Hotbar6.started -= instance.OnHotbar6;
             @Hotbar6.performed -= instance.OnHotbar6;
             @Hotbar6.canceled -= instance.OnHotbar6;
+            @Use.started -= instance.OnUse;
+            @Use.performed -= instance.OnUse;
+            @Use.canceled -= instance.OnUse;
         }
 
         public void RemoveCallbacks(IHotbarActions instance)
@@ -789,6 +847,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     {
         void OnToggleInventory(InputAction.CallbackContext context);
         void OnPickSwap(InputAction.CallbackContext context);
+        void OnDrop(InputAction.CallbackContext context);
     }
     public interface IHotbarActions
     {
@@ -798,5 +857,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnHotbar4(InputAction.CallbackContext context);
         void OnHotbar5(InputAction.CallbackContext context);
         void OnHotbar6(InputAction.CallbackContext context);
+        void OnUse(InputAction.CallbackContext context);
     }
 }

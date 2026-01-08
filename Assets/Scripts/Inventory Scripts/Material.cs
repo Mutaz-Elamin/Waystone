@@ -11,4 +11,13 @@ public class Material : ItemClass
     {
         return this;
     }
+    public override void UseItem(GameObject user)
+    {
+        return;
+    }
+    public override void Equip(GameObject user)
+    {
+        return;
+    }
+
 }

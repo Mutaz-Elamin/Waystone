@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d79cc4b93961d94fb34f66b6e49a26a, type: 3}
   m_Name: Forge
   m_EditorClassIdentifier: 
-  itemName: 
-  itemIcon: {fileID: 0}
-  isStackable: 1
+  itemName: Forge
+  itemIcon: {fileID: 21300000, guid: cd2e2852aafe3f942926db5f77027d55, type: 3}
+  isStackable: 0
+  worldPrefab: {fileID: 8311885948488806647, guid: 0c84cd8ecb0feab498b8cab4cdcac934, type: 3}
+  previewPrefab: {fileID: 1103994947262642194, guid: 6346511ca35e2d745ae109f2ad0a80e4, type: 3}

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Club
   m_EditorClassIdentifier: 
   itemName: Club
-  itemIcon: {fileID: 21300000, guid: b45939f11371c524684402713923fe54, type: 3}
+  itemIcon: {fileID: 21300000, guid: b52f524ec9af37d438a584684cf4a8ad, type: 3}
   isStackable: 0

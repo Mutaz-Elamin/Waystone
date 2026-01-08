@@ -10,4 +10,7 @@ public abstract class ItemClass : ScriptableObject
 
     // Start is called before the first frame update
     public abstract ItemClass GetItem();
+    public virtual void UseItem(GameObject user) { }
+
+    public virtual void Equip(GameObject user) { } 
 }

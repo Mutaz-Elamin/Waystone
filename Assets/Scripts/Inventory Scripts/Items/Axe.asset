@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Axe
   m_EditorClassIdentifier: 
   itemName: Axe
-  itemIcon: {fileID: 0}
-  isStackable: 1
+  itemIcon: {fileID: 21300000, guid: f9080caee48d4c84885ba4f25d561467, type: 3}
+  isStackable: 0

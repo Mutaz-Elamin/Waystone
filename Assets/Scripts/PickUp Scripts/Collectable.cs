@@ -4,14 +4,30 @@ using UnityEngine;
 public class Collectible : MonoBehaviour
 {
     public ItemClass itemData;
+    public int quantity = 1;
     [SerializeField] private GameObject prompt;
+    [SerializeField] private SpriteRenderer iconRenderer;
+
 
     void Start()
         
     {
-        
+        if (iconRenderer != null)
+            iconRenderer.sprite = itemData.itemIcon;
 
+        if (iconRenderer != null && iconRenderer.sprite != null)
+        {
+            float targetSize = 3f; 
+            Vector2 spriteSize = iconRenderer.sprite.bounds.size;
+            float largestSide = Mathf.Max(spriteSize.x, spriteSize.y);
+            float scale = targetSize / largestSide;
+            iconRenderer.transform.localScale = Vector3.one * scale;
+        }
+
+        gameObject.name = itemData.itemName;
+        
         prompt.GetComponent<TextMeshPro>().text = itemData.itemName;
+        
 
         if (prompt == null)
         {
