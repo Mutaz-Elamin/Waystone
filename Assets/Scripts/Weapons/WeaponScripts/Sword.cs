@@ -32,7 +32,6 @@ public class Sword : Weapon
 
     private void Awake()
     {
-        // Find WeaponSFX on player / parent / root
         sfx = GetComponentInParent<WeaponSFX>();
 
         if (sfx == null)
@@ -146,7 +145,7 @@ public class Sword : Weapon
     {
         canAttack = false;
 
-        yield return new WaitForSeconds(0.4f); // windup
+        yield return new WaitForSeconds(0.4f);
 
         EnableHitbox(true);
         yield return new WaitForSeconds(0.3f);

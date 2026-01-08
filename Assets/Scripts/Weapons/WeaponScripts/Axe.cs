@@ -13,9 +13,9 @@ public class Axe : Weapon
     public AttackType currentAttack = AttackType.None;
 
     [Header("Timing")]
-    public float lightDuration = 0.3f;               // Hit window length (at base speed)
-    public float heavyWindupDuration = 2.55f;        // fallback/time-budget only
-    public float heavyDuration = 0.6f;               // heavy hit window length
+    public float lightDuration = 0.3f;              
+    public float heavyWindupDuration = 2.55f;       
+    public float heavyDuration = 0.6f;              
     public float recoveryTime = 0.5f;
     public float baseAttackSpeed = 1f;
     public float speedIncreasePerHit = 0.3f;
@@ -26,7 +26,7 @@ public class Axe : Weapon
     public int heavyDamage = 5;
 
     [Header("References")]
-    public WeaponSFX sfx; // optional: will try to find in parent
+    public WeaponSFX sfx; 
     [HideInInspector] public AxeHitbox hitbox;
 
     [Header("Animation sync (tweak if needed)")]
@@ -44,7 +44,7 @@ public class Axe : Weapon
 
     private void Awake()
     {
-        // try to resolve references
+      
         if (sfx == null) sfx = GetComponentInParent<WeaponSFX>();
         if (attackCollider != null)
             hitbox = attackCollider.GetComponent<AxeHitbox>();
@@ -68,7 +68,7 @@ public class Axe : Weapon
         comboStep++;
         ResetLightTriggers();
 
-        // speed ramp (animation)
+ 
         float attackSpeed = baseAttackSpeed + (comboStep - 1) * speedIncreasePerHit;
         attackSpeed = Mathf.Min(attackSpeed, maxAttackSpeed);
         animator.speed = attackSpeed;
@@ -105,29 +105,28 @@ public class Axe : Weapon
 
         if (hitbox != null) hitbox.damage = lightDamage;
 
-        // Determine target state name (store locally since comboStep may change)
+
         int step = comboStep;
         string stateName = $"LightAttack{step}";
 
-        // Wait for the animator to enter that state and reach threshold normalized time
+
         yield return StartCoroutine(WaitForAnimationStateAndNormalizedTime(stateName, lightHitNormalizedTime, animationWaitTimeout));
 
-        // Enable hitbox for the configured window (scaled by attackSpeed)
+ 
         EnableHitbox(true);
         yield return new WaitForSeconds(lightDuration / attackSpeed);
         EnableHitbox(false);
 
-        // restore animator speed & state
+     
         animator.speed = baseAttackSpeed;
         currentAttack = AttackType.None;
 
-        // small recovery then allow next attack
         yield return new WaitForSeconds(recoveryTime / Mathf.Max(0.0001f, attackSpeed));
         canAttack = true;
     }
 
     // ---------------- HEAVY ATTACK ----------------
-    // For this axe we keep the single windup->attack flow (no release mechanic)
+ 
     public override void StartHeavyCharge()
     {
         if (!canAttack || isDefending) return;
@@ -144,34 +143,30 @@ public class Axe : Weapon
 
     public override void ReleaseHeavyAttack()
     {
-        // This axe uses automatic windup flow; implement release behavior here if you later add it.
+
     }
 
     private IEnumerator HeavyAttackRoutine()
     {
         currentAttack = AttackType.Heavy;
 
-        // Wait for the animation to actually get to the release/hit portion.
-        // Prefer to wait for the windup state to reach heavyHitNormalizedTime.
-        // Use timeout fallback so coroutine never loops forever.
+
         yield return StartCoroutine(WaitForAnimationStateAndNormalizedTime("HeavyWindup", heavyHitNormalizedTime, animationWaitTimeout));
 
-        // set heavy damage and enable hit
         if (hitbox != null) hitbox.damage = heavyDamage;
         EnableHitbox(true);
 
-        // keep hitbox for heavyDuration
         yield return new WaitForSeconds(heavyDuration);
 
         EnableHitbox(false);
 
-        // play heavy hit (hitbox or hitbox.OnHit should also attempt sfx)
+   
         sfx?.Axe_HeavyHitPlay();
 
         isChargingHeavy = false;
         animator.SetBool("IsChargingHeavy", false);
 
-        // recovery
+
         yield return new WaitForSeconds(recoveryTime);
         currentAttack = AttackType.None;
         canAttack = true;
@@ -209,7 +204,6 @@ public class Axe : Weapon
 
         float timer = 0f;
 
-        // Wait for the animator to enter the expected state
         while (timer < timeout)
         {
             var info = animator.GetCurrentAnimatorStateInfo(0);
@@ -220,11 +214,10 @@ public class Axe : Weapon
             yield return null;
         }
 
-        // If state didn't appear, bail out
+
         if (timer >= timeout)
             yield break;
 
-        // Now wait until the normalized time passes threshold (or timeout)
         timer = 0f;
         while (timer < timeout)
         {

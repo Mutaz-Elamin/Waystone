@@ -32,10 +32,10 @@ public class SwordHitbox : MonoBehaviour
 
         Debug.Log("Sword hit: " + other.name);
 
-        // DAMAGE
+
         other.GetComponent<GeneralNPC>()?.TakeDamage(1, DamageCause.EnemyAttack);
 
-        // HIT SFX (ONLY ON HIT)
+
         if (sword.currentAttack == Sword.AttackType.Light)
         {
             switch (sword.comboStep)
@@ -50,19 +50,19 @@ public class SwordHitbox : MonoBehaviour
             sfx?.Sword_HeavyHitPlay();
         }
 
-        // HIT STOP
+
         enemiesOnHit?.ApplyHitStop(this, 0.08f);
 
-        // FLASH
+
         Renderer rend = other.GetComponentInChildren<Renderer>();
         if (rend != null)
             StartCoroutine(enemiesOnHit.FlashEnemy(rend, Color.red, Color.black, 0.18f));
 
-        // KNOCKBACK
+
         enemiesOnHit?.ApplyKnockback(other, transform,
             sword.currentAttack == Sword.AttackType.Heavy ? 4f : 2f);
 
-        // BLOOD
+
         SpawnBlood(other.transform);
     }
 

@@ -60,7 +60,6 @@ public class Stick : Weapon
     {
         if (hitbox != null) hitbox.damage = lightDamage;
 
-        // Align hit with animation (adjust delay as needed)
         yield return new WaitForSeconds(0.55f);
 
         sfx?.Stick_Light1SwingPlay();
@@ -89,17 +88,17 @@ public class Stick : Weapon
     {
         if (hitbox != null) hitbox.damage = heavyDamage;
 
-        // First hit
+
         yield return new WaitForSeconds(0.15f);
         sfx?.Stick_HeavySwingPlay();
         EnableHitbox(true);
         yield return new WaitForSeconds(heavyDuration / 2f);
         EnableHitbox(false);
 
-        // Gap between hits
+
         yield return new WaitForSeconds(0.7f);
 
-        // Second hit
+
         sfx?.Stick_HeavySwingPlay();
         EnableHitbox(true);
         yield return new WaitForSeconds(heavyDuration / 2f);

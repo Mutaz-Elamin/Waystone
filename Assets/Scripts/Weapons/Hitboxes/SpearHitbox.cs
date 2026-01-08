@@ -31,10 +31,9 @@ public class SpearHitbox : MonoBehaviour
 
         Debug.Log("Spear hit: " + other.name);
 
-        // DAMAGE
+
         other.GetComponent<GeneralNPC>()?.TakeDamage(1, DamageCause.EnemyAttack);
 
-        // HIT SFX (ONLY ON HIT)
         if (spear.currentAttack == Spear.AttackType.Light)
         {
             switch (spear.comboStep)
@@ -51,22 +50,21 @@ public class SpearHitbox : MonoBehaviour
 
         Vector3 hitPoint = other.ClosestPoint(transform.position);
 
-        // HIT STOP
         enemiesOnHit?.ApplyHitStop(this, 0.08f);
 
-        // FLASH
+
         Renderer rend = other.GetComponentInChildren<Renderer>();
         if (rend != null)
             StartCoroutine(enemiesOnHit.FlashEnemy(rend, Color.red, Color.black, 0.18f));
 
-        // KNOCKBACK (spear = more forward force)
+
         enemiesOnHit?.ApplyKnockback(
             other,
             transform,
             spear.currentAttack == Spear.AttackType.Heavy ? 5f : 3f
         );
 
-        // BLOOD
+
         SpawnBlood(hitPoint, other.transform);
 
     }
