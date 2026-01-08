@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputItems:
   - item: {fileID: 11400000, guid: ed9cb30dda8debd469569ebd7ed95982, type: 2}
-    quantity: 5
+    quantity: 1
   - item: {fileID: 11400000, guid: f1557671adabdbb4abd422e3d2625956, type: 2}
-    quantity: 5
+    quantity: 2
   - item: {fileID: 11400000, guid: bca480a3b4db25d4489ba0597f417fa0, type: 2}
-    quantity: 10
+    quantity: 5
   - item: {fileID: 11400000, guid: 4033ff0d40b306346a0dcc055ba0ba8b, type: 2}
     quantity: 1
   outputItem:

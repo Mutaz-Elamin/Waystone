@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5276e2049c6e34a4680704a0639e7590, type: 3}
-  m_Name: Cloth
+  m_Script: {fileID: 11500000, guid: 61130ef645d30434e8d470dca3772dcc, type: 3}
+  m_Name: Cloth Armor
   m_EditorClassIdentifier: 
-  itemName: Cloth
-  itemIcon: {fileID: 21300000, guid: 5b27d79527d59f5459f543550425a1b5, type: 3}
-  isStackable: 1
+  itemName: Cloth Armor
+  itemIcon: {fileID: 21300000, guid: 18047f6927ba40a4983b5aecb50fafa8, type: 3}
+  isStackable: 0
