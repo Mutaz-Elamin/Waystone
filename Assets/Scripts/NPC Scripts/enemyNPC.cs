@@ -12,20 +12,21 @@ public class EnemyNPC : GeneralNPC
     public NpcType Type { get { return type; } }
 
     // Fields used for chasing/attacking behavior
-    private GameObject player;
-    [SerializeField] private float startChaseRange;
-    [SerializeField] private float stopChaseRange;
-    [SerializeField] private NpcAttack[] attacks;
-    private NpcAttack currentAttack;
-    private float currentAttackRange;
-    private float[] attackRanges;
-    private float maxAttackRange;
+    protected GameObject player;
+    [SerializeField] protected float startChaseRange;
+    [SerializeField] protected float stopChaseRange;
+    [SerializeField] protected float chaseSpeedModifier = 1.5f;
+    [SerializeField] protected NpcAttack[] attacks;
+    protected NpcAttack currentAttack;
+    protected float currentAttackRange;
+    protected float[] attackRanges;
+    protected float maxAttackRange;
 
     // Navmesh fields
     private NavMeshAgent agent;
     public LayerMask groundLayer, playerLayer;
     private Vector3 desPoint;
-    private bool desPointSet = false;
+    protected bool desPointSet = false;
     public float desPointMin;
     public float desPointMax;
     [SerializeField] private float walkInterval;
@@ -50,20 +51,16 @@ public class EnemyNPC : GeneralNPC
         {
             case Mode.Wandering:
 
-                GetComponent<Renderer>().material.color = Color.cyan;
                 WanderMovementScript();
                 break;
             case Mode.Chasing:
-                GetComponent<Renderer>().material.color = Color.magenta;
                 ChasingMovementScript();
                 break;
             case Mode.Attacking:
-                GetComponent<Renderer>().material.color = Color.red;
                 AttackingMovementScript();
                 break;
             default:
                 WanderMovementScript();
-                GetComponent<Renderer>().material.color = Color.blue;
                 Debug.LogWarning("Unknown movement mode, defaulting to wandering.");
                 break;
         }
@@ -79,11 +76,11 @@ public class EnemyNPC : GeneralNPC
         player = GameObject.FindGameObjectWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
-        agent.acceleration = 2f * speed;
-        agent.angularSpeed = 135f * speed;
+        agent.acceleration = 10f * speed;
+        agent.angularSpeed = 540f * speed;
+        attackRanges = new float[attacks.Length];
         for (int i = 0; i < attacks.Length; i++)
         {
-            attackRanges = new float[attacks.Length];
             attackRanges[i] = attacks[i].attackRange;
         }
         if (attackRanges.Length > 0)
@@ -95,6 +92,7 @@ public class EnemyNPC : GeneralNPC
             maxAttackRange = 3f;
         }
         currentAttack = attacks[0];
+        currentAttackRange = attackRanges[0];
     }
 
 
@@ -106,7 +104,7 @@ public class EnemyNPC : GeneralNPC
 
 
     // Method for when the npc is wandering around
-    private void WanderMovementScript()
+    protected virtual void WanderMovementScript()
     {
         bool inRange = Physics.CheckSphere(transform.position, startChaseRange, playerLayer);
         if (inRange)
@@ -128,7 +126,7 @@ public class EnemyNPC : GeneralNPC
             Vector3 distanceToDesPoint = transform.position - desPoint;
             distanceToDesPoint.y = 0;
 
-            if (distanceToDesPoint.magnitude < 3f)
+            if (distanceToDesPoint.magnitude < 1f)
             {
                 desPointSet = false;
                 lastWalkTime = Time.time;
@@ -160,29 +158,35 @@ public class EnemyNPC : GeneralNPC
 
 
     // Method for when the npc is chasing after the player
-    private void ChasingMovementScript()
+    protected virtual void ChasingMovementScript()
     {
+        SelectAttack();
         bool inRange = Physics.CheckSphere(transform.position, stopChaseRange, playerLayer);
         if (!inRange)
         {
             currentMode = Mode.Wandering;
+            agent.speed = speed;
+            return;
         }
 
+        agent.speed = speed * chaseSpeedModifier;
         agent.SetDestination(player.transform.position);
 
-        inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
+        inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
         if (inRange)
         {
             currentMode = Mode.Attacking;
+            agent.speed = speed;
+            return;
         }
     }
 
 
     // Method to run the attacking logic of the npcs - does not attack but handles choosing attacks and switching back to chase mode
-    private void AttackingMovementScript()
+    protected virtual void AttackingMovementScript()
     {
         agent.SetDestination(transform.position);
-        bool inRange = Physics.CheckSphere(transform.position, maxAttackRange, playerLayer);
+        bool inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
         if (!inRange)
         {
             currentMode = Mode.Chasing;
@@ -193,24 +197,26 @@ public class EnemyNPC : GeneralNPC
             return;
         }
         if (attackRanges.Length == 0) return;
-        if (!currentAttack.attackActive)
-        {
-            SelectAttack();
-        }
         inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
-        if (inRange && !currentAttack.attackActive)
+        bool inMinRange = Physics.CheckSphere(transform.position, currentAttack.attackRangeMin, playerLayer);
+        if (inRange && !currentAttack.attackActive && !inMinRange)
         {
             if (Time.time - currentAttack.lastAttackTime > currentAttack.attackCooldown)
             {
                 currentAttack.lastAttackTime = Time.time;
+                currentAttack.attackActive = true;
                 currentAttack.TriggerAttack(agent, player);
+            }
+            else
+            {
+                SelectAttack();
             }
         }
     }
 
 
     // Select attack
-    private void SelectAttack()
+    protected virtual void SelectAttack()
     {
         int attackIndex = Random.Range(0, attackRanges.Length);
 

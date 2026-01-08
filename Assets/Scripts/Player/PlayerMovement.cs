@@ -82,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
         playerVelocity.y += gravity * Time.deltaTime;
         if (playerVelocity.y < 0)
         {
-            playerVelocity.y += gravity * (1.5f - 1f) * Time.deltaTime; 
+            playerVelocity.y += gravity * (1.5f - 1f) * Time.deltaTime;
         }
     }
 
@@ -181,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-        public void ToggleSprint()
+    public void ToggleSprint()
     {
         if (crouching)
         {

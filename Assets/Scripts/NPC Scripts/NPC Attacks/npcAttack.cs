@@ -12,10 +12,11 @@ public abstract class NpcAttack : MonoBehaviour
 
     // These values can be overridden by child classes
     // The child classes must have these properties implemented but can change the stats depending on the attack
-    protected virtual float attackDamage => 10f;
+    protected virtual int attackDamage => 10;
     public virtual float attackTime => 1f;
     public virtual float attackCooldown => 3f;
     public virtual float attackRange => 2f;
+    public virtual float attackRangeMin => 0f;
 
 
     // Method to trigger the attack - abstract as all npc attacks will be different and will need to implement their own logic

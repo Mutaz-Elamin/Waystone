@@ -40,7 +40,7 @@ public class TestNPCAttack : NpcAttack
 
         if (player != null)
         {
-            transform.LookAt(player.transform);
+            transform.parent.LookAt(player.transform);
         }
 
         if (attackRoutine == null)
