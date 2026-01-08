@@ -161,9 +161,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 487705493}
-  range: 20
+  range: 8
   damage: 1
-  cause: 2
+  cause: 0
   key: 323
 --- !u!1 &1015596765
 GameObject:
@@ -357,11 +357,11 @@ PrefabInstance:
       objectReference: {fileID: 1406031168}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: spawnNpcs
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: spawnAssets
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: worldBorder
@@ -416,6 +416,10 @@ PrefabInstance:
       value: 0.057
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: npcPrefabs.Array.data[0].assetPrefab
+      value: 
+      objectReference: {fileID: 2833206327871748732, guid: de08d20745aeb8340895208fe0d39ead, type: 3}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetPrefab
       value: 
       objectReference: {fileID: 0}
@@ -453,11 +457,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].randomSpawnChance
-      value: 0
+      value: 0.529
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].randomSpawnChance
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetSpawnThreshholdMax
