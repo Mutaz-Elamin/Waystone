@@ -15,6 +15,7 @@ public class PlayerCollector : MonoBehaviour
 
     // Add a reference to the PortalStoneItem ScriptableObject in the inspector
     [SerializeField] private ItemClass portalStoneItem;
+    [SerializeField] private RunManager runManager;
 
     void Start()
     {
@@ -88,7 +89,18 @@ public class PlayerCollector : MonoBehaviour
     {
         if (portalLandmark != null && portalLandmark.IsPortalOpened())
         {
-            // Use portal to go to next level logic here
+            if (runManager == null)
+            {
+                runManager = FindFirstObjectByType<RunManager>();
+            }
+            if (runManager != null)
+            {
+                runManager.NextLevel();
+            }
+            else
+            {
+                Debug.LogWarning("RunManager not found in the scene.");
+            }
         }
 
         if (bossLandmark != null)
