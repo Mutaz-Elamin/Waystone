@@ -461,8 +461,8 @@ MonoBehaviour:
   exitButton: {fileID: 1674632691}
   IsOpen: 0
   startingItems:
-  - item: {fileID: 11400000, guid: 3825501c0df72d7499b129de98517b9f, type: 2}
-    quantity: 0
+  - item: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
+    quantity: 1
   armorSlotUI: {fileID: 359659044}
   emptyArmorIcon: {fileID: 21300000, guid: 5e4fd323ee92bc04c80fbfd9d5724f40, type: 3}
   buildPlacer: {fileID: 345374755}
@@ -483,6 +483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalStoneItem: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
   runManager: {fileID: 0}
+  victoryManager: {fileID: 868402947}
 --- !u!114 &345374758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1068,7 +1069,7 @@ MonoBehaviour:
   centreDistance: 100
   borderSamples: 128
   maxAttempts: 200
-  mapGenerator: {fileID: 0}
+  mapGenerator: {fileID: 1519841159}
   terrain: {fileID: 0}
   worldBorder: {fileID: 1519841158}
 --- !u!114 &868402947 stripped
@@ -1164,14 +1165,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1630a1f6f92f3e541b999ed34794553b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landmarkPrefab: {fileID: 8006400646985059455, guid: 66d0f709fcc7b60408fd87a8cd120f85, type: 3}
+  landmarkPrefab: {fileID: 8006400646985059455, guid: c1143574a0d8c6e46b1e18684a5b6d2e, type: 3}
   minHeight: 0
   maxHeight: 1
   borderDistance: 0
   centreDistance: 50
   borderSamples: 128
   maxAttempts: 200
-  mapGenerator: {fileID: 0}
+  mapGenerator: {fileID: 1519841159}
   terrain: {fileID: 0}
   worldBorder: {fileID: 1519841158}
 --- !u!1001 &1161197530
@@ -2016,7 +2017,7 @@ PrefabInstance:
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].assetPrefab
       value: 
-      objectReference: {fileID: 2833206327871748732, guid: de08d20745aeb8340895208fe0d39ead, type: 3}
+      objectReference: {fileID: 2833206327871748732, guid: 08e67aac72e39094083ac85a53bb892c, type: 3}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetPrefab
       value: 
@@ -3426,6 +3427,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58bac812b4526934c873e9256a207c6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1519841159 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+  m_PrefabInstance: {fileID: 1221366856}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 740aeeb3479f01e4e937c1391603f3b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1558300267

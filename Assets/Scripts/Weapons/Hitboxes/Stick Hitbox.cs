@@ -45,9 +45,6 @@ public class StickHitbox : MonoBehaviour
 
         if (enemiesOnHit != null)
         {
-
-            enemiesOnHit.ApplyHitStop(this, 0.08f);
-
             Renderer rend = other.GetComponentInChildren<Renderer>();
             if (rend != null)
                 StartCoroutine(enemiesOnHit.FlashEnemy(rend, Color.white, Color.gray, 0.15f));

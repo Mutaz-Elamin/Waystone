@@ -217,6 +217,12 @@ public class ClusterController : MonoBehaviour
 
     private bool TrySpawnOne()
     {
+        if (prefab == null)
+        {
+            Debug.LogError($"{name} ClusterController: prefab is NULL (did Initialise pass a prefab?)");
+            return false;
+        }
+
         if (!TryFindSpawnPosition(out Vector3 spawnPos))
             return false;
 
@@ -225,11 +231,24 @@ public class ClusterController : MonoBehaviour
             Random.Range(minYrot, maxYrot),
             Random.Range(minZrot, maxZrot));
 
-        GameObject instance = pool != null
-            ? pool.Get(prefab, spawnPos, rot, transform)
-            : Instantiate(prefab, spawnPos, rot, transform);
+        GameObject instance = null;
 
-        ClusterMember member = instance.GetComponent<ClusterMember>();
+        // Try pool first
+        if (pool != null)
+            instance = pool.Get(prefab, spawnPos, rot, transform);
+
+        // Fallback if pool not present OR pool returned null
+        if (instance == null)
+            instance = Instantiate(prefab, spawnPos, rot, transform);
+
+        if (instance == null)
+        {
+            Debug.LogError($"{name} ClusterController: Failed to spawn instance. " +
+                           $"prefab={(prefab ? prefab.name : "NULL")} pool={(pool ? pool.name : "NULL")}");
+            return false;
+        }
+
+        var member = instance.GetComponent<ClusterMember>();
         if (member == null) member = instance.AddComponent<ClusterMember>();
         member.Initialise(this, pool);
 
@@ -244,6 +263,7 @@ public class ClusterController : MonoBehaviour
 
         return true;
     }
+
 
     private void TryDespawnOne()
     {

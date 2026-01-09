@@ -163,8 +163,8 @@ public class EnemyNPC : GeneralNPC
 
     // Method for when the npc is chasing after the player
     protected virtual void ChasingMovementScript()
-
     {
+        if (!CanMove()) return;
         SelectAttack();
         bool inRange = Physics.CheckSphere(transform.position, stopChaseRange, playerLayer);
         if (!inRange)

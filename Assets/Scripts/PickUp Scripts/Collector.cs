@@ -16,6 +16,7 @@ public class PlayerCollector : MonoBehaviour
     // Add a reference to the PortalStoneItem ScriptableObject in the inspector
     [SerializeField] private ItemClass portalStoneItem;
     [SerializeField] private RunManager runManager;
+    [SerializeField] private VictoryManager victoryManager;
 
     void Start()
     {
@@ -98,7 +99,8 @@ public class PlayerCollector : MonoBehaviour
         {
             if (portalLandmark.IsWinPortal())
             {
-                // Trigger win condition
+                if (victoryManager != null)
+                    victoryManager.TriggerVictory();
                 return;
             }
 
