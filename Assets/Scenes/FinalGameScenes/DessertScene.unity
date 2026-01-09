@@ -254,7 +254,7 @@ MonoBehaviour:
   emptyArmorIcon: {fileID: 21300000, guid: 5e4fd323ee92bc04c80fbfd9d5724f40, type: 3}
   buildPlacer: {fileID: 345374755}
   craftingMenu: {fileID: 1048229738}
-  worldPickupPrefab: {fileID: 0}
+  worldPickupPrefab: {fileID: 3031827464038967374, guid: f7e9d3d25fdac9b44be4107f5ccc0df5, type: 3}
   dropPoint: {fileID: 0}
 --- !u!114 &345374757
 MonoBehaviour:
@@ -289,7 +289,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 194.99997
+      value: 195
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size

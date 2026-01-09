@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6688869455142436444}
   - component: {fileID: 5342288619945234728}
   - component: {fileID: 3925526516249810524}
+  - component: {fileID: 6605434368978918125}
   m_Layer: 0
   m_Name: CactusShrubResource
   m_TagString: Untagged
@@ -156,6 +157,18 @@ MonoBehaviour:
   tiltDegrees: 5
   usePositionShake: 1
   positionShake: 0.05
+--- !u!114 &6605434368978918125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9003521884830649916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2e63e2bc0a2de43b6d3495d94d4cfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &588695233010248031
 PrefabInstance:
   m_ObjectHideFlags: 0
