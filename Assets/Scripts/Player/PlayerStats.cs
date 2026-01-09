@@ -12,12 +12,16 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Speeds")]
     [SerializeField] protected float hungerLoseSpeed = 0.5f; 
-    [SerializeField] protected float staminaRegenSpeed = 10f; 
+    [SerializeField] protected float staminaRegenSpeed = 10f;
+
+    [SerializeField] private float minHungerMultiplier = 1f;   
+    [SerializeField] private float maxHungerMultiplier = 1.6f;
 
     // Internal numbers (hidden from the Inspector to keep it clean)
     private float _currentHealth;
     private float _currentStamina;
     private float _currentHunger;
+    private bool isDead;
 
     // These allow other scripts to SEEE the values, but not change them directly
     public float Health => _currentHealth;
@@ -43,11 +47,18 @@ public class PlayerStats : MonoBehaviour
         // 1. Lose hunger over time
         if (_currentHunger > 0)
         {
-            _currentHunger -= hungerLoseSpeed * Time.deltaTime;
+            float staminaPercent = _currentStamina / maxStamina;
+
+            float hungerMultiplier = Mathf.Lerp(
+                maxHungerMultiplier,
+                minHungerMultiplier,
+                staminaPercent
+            );
+
+            _currentHunger -= hungerLoseSpeed * hungerMultiplier * Time.deltaTime;
         }
         else
         {
-            // If hunger hits zero, start losing health (starving)
             TakeDamage(1f * Time.deltaTime);
         }
 
@@ -56,18 +67,23 @@ public class PlayerStats : MonoBehaviour
         {
             _currentStamina += staminaRegenSpeed * Time.deltaTime;
         }
+
+
+
     }
 
     // Call this for spikes, falls, or enemies
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         _currentHealth -= amount;
-        // Make sure health doesn't go below zero
         _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
-        
-        if (_currentHealth <= 0) 
+
+        if (_currentHealth <= 0)
         {
-            Debug.Log("Player is dead!");
+            isDead = true;
+            DeathManager.Instance.HandleDeath();
         }
     }
 
