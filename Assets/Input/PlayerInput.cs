@@ -589,6 +589,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Pause"",
+            ""id"": ""a8f85d9b-eb56-499f-9136-afc360fb825a"",
+            ""actions"": [
+                {
+                    ""name"": ""Toggle Pause "",
+                    ""type"": ""Button"",
+                    ""id"": ""2d7896f1-5908-4bec-bd2b-825da096033d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""14c94da8-9234-4490-8a47-cce5f645cfdc"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Pause "",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -619,6 +647,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Hotbar_Hotbar5 = m_Hotbar.FindAction("Hotbar5", throwIfNotFound: true);
         m_Hotbar_Hotbar6 = m_Hotbar.FindAction("Hotbar6", throwIfNotFound: true);
         m_Hotbar_Use = m_Hotbar.FindAction("Use", throwIfNotFound: true);
+        // Pause
+        m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
+        m_Pause_TogglePause = m_Pause.FindAction("Toggle Pause ", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -950,6 +981,52 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public HotbarActions @Hotbar => new HotbarActions(this);
+
+    // Pause
+    private readonly InputActionMap m_Pause;
+    private List<IPauseActions> m_PauseActionsCallbackInterfaces = new List<IPauseActions>();
+    private readonly InputAction m_Pause_TogglePause;
+    public struct PauseActions
+    {
+        private @PlayerInput m_Wrapper;
+        public PauseActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @TogglePause => m_Wrapper.m_Pause_TogglePause;
+        public InputActionMap Get() { return m_Wrapper.m_Pause; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PauseActions set) { return set.Get(); }
+        public void AddCallbacks(IPauseActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PauseActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Add(instance);
+            @TogglePause.started += instance.OnTogglePause;
+            @TogglePause.performed += instance.OnTogglePause;
+            @TogglePause.canceled += instance.OnTogglePause;
+        }
+
+        private void UnregisterCallbacks(IPauseActions instance)
+        {
+            @TogglePause.started -= instance.OnTogglePause;
+            @TogglePause.performed -= instance.OnTogglePause;
+            @TogglePause.canceled -= instance.OnTogglePause;
+        }
+
+        public void RemoveCallbacks(IPauseActions instance)
+        {
+            if (m_Wrapper.m_PauseActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPauseActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PauseActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PauseActions @Pause => new PauseActions(this);
     public interface IOnFootActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -978,5 +1055,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnHotbar5(InputAction.CallbackContext context);
         void OnHotbar6(InputAction.CallbackContext context);
         void OnUse(InputAction.CallbackContext context);
+    }
+    public interface IPauseActions
+    {
+        void OnTogglePause(InputAction.CallbackContext context);
     }
 }
