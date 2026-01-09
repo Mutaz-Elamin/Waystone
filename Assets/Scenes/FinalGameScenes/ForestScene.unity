@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0048969085, g: 0.005159525, b: 0.004656907, a: 1}
+  m_IndirectSpecularColor: {r: 0.09793976, g: 0.10318792, b: 0.09313704, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -299,13 +299,7 @@ MonoBehaviour:
   craftingUIButton: {fileID: 1790878876}
   exitButton: {fileID: 1007584701}
   IsOpen: 0
-  startingItems:
-  - item: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
-    quantity: 1
-  - item: {fileID: 11400000, guid: 9b332fb59c027db43870e516127ef0ad, type: 2}
-    quantity: 1
-  - item: {fileID: 11400000, guid: b3b8bee8ecc987e4e8c424dd2825402f, type: 2}
-    quantity: 1
+  startingItems: []
   armorSlotUI: {fileID: 518315034}
   emptyArmorIcon: {fileID: 21300000, guid: 5e4fd323ee92bc04c80fbfd9d5724f40, type: 3}
   buildPlacer: {fileID: 536648029}
@@ -362,7 +356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 195
+      value: 195.00005
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size
@@ -737,6 +731,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: daySpeed
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
       propertyPath: clockText
       value: 
       objectReference: {fileID: 1196736221}
@@ -745,9 +743,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 76153256}
     - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: timeScale
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: currentHour
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
       propertyPath: restartButton
       value: 
       objectReference: {fileID: 564618074}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: gameMinutesPerSecond
+      value: 4.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: realSecondsPerGameDay
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: skyboxMaterialOverride
+      value: 
+      objectReference: {fileID: 2100000, guid: 8064aa88defeebf429e2e6a05c9fd684, type: 2}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: skyboxRotationMultiplier
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

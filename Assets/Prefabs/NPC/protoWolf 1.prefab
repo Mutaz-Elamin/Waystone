@@ -466,7 +466,7 @@ MonoBehaviour:
     spawnChance: 0.25
     minCount: 1
     maxCount: 1
-  - resourcePrefab: {fileID: 8381562123142801682, guid: 6d5c23bbf9af85f41b72266c8e707698, type: 3}
+  - resourcePrefab: {fileID: 8381562123142801682, guid: bde9656d3644edc4399f968a290b98ca, type: 3}
     spawnChance: 0.5
     minCount: 1
     maxCount: 2
