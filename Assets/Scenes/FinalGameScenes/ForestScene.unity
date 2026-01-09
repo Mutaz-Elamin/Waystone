@@ -372,7 +372,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
+<<<<<<< HEAD
       value: 194.99973
+=======
+      value: 195
+>>>>>>> c127614589fc5e54789e0efccdca386648b49ad4
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size
@@ -1354,7 +1358,7 @@ PrefabInstance:
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].assetPrefab
       value: 
-      objectReference: {fileID: 2833206327871748732, guid: de08d20745aeb8340895208fe0d39ead, type: 3}
+      objectReference: {fileID: 2833206327871748732, guid: f158860afc5f9da4dae2be223a80e055, type: 3}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetPrefab
       value: 
