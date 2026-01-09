@@ -33,6 +33,12 @@ public class PassiveNPC : GeneralNPC
     }
     private Mode currentMode = Mode.Wandering;
 
+    private bool CanMove()
+    {
+        return agent != null && agent.enabled && agent.isOnNavMesh;
+    }
+
+
 
 
 
@@ -82,6 +88,8 @@ public class PassiveNPC : GeneralNPC
     // Method for when the npc is wandering around
     protected virtual void WanderMovementScript()
     {
+        if (!CanMove()) return;
+
         if (!desPointSet)
         {
             if (Time.time - lastWalkTime < walkInterval) return;
@@ -102,6 +110,7 @@ public class PassiveNPC : GeneralNPC
             }
         }
     }
+
 
 
     // Search for a valid random destination point on the ground within specified range
@@ -150,11 +159,15 @@ public class PassiveNPC : GeneralNPC
     // Method for when the npc is wandering around
     protected virtual void EscapeMovementScript()
     {
+        if (!CanMove()) return;
+
         EscapeTimeout();
+
         if (!desPointSet)
         {
             SearchDesPoint(true);
         }
+
         if (desPointSet)
         {
             agent.SetDestination(desPoint);

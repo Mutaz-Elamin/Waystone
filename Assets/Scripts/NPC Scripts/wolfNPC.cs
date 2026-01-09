@@ -12,6 +12,7 @@ public class WolfNPC : EnemyNPC
         WolfAnimator = GetComponent<Animator>();
     }
 
+
     protected override void WanderMovementScript()
     {
         WolfAnimator.SetBool("Chasing", false);

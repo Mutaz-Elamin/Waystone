@@ -289,6 +289,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3eb567bc1e4ea9846bc21f0e73a273b5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5820625934738569596}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3eb567bc1e4ea9846bc21f0e73a273b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3205746079273951448}
   m_SourcePrefab: {fileID: 100100000, guid: 3eb567bc1e4ea9846bc21f0e73a273b5, type: 3}
 --- !u!4 &64049586846934739 stripped
 Transform:
@@ -361,7 +364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d01e1c732b1bb74ea42a7bde6ee9e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 15
+  startHealth: 100
   visualRoot: {fileID: 2040566548360387991}
   playSpawnFx: 1
   spawnFxPrefab: {fileID: 6551685341991220029, guid: c268957be136e0943954e437950b1144, type: 3}
@@ -496,6 +499,33 @@ MonoBehaviour:
   - _Color
   - _MainColor
   - _TintColor
+--- !u!54 &3205746079273951448
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6403275833629523980}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &6717202033541393554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 658689967997702607, guid: 3eb567bc1e4ea9846bc21f0e73a273b5, type: 3}

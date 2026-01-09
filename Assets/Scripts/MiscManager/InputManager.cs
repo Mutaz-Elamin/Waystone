@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     private PlayerAttack attack;
     private InventoryManager inventoryManager;
     private PlayerCollector collector;
+    public Weapon weaponPrefab;
 
     public bool interactPressed;
     private WeaponsManager weaponsManager;
@@ -61,7 +62,7 @@ public class InputManager : MonoBehaviour
 
         onFoot.Defend.performed += ctx => attack.StartDefend();
         onFoot.Defend.canceled += ctx => attack.StopDefend();
-        onFoot.ToggleWeapon.performed += ctx => attack.ToggleWeaponDraw();
+        onFoot.ToggleWeapon.performed += ctx => weaponsManager.SpawnTestWeapon(weaponPrefab);
 
         onFoot.Interact.performed += ctx =>
         {

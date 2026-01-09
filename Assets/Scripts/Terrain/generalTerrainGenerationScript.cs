@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UMaterial = UnityEngine.Material;
+
 
 
 public class RandomTerrain : MonoBehaviour
@@ -66,6 +68,8 @@ public class RandomTerrain : MonoBehaviour
     protected NavMeshSurface navSurface;
 
     // Initialize terrain generation on Awake
+
+
     private void Awake()
     {
         terrainData = new TerrainData
@@ -514,6 +518,8 @@ public class RandomTerrain : MonoBehaviour
     }
 
 
+
+
     protected bool SpawnAssetRequirements(TerrainAsset asset, float x, float y, float spawnRate, float currentHeight, bool checkStep)
     {
         if (checkStep)
@@ -626,4 +632,7 @@ public struct TerrainAsset
     public float ClusterCheckInterval => clusterCheckInterval;
     public ClusterRateSettings ClusterSpawnSettings => clusterSpawnSettings;
     public ClusterRateSettings ClusterDespawnSettings => clusterDespawnSettings;
+
+
+    
 }

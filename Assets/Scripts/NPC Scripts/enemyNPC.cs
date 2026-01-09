@@ -41,6 +41,10 @@ public class EnemyNPC : GeneralNPC
     }
     private Mode currentMode = Mode.Wandering;
 
+    protected bool CanMove()
+    {
+        return agent != null && agent.enabled && agent.isOnNavMesh;
+    }
 
 
 
@@ -106,16 +110,10 @@ public class EnemyNPC : GeneralNPC
     // Method for when the npc is wandering around
     protected virtual void WanderMovementScript()
     {
-        bool inRange = Physics.CheckSphere(transform.position, startChaseRange, playerLayer);
-        if (inRange)
-        {
-            currentMode = Mode.Chasing;
-            return;
-        }
+        if (!CanMove()) return;
 
         if (!desPointSet)
         {
-            if (Time.time - lastWalkTime < walkInterval) return;
             SearchDesPoint();
         }
 
@@ -123,13 +121,12 @@ public class EnemyNPC : GeneralNPC
         {
             agent.SetDestination(desPoint);
 
-            Vector3 distanceToDesPoint = transform.position - desPoint;
-            distanceToDesPoint.y = 0;
+            Vector3 distance = transform.position - desPoint;
+            distance.y = 0;
 
-            if (distanceToDesPoint.magnitude < 1f)
+            if (distance.magnitude < 1.5f)
             {
                 desPointSet = false;
-                lastWalkTime = Time.time;
             }
         }
     }
@@ -159,7 +156,9 @@ public class EnemyNPC : GeneralNPC
 
     // Method for when the npc is chasing after the player
     protected virtual void ChasingMovementScript()
+
     {
+        if (!CanMove()) return;
         SelectAttack();
         bool inRange = Physics.CheckSphere(transform.position, stopChaseRange, playerLayer);
         if (!inRange)
