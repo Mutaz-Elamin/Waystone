@@ -1,0 +1,256 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &447548920584704168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 747165056832209848}
+  - component: {fileID: 3425927869308737719}
+  - component: {fileID: 8689963826381095261}
+  m_Layer: 0
+  m_Name: IceClub
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &747165056832209848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447548920584704168}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.0018258924, y: 0.42499045, z: -0.009843549, w: -0.90514255}
+  m_LocalPosition: {x: 1.71, y: -0.05, z: 0.85}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6151573117515999203}
+  - {fileID: 8596471862278611498}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0.29, y: 309.7, z: 1.11}
+--- !u!114 &3425927869308737719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447548920584704168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb440236d56c9b498c462bc04e4c37c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponName: 'Ice Club '
+  animator: {fileID: 8525899208345576284}
+  attackCollider: {fileID: 7820912319089362091}
+  baseDamage: 2.4
+  materialType: 8
+  heavyAttackMultiplier: 3
+  comboResetTime: 1.2
+  comboStep: 0
+  currentAttack: 0
+  lightDuration: 0.25
+  windupDuration: 0.25
+  slamDuration: 0.45
+  recoveryTime: 0.6
+  minChargeTime: 0.15
+  maxChargeTime: 1
+  lightDamage: 1
+  windupDamage: 2
+  slamDamage: 4
+  sfx: {fileID: 0}
+  hitbox: {fileID: 0}
+--- !u!114 &8689963826381095261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447548920584704168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121c05fe8dc64d94fb0cb252d7634796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &4026345129481169115
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8596471862278611498}
+  - component: {fileID: 7820912319089362091}
+  - component: {fileID: 2881547039567128996}
+  m_Layer: 15
+  m_Name: ClubAttackZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8596471862278611498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4026345129481169115}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.6075244, y: -0.5729289, z: 0.49165827, w: 0.246858}
+  m_LocalPosition: {x: -1.3106532, y: -1.634095, z: 0.34731576}
+  m_LocalScale: {x: 0.23999992, y: 0.23999994, z: 0.2399999}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 747165056832209848}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7820912319089362091
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4026345129481169115}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 9.3, y: 6.9, z: 10.3}
+  m_Center: {x: 10.1, y: -3.09, z: -7.97}
+--- !u!114 &2881547039567128996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4026345129481169115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad7255a42577cd44b99f11b53bb1f0ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canHit: 0
+  damage: 0
+  sfx: {fileID: 0}
+  bloodPrefab: {fileID: 5573792894572939204, guid: 98d26191501eb6742814606d8b4415eb, type: 3}
+  enemiesOnHit: {fileID: 0}
+--- !u!1001 &5968534310009913352
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 747165056832209848}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 11.560158
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 11.560157
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 11.560159
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.2528508
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.5400001
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.9499999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8654979
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.4996954
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.030223846
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.017449748
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      propertyPath: m_Name
+      value: IceClub
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8525899208345576284}
+  m_SourcePrefab: {fileID: 100100000, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+--- !u!4 &6151573117515999203 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+  m_PrefabInstance: {fileID: 5968534310009913352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6779350673903484249 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 56dda9c6ad3cdec4182616a9cdf95389, type: 3}
+  m_PrefabInstance: {fileID: 5968534310009913352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8525899208345576284
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6779350673903484249}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1c483c2abd4778a409c20aa1c64984f1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
