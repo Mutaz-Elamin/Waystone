@@ -220,6 +220,9 @@ public class RandomTerrain : MonoBehaviour
     // Main terrain generation method using Perlin noise
     private void GenerateTerrain()
     {
+        seed = UnityEngine.Random.Range(0, int.MaxValue);
+        spawnSeed = seed * 100;
+
         worldBorder.ClearBorderAssets(prefabPool);
 
         int heightmapHeight = terrainData.heightmapResolution;
