@@ -15,7 +15,7 @@ MonoBehaviour:
   inputItems:
   - item: {fileID: 11400000, guid: e003cb36f07bfc743a40eefb5d412513, type: 2}
     quantity: 5
-  - item: {fileID: 11400000, guid: 019fa03f31b768648920c656ab69f034, type: 2}
+  - item: {fileID: 11400000, guid: 965326b19356ec9418f5ca9e70006bea, type: 2}
     quantity: 2
   - item: {fileID: 11400000, guid: 4033ff0d40b306346a0dcc055ba0ba8b, type: 2}
     quantity: 1

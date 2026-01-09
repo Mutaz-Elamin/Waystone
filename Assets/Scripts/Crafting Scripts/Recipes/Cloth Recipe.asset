@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputItems: []
   outputItem:
-    item: {fileID: 0}
-    quantity: 0
+    item: {fileID: 11400000, guid: 019fa03f31b768648920c656ab69f034, type: 2}
+    quantity: 1
