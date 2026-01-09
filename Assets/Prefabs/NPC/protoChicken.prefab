@@ -225,6 +225,12 @@ MonoBehaviour:
   walkInterval: 2
   escapeTimeout: 10
   escapeMoveModifier: 1.5
+  colourShiftEnabled: 0
+  targetColour: {r: 1, g: 1, b: 1, a: 1}
+  shiftAmount: 0.495
+  shiftHue: 1
+  shiftSaturation: 1
+  shiftValue: 1
 --- !u!65 &2155798884523950000
 BoxCollider:
   m_ObjectHideFlags: 0

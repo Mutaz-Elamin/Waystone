@@ -74,7 +74,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.2, y: 0.3, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 658397356710824265}
@@ -151,7 +151,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 0.008, y: 0.022, z: 0.02}
+  m_Size: {x: 0.018, y: 0.065, z: 0.05}
   m_Center: {x: 0, y: 0.007, z: 0}
 --- !u!1 &6538057464824463970
 GameObject:
@@ -435,10 +435,26 @@ MonoBehaviour:
   disableGameplayDuringDeath: 1
   resourceRadius: 2
   resourceDrops:
-  - resourcePrefab: {fileID: 0}
-    spawnChance: 0
-    minCount: 0
-    maxCount: 0
+  - resourcePrefab: {fileID: 8465362152466353679, guid: beec7b22c74522d4cacda7c4aa51f14b, type: 3}
+    spawnChance: 1
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 6884670967486755781, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
+    spawnChance: 0.05
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 4886971969442270434, guid: ea816cc2247c97f46aa1a1481af948f8, type: 3}
+    spawnChance: 0.05
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 5397069016849034924, guid: 0762062894777e045bb18c3e0441f12e, type: 3}
+    spawnChance: 0.05
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 8312316297816020311, guid: bae7236ccf5fb0a4ab93947b3e91d68d, type: 3}
+    spawnChance: 0.05
+    minCount: 3
+    maxCount: 5
   snapDropsToTerrain: 1
   dropHeightOffset: 0.05
   speed: 5

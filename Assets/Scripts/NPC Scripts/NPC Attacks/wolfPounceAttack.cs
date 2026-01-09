@@ -155,16 +155,18 @@ public class WolfPounceAttack : NpcAttack
     // OnTriggerEnter to handle hit detection for the attack
     private void OnTriggerEnter(Collider other)
     {
-        // In the future the collider will be set up to only exist for the npc and player layers but right player takedamage doesn't exist yet so cannot call without if statements
-        if (other.CompareTag("Player"))
+        PlayerStats player = other.GetComponent<PlayerStats>();
+        if (player != null)
         {
-            Debug.Log("Test NPC Attack Hit: " + other.gameObject.name);
-            // this will eventually call the player's TakeDamage method but currently this doesn't exist due to other person being assigned to the feature
+            int damage = Random.Range(10, 15);
+            player.TakeDamage(damage);
         }
-        if (other.CompareTag("npc"))
+
+        HealthBasedAsset asset = other.GetComponent<HealthBasedAsset>();
+        if (asset != null)
         {
-            Debug.Log("Test NPC Attack Hit: " + other.gameObject.name);
-            other.GetComponent<GeneralNPC>()?.TakeDamage(2, DamageCause.EnemyAttack);
+            asset.TakeDamage(200, DamageCause.EnemyAttack);
+            return;
         }
     }
 

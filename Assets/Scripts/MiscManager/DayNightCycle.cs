@@ -1,7 +1,8 @@
-using UnityEngine;
+using System.Collections;
 using TMPro;
+using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class DayNightCycle : MonoBehaviour
 {
@@ -9,137 +10,221 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Light sunLight;
     [SerializeField] private Light moonLight;
 
-    [Header("Time Settings")]
-    private float daySpeed = 1.2f; 
-    [Range(0, 24)] [SerializeField] private float currentHour = 0f;
+    [Header("Time")]
+    [Tooltip("In-game minutes that pass per real second. 1 = 1 game minute/sec (a full day takes 24 real minutes).")]
+    [SerializeField] private float gameMinutesPerSecond = 1.2f;
+
+    [Tooltip("Starting time (0..24).")]
+    [Range(0f, 24f)]
+    [SerializeField] private float startHour = 8f;
+
+    [SerializeField] private int maxDays = 4;
+
+    private float minuteOfDay;
     private int dayCount = 1;
-    private int maxDays = 4;
 
-    // --- Added this so the Hunger Disaster can "see" the time ---
-    public float CurrentHour => currentHour; 
+    public float CurrentHour => minuteOfDay / 60f;
 
-    [Header("UI & Animation")]
+    [Header("Skybox")]
+    [Tooltip("Assign your gameplay skybox material here so it doesn't inherit from a menu scene.")]
+    [SerializeField] private UnityEngine.Material skyboxMaterialOverride;
+
+    [SerializeField] private bool rotateSkybox = true;
+    [SerializeField] private float skyboxRotationOffset = 0f;
+    [SerializeField] private float skyboxRotationMultiplier = 1f;
+
+    private UnityEngine.Material runtimeSkybox;
+
+    [Header("UI & End Game")]
     [SerializeField] private TextMeshProUGUI clockText;
-    [SerializeField] private GameObject restartButton; 
-    [SerializeField] private float animationDuration = 3f; 
+    [SerializeField] private GameObject restartButton;
+    [SerializeField] private float dayBannerDuration = 3f;
 
-    private bool isAnimating = false;
+    private bool isShowingBanner = false;
     private bool gameEnded = false;
     private Vector3 originalTextScale;
 
-    private void Start()
+    [Header("GI Update")]
+    [Tooltip("Updating GI every frame is expensive. 0.25–1.0 is usually fine.")]
+    [SerializeField] private float giUpdateInterval = 0.5f;
+    private float giTimer = 0f;
+
+    private void Awake()
     {
-        dayCount = 1;
-        currentHour = 0f;
-        gameEnded = false;
+        Time.timeScale = 1f;
 
         if (restartButton != null) restartButton.SetActive(false);
         if (clockText != null) originalTextScale = clockText.transform.localScale;
+    }
 
-        if (RenderSettings.skybox != null)
-            RenderSettings.skybox.SetFloat("_Exposure", 0.05f);
-        
-        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+    private void Start()
+    {
+        StartCoroutine(InitializeAfterOneFrame(playBanner: true));
+    }
 
-        StartCoroutine(PlayDayAnimation());
+    private IEnumerator InitializeAfterOneFrame(bool playBanner)
+    {
+        yield return null;
+
+        dayCount = 1;
+        gameEnded = false;
+        minuteOfDay = Mathf.Repeat(startHour, 24f) * 60f;
+
+        SetupSkyboxMaterial();
+
+        ApplyLightingAndSky();
+        UpdateClockUI(forceClock: true);
+
+        if (playBanner)
+            StartCoroutine(PlayDayBanner());
+    }
+
+    private void SetupSkyboxMaterial()
+    {
+        UnityEngine.Material source = skyboxMaterialOverride != null
+            ? skyboxMaterialOverride
+            : RenderSettings.skybox;
+
+        if (source == null) return;
+
+        if (runtimeSkybox == null || runtimeSkybox.shader != source.shader)
+            runtimeSkybox = new UnityEngine.Material(source);
+        else
+            runtimeSkybox.CopyPropertiesFromMaterial(source);
+
+        RenderSettings.skybox = runtimeSkybox;
     }
 
     private void Update()
     {
         if (gameEnded) return;
 
-        daySpeed = 1.2f;
+        AdvanceTime();
+        ApplyLightingAndSky();
 
-        if (!isAnimating)
-        {
-            UpdateTime();
-            UpdateClockUI();
-        }
-
-        UpdateLightRotation();
-        UpdateAtmosphere();
+        if (!isShowingBanner)
+            UpdateClockUI(forceClock: false);
     }
 
-    private void UpdateTime()
+    private void AdvanceTime()
     {
-        currentHour += (Time.deltaTime * daySpeed) / 60f; 
+        minuteOfDay += Time.deltaTime * gameMinutesPerSecond;
 
-        if (currentHour >= 24f) 
+        if (minuteOfDay >= 1440f)
         {
-            currentHour = 0f;
+            minuteOfDay -= 1440f;
             dayCount++;
 
             if (dayCount > maxDays) TriggerEndGame();
-            else StartCoroutine(PlayDayAnimation());
+            else StartCoroutine(PlayDayBanner());
         }
+    }
+
+    private void ApplyLightingAndSky()
+    {
+        float hour = CurrentHour;
+
+        float sunRotationX = (hour - 6f) * 15f;
+        if (sunLight) sunLight.transform.localRotation = Quaternion.Euler(sunRotationX, 0f, 0f);
+        if (moonLight) moonLight.transform.localRotation = Quaternion.Euler(sunRotationX + 180f, 0f, 0f);
+
+        bool isDay = hour >= 6f && hour < 18f;
+        if (sunLight) sunLight.enabled = isDay;
+        if (moonLight) moonLight.enabled = !isDay;
+
+        RenderSettings.sun = isDay ? sunLight : moonLight;
+        RenderSettings.ambientMode = AmbientMode.Flat;
+
+        float sunHeight = Mathf.Sin(sunRotationX * Mathf.Deg2Rad);
+        float sunHeight01 = Mathf.Clamp01((sunHeight + 0.1f) / 1.1f);
+        float exposure = Mathf.Lerp(0.05f, 1.0f, sunHeight01);
+
+        RenderSettings.ambientLight = Color.Lerp(new Color(0.1f, 0.11f, 0.18f), Color.white, exposure);
+
+        if (runtimeSkybox != null)
+        {
+            if (runtimeSkybox.HasProperty("_Exposure"))
+                runtimeSkybox.SetFloat("_Exposure", exposure);
+
+            if (rotateSkybox && runtimeSkybox.HasProperty("_Rotation"))
+            {
+                float rot = (minuteOfDay / 1440f) * 360f;
+                rot = (rot * skyboxRotationMultiplier) + skyboxRotationOffset;
+                runtimeSkybox.SetFloat("_Rotation", Mathf.Repeat(rot, 360f));
+            }
+        }
+
+        giTimer -= Time.deltaTime;
+        if (giTimer <= 0f)
+        {
+            giTimer = Mathf.Max(0.05f, giUpdateInterval);
+            DynamicGI.UpdateEnvironment();
+        }
+    }
+
+    private void UpdateClockUI(bool forceClock)
+    {
+        if (clockText == null) return;
+        if (!forceClock && isShowingBanner) return;
+
+        int totalMinutes = Mathf.FloorToInt(minuteOfDay);
+        int h = (totalMinutes / 60) % 24;
+        int m = totalMinutes % 60;
+
+        clockText.text = $"Day {dayCount} - {h:00}:{m:00}";
+        clockText.color = Color.white;
+        clockText.transform.localScale = originalTextScale;
+    }
+
+    private IEnumerator PlayDayBanner()
+    {
+        if (clockText == null) yield break;
+
+        isShowingBanner = true;
+
+        float elapsed = 0f;
+        clockText.text = $"DAY {dayCount}";
+        clockText.color = new Color(1f, 0.85f, 0f);
+
+        while (elapsed < dayBannerDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / dayBannerDuration);
+            float scaleCurve = Mathf.Sin(t * Mathf.PI) * 1.2f + 1f;
+            clockText.transform.localScale = originalTextScale * scaleCurve;
+            yield return null;
+        }
+
+        isShowingBanner = false;
+        UpdateClockUI(forceClock: true);
     }
 
     private void TriggerEndGame()
     {
         gameEnded = true;
+
         if (clockText != null)
         {
             clockText.text = "END";
             clockText.color = Color.red;
             clockText.transform.localScale = originalTextScale * 2f;
         }
-        
+
         if (restartButton != null) restartButton.SetActive(true);
     }
 
-    public void RestartGame() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
-    private void UpdateLightRotation()
+    public void RestartGame()
     {
-        float sunRotation = (currentHour - 6f) * 15f;
-        if (sunLight) sunLight.transform.localRotation = Quaternion.Euler(sunRotation, 0f, 0f);
-        if (moonLight) moonLight.transform.localRotation = Quaternion.Euler(sunRotation + 180f, 0f, 0f);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    private void UpdateAtmosphere()
+    private void OnDestroy()
     {
-        float sunRotation = (currentHour - 6f) * 15f;
-        float sunHeight = Mathf.Sin(sunRotation * Mathf.Deg2Rad); 
-        float exposure = Mathf.Lerp(0.05f, 1.0f, Mathf.Clamp01(sunHeight * 2.0f));
-
-        bool isDay = currentHour >= 6f && currentHour < 18f;
-        if (sunLight) sunLight.enabled = isDay;
-        if (moonLight) moonLight.enabled = !isDay;
-
-        if (RenderSettings.skybox != null) RenderSettings.skybox.SetFloat("_Exposure", exposure);
-        RenderSettings.sun = isDay ? sunLight : moonLight;
-        RenderSettings.ambientLight = Color.Lerp(new Color(0.1f, 0.11f, 0.18f), Color.white, exposure);
-        
-        DynamicGI.UpdateEnvironment();
-    }
-
-    System.Collections.IEnumerator PlayDayAnimation()
-    {
-        if (clockText == null) yield break;
-        isAnimating = true;
-        float elapsed = 0f;
-        clockText.text = "DAY " + dayCount;
-        clockText.color = new Color(1f, 0.85f, 0f); 
-
-        while (elapsed < animationDuration)
+        if (runtimeSkybox != null)
         {
-            elapsed += Time.deltaTime;
-            float percent = elapsed / animationDuration;
-            float scaleCurve = Mathf.Sin(percent * Mathf.PI) * 1.2f + 1f;
-            clockText.transform.localScale = originalTextScale * scaleCurve;
-            yield return null;
+            Destroy(runtimeSkybox);
+            runtimeSkybox = null;
         }
-
-        clockText.transform.localScale = originalTextScale;
-        clockText.color = Color.white;
-        isAnimating = false;
-    }
-
-    private void UpdateClockUI()
-    {
-        if (clockText == null) return;
-        int h = Mathf.FloorToInt(currentHour);
-        int m = Mathf.FloorToInt((currentHour - h) * 60);
-        clockText.text = string.Format("Day {0} - {1:00}:{2:00}", dayCount, h, m);
     }
 }

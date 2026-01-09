@@ -16,7 +16,9 @@ public class Food : ItemClass
         InventoryManager inv = user.GetComponent<InventoryManager>();
         if (inv == null) return;
 
-        // TODO: eat logic here (hunger restore, animation, etc.)
+        PlayerStats stats = user.GetComponent<PlayerStats>();
+        if (stats == null) return;
+        stats.Eat(20f);
 
         inv.Remove(this, 1);
     }
