@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 
 public class StickHitbox : MonoBehaviour
 {
@@ -11,38 +10,49 @@ public class StickHitbox : MonoBehaviour
 
     private void Awake()
     {
-
         if (sfx == null) sfx = GetComponentInParent<WeaponSFX>();
         if (enemiesOnHit == null) enemiesOnHit = GetComponentInParent<EnemiesOnHit>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        HealthBasedAsset npc = other.GetComponent<HealthBasedAsset>();
+        // --- IMPORTANT: only handle hits when allowed ---
+        if (!canHit) return;
+
+        // prevent re-entry until next attack window
+        canHit = false;
+
+        // find the target
+        HealthBasedAsset npc = other.GetComponentInParent<HealthBasedAsset>();
         if (npc != null)
         {
             Stick stick = GetComponentInParent<Stick>();
-            bool isHeavy = stick.currentAttack == Stick.AttackType.Heavy;
-            int damage = stick.CalculateDamage(isHeavy);
-            npc.TakeDamage(damage, DamageCause.PlayerAttack);
+            if (stick != null)
+            {
+                bool isHeavy = stick.currentAttack == Stick.AttackType.Heavy;
+                int dmg = stick.CalculateDamage(isHeavy);
+                npc.TakeDamage(dmg, DamageCause.PlayerAttack);
+                damage = dmg; 
+            }
         }
+
+
         if (sfx != null)
         {
             if (damage == 1) sfx.Stick_LightHitPlay();
             else sfx.Stick_HeavyHitPlay();
         }
 
-
         if (enemiesOnHit != null)
         {
-            enemiesOnHit.ApplyHitStop(GetComponentInParent<Weapon>(), 0.08f);
+
+            enemiesOnHit.ApplyHitStop(this, 0.08f);
 
             Renderer rend = other.GetComponentInChildren<Renderer>();
             if (rend != null)
                 StartCoroutine(enemiesOnHit.FlashEnemy(rend, Color.white, Color.gray, 0.15f));
 
-    
-            enemiesOnHit.ApplyKnockback(other, transform, damage == 2 ? 1f : 0.5f);
+            enemiesOnHit.ApplyKnockback(other, transform, (damage == 2) ? 1f : 0.5f);
         }
     }
 }
