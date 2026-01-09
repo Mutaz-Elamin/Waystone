@@ -114,19 +114,6 @@ public class RandomTerrain : MonoBehaviour
         GenerateTerrain();
     }
 
-    // Method to regenerate terrain on key press for testing purposes - can be removed in final version
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            // Regenerate terrain with a new random seed for testing random seed quickly - commented out during most use
-            seed = UnityEngine.Random.Range(0, 1000);
-            spawnSeed = seed * 100;
-            GenerateTerrain();
-        }
-        //GenerateTerrain(this.terrain, this.terrainData, this.noiseScale, this.heightMultiplier, this.seed);
-    }
-
     // Optional: Method to set seeds externally
     public void SetSeed(int newSeed)
     {
