@@ -28,14 +28,6 @@ public class AxeHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-
-        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
-        if (asset != null)
-        {
-            asset.TakeDamage(damage, DamageCause.PlayerAttack);
-        }
-
         if (!canHit) return;
 
         canHit = false;
@@ -54,7 +46,7 @@ public class AxeHitbox : MonoBehaviour
             {
                 bool isHeavy = axe.currentAttack == Axe.AttackType.Heavy;
                 int damage = axe.CalculateDamage(isHeavy);
-                npc.TakeDamage(damage, DamageCause.PlayerAttack);
+                npc.TakeDamage(damage, DamageCause.PlayerAxe);
             }
         }
 

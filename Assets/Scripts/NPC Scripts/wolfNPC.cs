@@ -12,10 +12,6 @@ public class WolfNPC : EnemyNPC
     [Range(0f, 1f)]
     [SerializeField] private float shiftAmount = 0.5f;
 
-    [SerializeField] private bool shiftHue = true;
-    [SerializeField] private bool shiftSaturation = true;
-    [SerializeField] private bool shiftValue = true;
-
     // Cached renderers + original colours
     private Renderer[] _renderers;
     private Color[] _baseColours;

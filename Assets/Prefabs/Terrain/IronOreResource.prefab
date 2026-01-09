@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d04e6375b5f62a84580dc2ea1e69d6a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 15
+  startHealth: 25
   visualRoot: {fileID: 6589769609397730431}
   playSpawnFx: 1
   spawnFxPrefab: {fileID: 6551685341991220029, guid: c268957be136e0943954e437950b1144, type: 3}
@@ -131,10 +131,10 @@ MonoBehaviour:
   disableGameplayDuringDeath: 1
   resourceRadius: 4
   resourceDrops:
-  - resourcePrefab: {fileID: 919132149155446097, guid: 149602427d32f064083fe0e88739b65b, type: 3}
+  - resourcePrefab: {fileID: 1740891769306972032, guid: c45076dfe5e0dff4b9425491da293857, type: 3}
     spawnChance: 0.8
     minCount: 2
-    maxCount: 3
+    maxCount: 4
   - resourcePrefab: {fileID: 7108193951838084754, guid: 6fa610b54704b9640b79979dc4d4b1fb, type: 3}
     spawnChance: 0.5
     minCount: 2

@@ -44,7 +44,6 @@ public class PickaxeHitbox : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!canHit) return;
-        if (!other.CompareTag("npc")) return;
 
         Pickaxe pick = GetComponentInParent<Pickaxe>();
         if (pick != null && pick.IsPerformingHeavy)
@@ -69,7 +68,6 @@ public class PickaxeHitbox : MonoBehaviour
         }
 
         if (!canHit) return;
-        if (!other.CompareTag("npc")) return;
 
         Pickaxe pick = GetComponentInParent<Pickaxe>();
         float hitInterval = forcedHitInterval > 0f ? forcedHitInterval : fallbackHitInterval;

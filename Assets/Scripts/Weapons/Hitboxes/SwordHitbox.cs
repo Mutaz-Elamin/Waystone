@@ -22,15 +22,7 @@ public class SwordHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
-        if (asset != null)
-        {
-            asset.TakeDamage(2, DamageCause.PlayerAttack);
-        }
-
         if (!canHit) return;
-        if (!other.CompareTag("npc")) return;
 
         canHit = false;
 
@@ -39,8 +31,7 @@ public class SwordHitbox : MonoBehaviour
 
         Debug.Log("Sword hit: " + other.name);
 
-
-        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        HealthBasedAsset npc = other.GetComponentInParent<HealthBasedAsset>();
         if (npc != null)
         {
             if (sword != null)

@@ -6,7 +6,6 @@ using UnityEngine;
 public class HungerDisaster : NaturalDisaster
 {
     [SerializeField] private HeatstrokeEffect_BuiltIn heatstroke;
-    [SerializeField] private float heatPerDay = 0.25f;
 
     protected override void day1Effect()
     {
@@ -17,13 +16,13 @@ public class HungerDisaster : NaturalDisaster
     protected override void day2Effect()
     {
         PlayerStats stats = GetComponent<PlayerStats>();
-        stats.setHungerSpeed(stats.HungerLoseSpeed * 1.3f);
+        stats.setHungerSpeed(stats.HungerLoseSpeed * 1.4f);
         heatstroke.SetHeatstroke(0.5f);
     }
     protected override void day3Effect()
     {
         PlayerStats stats = GetComponent<PlayerStats>();
-        stats.setHungerSpeed(stats.HungerLoseSpeed * 1.3f);
+        stats.setHungerSpeed(stats.HungerLoseSpeed * 1.4f);
         heatstroke.SetHeatstroke(0.75f);
     }
     protected override void day4Effect()

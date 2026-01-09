@@ -400,7 +400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043bc0b6f78347d48acf66712f668bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 5
+  startHealth: 12
   visualRoot: {fileID: 530372791475843810}
   playSpawnFx: 1
   spawnFxPrefab: {fileID: 6551685341991220029, guid: c268957be136e0943954e437950b1144, type: 3}
@@ -491,9 +491,6 @@ MonoBehaviour:
   colourShiftEnabled: 1
   targetColour: {r: 0.6698113, g: 0.44651058, b: 0.0473923, a: 1}
   shiftAmount: 0.8
-  shiftHue: 1
-  shiftSaturation: 1
-  shiftValue: 1
 --- !u!114 &2347615182203383492
 MonoBehaviour:
   m_ObjectHideFlags: 0

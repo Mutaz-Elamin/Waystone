@@ -18,13 +18,6 @@ public class StickHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
-        if (asset != null)
-        {
-            asset.TakeDamage(damage, DamageCause.PlayerAttack);
-        }
-
         HealthBasedAsset npc = other.GetComponent<HealthBasedAsset>();
         if (npc != null)
         {

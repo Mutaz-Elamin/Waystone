@@ -16,20 +16,13 @@ public class DaggerHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
-        if (asset != null)
-        {
-            asset.TakeDamage(2, DamageCause.PlayerAttack);
-        }
-
         if (!canHit || !other.CompareTag("npc")) return;
         canHit = false;
 
         Dagger dagger = GetComponentInParent<Dagger>();
         if (dagger == null) return;
 
-        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        HealthBasedAsset npc = other.GetComponentInParent<HealthBasedAsset>();
         if (npc != null)
         {
             if (dagger != null)

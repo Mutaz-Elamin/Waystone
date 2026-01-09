@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 691b452d5600e1140a988f85730ac68c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 3
+  startHealth: 5
   visualRoot: {fileID: 2628638408918654593}
   playSpawnFx: 1
   spawnFxPrefab: {fileID: 6551685341991220029, guid: c268957be136e0943954e437950b1144, type: 3}

@@ -77,11 +77,11 @@ public class PlayerMovement : MonoBehaviour
                 Physics.SyncTransforms(); // ensure procedural colliders are registered
 
                 // Look for Terrain collider first
-                Terrain t = FindObjectOfType<Terrain>();
+                Terrain t = Terrain.activeTerrain != null ? Terrain.activeTerrain : Object.FindFirstObjectByType<Terrain>();
                 if (t != null) groundCollider = t.GetComponent<TerrainCollider>();
 
                 // fallback to any MeshCollider
-                if (groundCollider == null) groundCollider = FindObjectOfType<MeshCollider>();
+                if (groundCollider == null) groundCollider = Object.FindFirstObjectByType<MeshCollider>();
 
                 if (groundCollider != null) break;
 

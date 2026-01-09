@@ -23,21 +23,14 @@ public class SpearHitbox : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
-        if (asset != null)
-        {
-            asset.TakeDamage(3, DamageCause.PlayerAttack);
-        }
 
         if (!canHit) return;
-        if (!other.CompareTag("npc")) return;
-
         canHit = false;
 
         Spear spear = GetComponentInParent<Spear>();
         if (spear == null) return;
 
-        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        HealthBasedAsset npc = other.GetComponentInParent<HealthBasedAsset>();
         if (npc != null)
         {
             if (spear != null)
