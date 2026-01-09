@@ -299,7 +299,13 @@ MonoBehaviour:
   craftingUIButton: {fileID: 1790878876}
   exitButton: {fileID: 1007584701}
   IsOpen: 0
-  startingItems: []
+  startingItems:
+  - item: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 9b332fb59c027db43870e516127ef0ad, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: b3b8bee8ecc987e4e8c424dd2825402f, type: 2}
+    quantity: 1
   armorSlotUI: {fileID: 518315034}
   emptyArmorIcon: {fileID: 21300000, guid: 5e4fd323ee92bc04c80fbfd9d5724f40, type: 3}
   buildPlacer: {fileID: 536648029}
@@ -320,6 +326,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalStoneItem: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
   runManager: {fileID: 249429826}
+--- !u!114 &536648032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536648028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8def3c16e455a4492e52289c162f1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 1830098554}
+  range: 8
+  damage: 1
+  cause: 2
+  key: 323
 --- !u!1 &564618074 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1188941740479625541, guid: 894afe88665a62e45ae8ddc8b0171b75, type: 3}
@@ -339,7 +362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 195.00002
+      value: 194.99991
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size
@@ -907,9 +930,25 @@ PrefabInstance:
       value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: terrainSize.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: terrainSize.y
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: terrainSize.z
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: landmarkGeneration
       value: 
       objectReference: {fileID: 2036428637}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: heightmapResolution
+      value: 513
+      objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.size
       value: 2
@@ -1008,7 +1047,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].assetStep
-      value: 1
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].maxHeight
@@ -1620,7 +1659,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].randomSpawnChance
-      value: 0.8
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].randomSpawnChance
@@ -2317,7 +2356,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 467
+      value: 226
       objectReference: {fileID: 0}
     - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2325,7 +2364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 572
+      value: 113
       objectReference: {fileID: 0}
     - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2381,6 +2420,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 536648029}
+    - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 536648032}
     - targetCorrespondingSourceObject: {fileID: 3911445574146491929, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1830098556}

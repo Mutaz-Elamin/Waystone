@@ -431,7 +431,11 @@ MonoBehaviour:
     m_RotationOrder: 4
   disableGameplayDuringDeath: 1
   resourceRadius: 2
-  resourceDrops: []
+  resourceDrops:
+  - resourcePrefab: {fileID: 0}
+    spawnChance: 0
+    minCount: 0
+    maxCount: 0
   snapDropsToTerrain: 1
   dropHeightOffset: 0.05
   speed: 5
