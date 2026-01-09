@@ -1,0 +1,154 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4833315831610342709
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3526242953935661785, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: m_Name
+      value: Player Functioning Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4490965197777918648}
+    - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7933093829995932761}
+    - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4349898319562479696}
+  m_SourcePrefab: {fileID: 100100000, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+--- !u!1 &277922077679535033 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+  m_PrefabInstance: {fileID: 4833315831610342709}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4490965197777918648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277922077679535033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af14d965bb8d90419dadedfaf4a20d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portalStoneItem: {fileID: 0}
+  runManager: {fileID: 0}
+--- !u!114 &7933093829995932761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277922077679535033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71e4e0089f2b00c4d946275d86000c16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemCursor: {fileID: 0}
+  slotHolder: {fileID: 0}
+  hotbarslotHolder: {fileID: 0}
+  itemToAdd: {fileID: 11400000, guid: bca480a3b4db25d4489ba0597f417fa0, type: 2}
+  itemToRemove: {fileID: 0}
+  inventoryUI: {fileID: 0}
+  selector: {fileID: 0}
+  selectedHotbarIndex: 0
+  craftingUI: {fileID: 0}
+  craftingUIButton: {fileID: 0}
+  exitButton: {fileID: 0}
+  IsOpen: 0
+  startingItems:
+  - item: {fileID: 11400000, guid: f1557671adabdbb4abd422e3d2625956, type: 2}
+    quantity: 5
+  - item: {fileID: 11400000, guid: d76c669b540ce0c499ababd5573ce7dd, type: 2}
+    quantity: 5
+  - item: {fileID: 11400000, guid: d7c81ffcc45e8404e8e6f552f52a4863, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: ba0fb08e8c61da544a5d4e3565e16038, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: e023ab45850622e45a11414797e795af, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: e6b4aa3e88eb11342a09074539f449dd, type: 2}
+    quantity: 1
+  - item: {fileID: 11400000, guid: 1845eb363d65f9b43bf28d0553bdf261, type: 2}
+    quantity: 1
+  armorSlotUI: {fileID: 0}
+  emptyArmorIcon: {fileID: 21300000, guid: 5e4fd323ee92bc04c80fbfd9d5724f40, type: 3}
+  buildPlacer: {fileID: 4349898319562479696}
+  craftingMenu: {fileID: 0}
+  worldPickupPrefab: {fileID: 3031827464038967374, guid: f7e9d3d25fdac9b44be4107f5ccc0df5, type: 3}
+  dropPoint: {fileID: 0}
+--- !u!114 &4349898319562479696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277922077679535033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b53ca635ae14f4abc83cd88699a9b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1048576
+  maxPlaceDistance: 4
+  yOffset: 0.02
+  blockedMask:
+    serializedVersion: 2
+    m_Bits: 98337
+  overlapHalfExtents: {x: 0.6, y: 0.5, z: 0.6}
+  rotationOffsetEuler: {x: 0, y: 0, z: 0}
