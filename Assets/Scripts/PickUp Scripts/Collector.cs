@@ -27,6 +27,13 @@ public class PlayerCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        PickupResource resource = other.GetComponent<PickupResource>();
+        if (resource != null)
+        {
+            resource.Pickup();
+            return;
+        }
+
         OpenPortalLandmark portal = other.GetComponent<OpenPortalLandmark>();
         if (portal != null)
         {
