@@ -16,15 +16,18 @@ public class InputManager : MonoBehaviour
 
     public bool interactPressed;
     private WeaponsManager weaponsManager;
+    private PauseMenu PauseMenu;
 
 
     void Awake()
     {
 
+        playerInput = new PlayerInput();
+        PauseMenu = GetComponent<PauseMenu>();
+
         movement = GetComponent<PlayerMovement>();
         camLook = GetComponent<CameraLook>();
         attack = GetComponent<PlayerAttack>();
-        playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
         inventory = playerInput.Inventory;
         inventoryManager = GetComponent<InventoryManager>();
@@ -40,12 +43,14 @@ public class InputManager : MonoBehaviour
         }
 
 
-        playerInput = new PlayerInput();
+        
         onFoot = playerInput.OnFoot;
 
         onFoot.Jump.performed += ctx => movement.Jump();
 
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
+        PlayerInput.PauseActions pauseActions = playerInput.Pause;
+
 
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
@@ -78,6 +83,8 @@ public class InputManager : MonoBehaviour
         hotbars.Hotbar5.performed += ctx => TryUseHotbar(4);
         hotbars.Hotbar6.performed += ctx => TryUseHotbar(5);
         BuildPlacer placer = GetComponent<BuildPlacer>();
+        
+        
 
 
         inventory.Drop.performed += ctx =>

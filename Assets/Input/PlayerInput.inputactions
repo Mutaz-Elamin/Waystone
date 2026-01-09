@@ -567,6 +567,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Pause",
+            "id": "a8f85d9b-eb56-499f-9136-afc360fb825a",
+            "actions": [
+                {
+                    "name": "Toggle Pause",
+                    "type": "Button",
+                    "id": "2d7896f1-5908-4bec-bd2b-825da096033d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "14c94da8-9234-4490-8a47-cce5f645cfdc",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
