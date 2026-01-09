@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 public class StickHitbox : MonoBehaviour
 {
@@ -17,21 +18,20 @@ public class StickHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!canHit || !other.CompareTag("npc")) return;
-        canHit = false;
 
-        Stick stick = GetComponentInParent<Stick>();
-        if (stick == null) return;
+        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
+        if (asset != null)
+        {
+            asset.TakeDamage(damage, DamageCause.PlayerAttack);
+        }
 
-        GeneralNPC npc = other.GetComponent<GeneralNPC>();
+        HealthBasedAsset npc = other.GetComponent<HealthBasedAsset>();
         if (npc != null)
         {
-            if (stick != null)
-            {
-                bool isHeavy = stick.currentAttack == Stick.AttackType.Heavy;
-                int damage = stick.CalculateDamage(isHeavy);
-                npc.TakeDamage(damage, DamageCause.EnemyAttack);
-            }
+            Stick stick = GetComponentInParent<Stick>();
+            bool isHeavy = stick.currentAttack == Stick.AttackType.Heavy;
+            int damage = stick.CalculateDamage(isHeavy);
+            npc.TakeDamage(damage, DamageCause.PlayerAttack);
         }
         if (sfx != null)
         {

@@ -1,3 +1,4 @@
+using OpenCover.Framework.Model;
 using UnityEngine;
 
 public class DebugDamageRaycast : MonoBehaviour

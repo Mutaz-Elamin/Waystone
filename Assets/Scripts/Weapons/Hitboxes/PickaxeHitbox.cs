@@ -61,6 +61,13 @@ public class PickaxeHitbox : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+
+        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
+        if (asset != null)
+        {
+            asset.TakeDamage(damage, DamageCause.PlayerPickaxe);
+        }
+
         if (!canHit) return;
         if (!other.CompareTag("npc")) return;
 

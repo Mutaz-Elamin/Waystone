@@ -18,6 +18,13 @@ public class ClubHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
+        if (asset != null)
+        {
+            asset.TakeDamage(damage, DamageCause.PlayerAttack);
+        }
+
         if (!canHit) return;
         if (!other.CompareTag("npc")) return;
 

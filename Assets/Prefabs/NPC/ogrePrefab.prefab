@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d01e1c732b1bb74ea42a7bde6ee9e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 5
+  startHealth: 15
   visualRoot: {fileID: 2040566548360387991}
   playSpawnFx: 1
   spawnFxPrefab: {fileID: 6551685341991220029, guid: c268957be136e0943954e437950b1144, type: 3}
@@ -430,6 +430,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   disableGameplayDuringDeath: 1
+  resourceRadius: 2
+  resourceDrops: []
+  snapDropsToTerrain: 1
+  dropHeightOffset: 0.05
   speed: 5
   startChaseRange: 900
   stopChaseRange: 900

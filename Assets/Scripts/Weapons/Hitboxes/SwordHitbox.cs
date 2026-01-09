@@ -22,6 +22,13 @@ public class SwordHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+        HealthBasedAsset asset = other.GetComponentInParent<HealthBasedAsset>();
+        if (asset != null)
+        {
+            asset.TakeDamage(2, DamageCause.PlayerAttack);
+        }
+
         if (!canHit) return;
         if (!other.CompareTag("npc")) return;
 
