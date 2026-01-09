@@ -96,6 +96,12 @@ public class PlayerCollector : MonoBehaviour
     {
         if (portalLandmark != null && portalLandmark.IsPortalOpened())
         {
+            if (portalLandmark.IsWinPortal())
+            {
+                // Trigger win condition
+                return;
+            }
+
             if (runManager == null)
             {
                 runManager = FindFirstObjectByType<RunManager>();

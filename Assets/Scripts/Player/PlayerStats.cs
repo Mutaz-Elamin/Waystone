@@ -12,8 +12,8 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Speeds")]
     [SerializeField] protected float hungerLoseSpeed = 0.5f; 
-    [SerializeField] protected float staminaRegenSpeed = 10f; 
     [SerializeField] protected float staminaRegenSpeed = 10f;
+    protected float healthLoseSpeed = 0f;
 
     [SerializeField] private float minHungerMultiplier = 1f;   
     [SerializeField] private float maxHungerMultiplier = 1.6f;

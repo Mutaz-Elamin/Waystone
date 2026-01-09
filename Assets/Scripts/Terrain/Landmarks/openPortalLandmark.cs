@@ -5,6 +5,7 @@ using UnityEngine;
 public class OpenPortalLandmark : MonoBehaviour
 {
     [SerializeField] private GameObject portalParticles;
+    [SerializeField] private bool winPortal = false;
 
     private bool portalOpened = false;
 
@@ -22,5 +23,10 @@ public class OpenPortalLandmark : MonoBehaviour
             Instantiate(portalParticles, particlesPosition, portalParticles.transform.rotation);
             portalOpened = true;
         }
+    }
+
+    public bool IsWinPortal()
+    {
+        return winPortal;
     }
 }

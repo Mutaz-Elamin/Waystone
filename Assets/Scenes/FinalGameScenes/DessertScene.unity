@@ -289,7 +289,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heatstroke: {fileID: 1454059041}
-  heatPerDay: 0.25
 --- !u!1 &359659044 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 46054080146871146, guid: a3c506c7da32df34fa071505885ef259, type: 3}
@@ -309,7 +308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 194.99995
+      value: 194.99945
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size
@@ -875,7 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1630a1f6f92f3e541b999ed34794553b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landmarkPrefab: {fileID: 8006400646985059455, guid: 66d0f709fcc7b60408fd87a8cd120f85, type: 3}
+  landmarkPrefab: {fileID: 8006400646985059455, guid: c1143574a0d8c6e46b1e18684a5b6d2e, type: 3}
   minHeight: 0
   maxHeight: 1
   borderDistance: 0
