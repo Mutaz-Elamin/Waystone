@@ -41,6 +41,27 @@ public class HealthBasedAsset : MonoBehaviour
     [SerializeField] private AnimationCurve deathCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
     [SerializeField] private bool disableGameplayDuringDeath = true;
 
+    [System.Serializable]
+    public struct ResourceDrop
+    {
+        [SerializeField] private GameObject resourcePrefab;
+        [SerializeField, Range(0f, 1f)] private float spawnChance;
+        [SerializeField, Min(0)] private int minCount;
+        [SerializeField, Min(0)] private int maxCount;
+
+        public GameObject ResourcePrefab => resourcePrefab;
+        public float SpawnChance => spawnChance;
+        public int MinCount => minCount;
+        public int MaxCount => maxCount;
+    }
+
+    [Header("Resource Drops")]
+    [SerializeField, Min(0f)] private float resourceRadius = 2f;
+    [SerializeField] private ResourceDrop[] resourceDrops;
+    [SerializeField] private bool snapDropsToTerrain = true;
+    [SerializeField] private float dropHeightOffset = 0.05f;
+
+
     private Vector3 visualBaseScale;
     private Coroutine spawnRoutine;
     private Coroutine deathRoutine;
@@ -104,8 +125,51 @@ public class HealthBasedAsset : MonoBehaviour
     // By default, die function will call this method but this may not be true for all assets
     protected virtual void DropResources()
     {
-        // Resource dropping logic
+        if (resourceDrops == null || resourceDrops.Length == 0)
+            return;
+
+        Vector3 origin = transform.position;
+
+        Terrain t = Terrain.activeTerrain;
+        Vector3 tPos = t != null ? t.transform.position : Vector3.zero;
+
+        for (int i = 0; i < resourceDrops.Length; i++)
+        {
+            ResourceDrop d = resourceDrops[i];
+
+            if (d.ResourcePrefab == null)
+                continue;
+
+            float chance = Mathf.Clamp01(d.SpawnChance);
+            if (chance > 0f && Random.value > chance)
+                continue;
+
+            int min = Mathf.Max(0, d.MinCount);
+            int max = Mathf.Max(min, d.MaxCount);
+            int count = (max > min) ? Random.Range(min, max + 1) : min;
+
+            for (int n = 0; n < count; n++)
+            {
+                Vector2 dir2 = Random.insideUnitCircle.normalized;
+                float dist = (resourceRadius <= 0f) ? 0f : Random.Range(0f, resourceRadius);
+
+                Vector3 pos = origin + new Vector3(dir2.x, 0f, dir2.y) * dist;
+
+                if (snapDropsToTerrain && t != null)
+                {
+                    float y = t.SampleHeight(pos) + tPos.y + dropHeightOffset;
+                    pos.y = y;
+                }
+                else
+                {
+                    pos.y = origin.y + dropHeightOffset;
+                }
+
+                Instantiate(d.ResourcePrefab, pos, Quaternion.Euler(0f, Random.Range(0f, 360f), 0f));
+            }
+        }
     }
+
 
     private IEnumerator SpawnRoutine()
     {

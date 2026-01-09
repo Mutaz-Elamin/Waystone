@@ -7,7 +7,6 @@ public class GeneralResourceAsset : HealthBasedAsset
 {
     [SerializeField] private DamageCause DamageWeakness;
     [SerializeField] private DamageCause DamageResistance;
-    [SerializeField] private GameObject[] resourcesDroppedOnDeath;
 
     private void Update()
     {
