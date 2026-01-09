@@ -1852,8 +1852,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 197465443}
   m_HandleRect: {fileID: 197465442}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.9999005
+  m_Value: 0
+  m_Size: 0.99714214
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3636,7 +3636,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -183, y: 194.99982}
+  m_AnchoredPosition: {x: -183, y: 195}
   m_SizeDelta: {x: 369, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &625406239
@@ -9643,6 +9643,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3905928055491956656, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      propertyPath: sfx
+      value: 
+      objectReference: {fileID: 1922806112}
     - target: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       propertyPath: m_Name
       value: Player
@@ -11745,6 +11749,17 @@ MonoBehaviour:
     m_Bits: 98337
   overlapHalfExtents: {x: 0.6, y: 0.5, z: 0.6}
   rotationOffsetEuler: {x: 0, y: 0, z: 0}
+--- !u!114 &1922806112 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2963246254356947803, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+  m_PrefabInstance: {fileID: 1665745642}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922806078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8ec381ca499d141811bbbec852868a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1930921007
 GameObject:
   m_ObjectHideFlags: 0
