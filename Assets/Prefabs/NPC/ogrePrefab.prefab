@@ -435,10 +435,26 @@ MonoBehaviour:
   disableGameplayDuringDeath: 1
   resourceRadius: 2
   resourceDrops:
-  - resourcePrefab: {fileID: 0}
-    spawnChance: 0
-    minCount: 0
-    maxCount: 0
+  - resourcePrefab: {fileID: 8465362152466353679, guid: beec7b22c74522d4cacda7c4aa51f14b, type: 3}
+    spawnChance: 1
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 6884670967486755781, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
+    spawnChance: 0.05
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 4886971969442270434, guid: ea816cc2247c97f46aa1a1481af948f8, type: 3}
+    spawnChance: 0.05
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 5397069016849034924, guid: 0762062894777e045bb18c3e0441f12e, type: 3}
+    spawnChance: 0.05
+    minCount: 1
+    maxCount: 1
+  - resourcePrefab: {fileID: 8312316297816020311, guid: bae7236ccf5fb0a4ab93947b3e91d68d, type: 3}
+    spawnChance: 0.05
+    minCount: 3
+    maxCount: 5
   snapDropsToTerrain: 1
   dropHeightOffset: 0.05
   speed: 5

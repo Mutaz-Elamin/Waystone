@@ -14,10 +14,10 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.002
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -94,7 +94,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: fe0eeeddc24fdaf4d857ba1a5d0582a6, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -171,6 +171,22 @@ PrefabInstance:
     - target: {fileID: 5078318307230884580, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: currentHour
+      value: 10.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: gameMinutesPerSecond
+      value: 4.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: skyboxMaterialOverride
+      value: 
+      objectReference: {fileID: 2100000, guid: 8064aa88defeebf429e2e6a05c9fd684, type: 2}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: skyboxRotationMultiplier
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -254,23 +270,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalStoneItem: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
   runManager: {fileID: 0}
---- !u!114 &345374769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345374754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a8def3c16e455a4492e52289c162f1c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 1658484709}
-  range: 8
-  damage: 1
-  cause: 5
-  key: 323
 --- !u!1 &359659044 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 46054080146871146, guid: a3c506c7da32df34fa071505885ef259, type: 3}
@@ -290,7 +289,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 194.99951
+      value: 194.99997
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size
@@ -703,9 +702,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 345374755}
-    - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 345374769}
     - targetCorrespondingSourceObject: {fileID: 3911445574146491929, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1658484711}
@@ -1479,7 +1475,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].assetStep
-      value: 32
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: npcPrefabs.Array.data[0].maxHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
+      propertyPath: npcPrefabs.Array.data[0].minHeight
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetName
@@ -1487,15 +1491,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetStep
-      value: 24
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].maxHeight
-      value: 0.7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].minHeight
-      value: 0.35
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[1].maxScale
@@ -1696,7 +1700,7 @@ PrefabInstance:
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].assetPrefab
       value: 
-      objectReference: {fileID: 60817666007279207, guid: 171a3f798efc0ac409b047b466b0462c, type: 3}
+      objectReference: {fileID: 60817666007279207, guid: 1d31fe4a6abedea42b0e9541b2be924c, type: 3}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: assetPrefabs.Array.data[0].isResource
       value: 1
@@ -1995,7 +1999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[0].clusterMinCount
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6191713121643012047, guid: 69289d8fb877c3347a6fa17bfd925398, type: 3}
       propertyPath: npcPrefabs.Array.data[1].clusterMaxCount
@@ -3053,7 +3057,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1658484708}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a8def3c16e455a4492e52289c162f1c, type: 3}
   m_Name: 

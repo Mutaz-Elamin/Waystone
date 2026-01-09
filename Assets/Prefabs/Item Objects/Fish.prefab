@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef2ee8064d210b4abb9374d5ac4f775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemData: {fileID: 11400000, guid: 1fdf003d753363d4280517a6d876dbab, type: 2}
+  itemData: {fileID: 11400000, guid: cc5ab9e2799cbdd4d84ba9b9ef768099, type: 2}
   quantity: 1
   prompt: {fileID: 7331289023097131239}
   iconRenderer: {fileID: 6212989040114279547}
