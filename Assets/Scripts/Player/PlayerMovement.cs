@@ -1,4 +1,5 @@
-using System.Collections;
+﻿using System.Collections;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -9,6 +10,13 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGrounded;
     private bool movementEnabled = false;
+    [Header("Stamina Costs")]
+    public float sprintStaminaCostPerSecond = 10f;
+    public float dodgeStaminaCost = 25f;
+    public float slideStaminaCost = 20f;
+    public float jumpStaminaCost = 15f;
+
+    private PlayerStats stats;
 
     [Header("Movement")]
     public float gravity = -9.8f;
@@ -63,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
         camMove = GetComponent<CameraLook>();
         camStartPos = camMove?.cam?.transform?.localPosition ?? Vector3.zero;
         targetSpeed = speed;
+        stats = GetComponent<PlayerStats>();
     }
 
     IEnumerator Start()
@@ -107,6 +116,21 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         if (!movementEnabled) return;
+
+
+        if (camMove != null && camMove.isSprinting && !crouching)
+        {
+            if (HasStamina(0.01f))
+            {
+                ConsumeStamina(sprintStaminaCostPerSecond * Time.deltaTime);
+            }
+            else
+            {
+                // Out of stamina → stop sprinting
+                camMove.isSprinting = false;
+                targetSpeed = 5f;
+            }
+        }
 
         isGrounded = CheckGrounded();
 
@@ -225,8 +249,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
+        if (!HasStamina(jumpStaminaCost)) return;
+
         if ((isGrounded || CheckGroundedAllowance()) && !crouching)
         {
+            ConsumeStamina(jumpStaminaCost);
             float jumpVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity * 1.5f);
             playerVelocity.y = jumpVelocity;
         }
@@ -234,11 +261,14 @@ public class PlayerMovement : MonoBehaviour
 
     public void ToggleSprint()
     {
+        if (!HasStamina(1f)) return;
+
         if (crouching)
         {
             crouching = false;
             lerpCrouch = true;
         }
+
         if (camMove != null)
         {
             camMove.isSprinting = !camMove.isSprinting;
@@ -265,29 +295,48 @@ public class PlayerMovement : MonoBehaviour
 
     public void Slide()
     {
-        if (isGrounded && camMove != null && camMove.isSprinting && !isSliding)
-        {
-            isSliding = true;
-            slideTimer = slideDuration;
-            controller.height = slideHeight;
-            playerVelocity = transform.forward * slideSpeed + Vector3.up * -2f;
-            camMove.isSliding = true;
-        }
+        if (!isGrounded || isSliding) return;
+        if (!camMove.isSprinting) return;
+        if (!HasStamina(slideStaminaCost)) return;
+
+        ConsumeStamina(slideStaminaCost);
+
+        isSliding = true;
+        slideTimer = slideDuration;
+        controller.height = slideHeight;
+        playerVelocity = transform.forward * slideSpeed + Vector3.up * -2f;
+
+        if (camMove != null) camMove.isSliding = true;
     }
+
 
     public void Dodge(Vector3 direction)
     {
         if (isDodging || !isGrounded) return;
+        if (!HasStamina(dodgeStaminaCost)) return;
+
+        ConsumeStamina(dodgeStaminaCost);
+
         isDodging = true;
         dodgeTimer = dodgeDuration;
         dodgeDirection = direction.normalized * dodgeSpeed;
+
         if (camMove != null)
         {
             camMove.isDodging = true;
             camMove.dodgeDirection = direction;
         }
     }
+    private bool HasStamina(float amount)
+    {
+        return stats != null && stats.Stamina >= amount;
+    }
 
+    private void ConsumeStamina(float amount)
+    {
+        if (stats != null)
+            stats.UseStamina(amount);
+    }
     private bool CheckGrounded()
     {
         if (controller.isGrounded) return true;

@@ -51,7 +51,7 @@ public class InputManager : MonoBehaviour
 
         onFoot.Sprint.performed += ctx => movement.ToggleSprint();
         PlayerInput.PauseActions pauseActions = playerInput.Pause;
-
+       
 
         onFoot.Crouch.performed += ctx => movement.Crouch(onFoot.Movement.ReadValue<Vector2>());
         onFoot.LightAttack.performed += ctx => attack.LightAttack();
