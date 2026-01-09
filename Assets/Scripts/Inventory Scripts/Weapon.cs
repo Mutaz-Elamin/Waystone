@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Weapon", menuName = "Inventory/Weapons")]
 public class Weapon : ItemClass
 {
-    
+    public GameObject weaponPrefab;
 
     // Start is called before the first frame update
     public override ItemClass GetItem() {
