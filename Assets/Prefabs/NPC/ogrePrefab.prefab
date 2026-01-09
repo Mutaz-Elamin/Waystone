@@ -454,6 +454,12 @@ MonoBehaviour:
   desPointMin: 0
   desPointMax: 30
   walkInterval: 5
+  colourShiftEnabled: 1
+  targetColour: {r: 1, g: 0.28953755, b: 0, a: 1}
+  shiftAmount: 0.728
+  shiftHue: 1
+  shiftSaturation: 1
+  shiftValue: 1
 --- !u!65 &5237817287553438536
 BoxCollider:
   m_ObjectHideFlags: 0
