@@ -18,7 +18,16 @@ public class Food : ItemClass
 
         PlayerStats stats = user.GetComponent<PlayerStats>();
         if (stats == null) return;
-        stats.Eat(20f);
+
+        if (itemName == "Cooked Meat")
+        {
+            stats.Eat(14f);
+        }
+        else
+        {
+            stats.Eat(6f);
+        }
+        stats.Eat(6f);
 
         inv.Remove(this, 1);
     }
