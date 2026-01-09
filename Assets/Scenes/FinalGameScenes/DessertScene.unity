@@ -177,8 +177,12 @@ PrefabInstance:
       value: 10.7
       objectReference: {fileID: 0}
     - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
+      propertyPath: disasterScript
+      value: 
+      objectReference: {fileID: 345374758}
+    - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
       propertyPath: gameMinutesPerSecond
-      value: 4.8
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6951684343407676925, guid: 5b5860156593d4c4ea6d6d1bccddeadf, type: 3}
       propertyPath: skyboxMaterialOverride
@@ -270,6 +274,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalStoneItem: {fileID: 11400000, guid: 9430f3b4578ec284fb18aaadfb935d11, type: 2}
   runManager: {fileID: 0}
+--- !u!114 &345374758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345374754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d409a7a7dd856b4ca1b214130ed3e9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heatstroke: {fileID: 1454059041}
+  heatPerDay: 0.25
 --- !u!1 &359659044 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 46054080146871146, guid: a3c506c7da32df34fa071505885ef259, type: 3}
@@ -289,7 +307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 36019713879149585, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 195
+      value: 194.99913
       objectReference: {fileID: 0}
     - target: {fileID: 349689955210512454, guid: a3c506c7da32df34fa071505885ef259, type: 3}
       propertyPath: m_Size
@@ -702,13 +720,24 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 345374755}
+    - targetCorrespondingSourceObject: {fileID: 4667984914492440204, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 345374758}
     - targetCorrespondingSourceObject: {fileID: 3911445574146491929, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1658484711}
     - targetCorrespondingSourceObject: {fileID: 3911445574146491929, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1658484710}
+    - targetCorrespondingSourceObject: {fileID: 3911445574146491929, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1658484712}
   m_SourcePrefab: {fileID: 100100000, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+--- !u!4 &461662093 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1862669719269725080, guid: 376532c044fc85e498fadb15ce7c26c4, type: 3}
+  m_PrefabInstance: {fileID: 461662092}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &462312667 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8258575683864722844, guid: a3c506c7da32df34fa071505885ef259, type: 3}
@@ -2967,6 +2996,70 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1454059038
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1454059039}
+  - component: {fileID: 1454059040}
+  - component: {fileID: 1454059041}
+  m_Layer: 22
+  m_Name: PostProcessVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1454059039
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454059038}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 237, y: 96.6, z: 212}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1454059040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454059038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: 1661bb3e710fa7c4d94b748c8af04abc, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
+--- !u!114 &1454059041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454059038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a7218ba8fd157443b360a5193449c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  intensity: 0
+  volume: {fileID: 1454059040}
 --- !u!1 &1467784365 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1828182154340417193, guid: a3c506c7da32df34fa071505885ef259, type: 3}
@@ -3085,6 +3178,66 @@ MonoBehaviour:
   distanceMultiplier: 1
   padding: 50
   maxFarClip: 3000
+--- !u!114 &1658484712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658484708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeTrigger: {fileID: 461662093}
+  volumeLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 1
+  temporalAntialiasing:
+    jitterSpread: 0.75
+    sharpness: 0.25
+    stationaryBlending: 0.95
+    motionBlending: 0.85
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 0
+    keepAlpha: 0
+  fog:
+    enabled: 1
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
 --- !u!114 &1674632691 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2696697987050393803, guid: a3c506c7da32df34fa071505885ef259, type: 3}
@@ -3276,3 +3429,4 @@ SceneRoots:
   - {fileID: 1161197530}
   - {fileID: 1558300267}
   - {fileID: 1724842598}
+  - {fileID: 1454059039}

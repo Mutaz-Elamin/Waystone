@@ -49,6 +49,8 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private float giUpdateInterval = 0.5f;
     private float giTimer = 0f;
 
+    [SerializeField] NaturalDisaster disasterScript;
+
     private void Awake()
     {
         Time.timeScale = 1f;
@@ -114,6 +116,8 @@ public class DayNightCycle : MonoBehaviour
         {
             minuteOfDay -= 1440f;
             dayCount++;
+            if (disasterScript != null)
+                disasterScript.dayEffect(dayCount);
 
             if (dayCount > maxDays) TriggerEndGame();
             else StartCoroutine(PlayDayBanner());
@@ -201,22 +205,7 @@ public class DayNightCycle : MonoBehaviour
 
     private void TriggerEndGame()
     {
-        gameEnded = true;
-
-        if (clockText != null)
-        {
-            clockText.text = "END";
-            clockText.color = Color.red;
-            clockText.transform.localScale = originalTextScale * 2f;
-        }
-
-        if (restartButton != null) restartButton.SetActive(true);
-    }
-
-    public void RestartGame()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // Ignore with disasaterScript
     }
 
     private void OnDestroy()
