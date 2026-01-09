@@ -41,7 +41,6 @@ public sealed class RunManager : MonoBehaviour
             return;
         }
 
-        // Wrap or clamp depending on what you want
         int sceneIdx = Mathf.Clamp(levelIndex, 0, levelScenes.Length - 1);
         string sceneName = levelScenes[sceneIdx];
 
