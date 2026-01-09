@@ -88,7 +88,13 @@ public class InputManager : MonoBehaviour
             inventoryManager.DropClosestSlot(1); // drop 1
         };
 
+        hotbars.Use.performed += ctx =>
+        {
+            if (inventoryManager == null) return;
+            if (inventoryManager.IsOpen) return;
 
+            inventoryManager.UseSelectedHotbarItem();
+        };
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
