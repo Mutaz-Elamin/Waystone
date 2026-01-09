@@ -190,6 +190,7 @@ public class EnemyNPC : GeneralNPC
     // Method to run the attacking logic of the npcs - does not attack but handles choosing attacks and switching back to chase mode
     protected virtual void AttackingMovementScript()
     {
+        if (!CanMove()) return;
         agent.SetDestination(transform.position);
         bool inRange = Physics.CheckSphere(transform.position, currentAttackRange, playerLayer);
         if (!inRange)
