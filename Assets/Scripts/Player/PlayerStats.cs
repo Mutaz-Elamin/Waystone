@@ -13,6 +13,7 @@ public class PlayerStats : MonoBehaviour
     [Header("Speeds")]
     [SerializeField] protected float hungerLoseSpeed = 0.5f; 
     [SerializeField] protected float staminaRegenSpeed = 10f; 
+    private float healthLoseSpeed = 0f;
 
     // Internal numbers (hidden from the Inspector to keep it clean)
     private float _currentHealth;
@@ -44,6 +45,7 @@ public class PlayerStats : MonoBehaviour
         if (_currentHunger > 0)
         {
             _currentHunger -= hungerLoseSpeed * Time.deltaTime;
+            _currentHealth -= healthLoseSpeed * Time.deltaTime;
         }
         else
         {
@@ -88,4 +90,21 @@ public class PlayerStats : MonoBehaviour
     {
         _currentHunger = Mathf.Clamp(_currentHunger + amount, 0, maxHunger);
     }
+
+    public void setHungerSpeed(float amount)
+    {
+        hungerLoseSpeed = amount;
+    }
+
+    public float HungerLoseSpeed
+    {
+        get { return hungerLoseSpeed; }
+    }
+
+    public void setHealthLoseSpeed(float amount)
+    {
+        healthLoseSpeed = amount;
+    }
+
+    public float HealthLoseSpeed() { return healthLoseSpeed; }
 }  
