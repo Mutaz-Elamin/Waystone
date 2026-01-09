@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 6165f4acd0c543c48b48465e9bee3b73
   - enabled: 1
-    path: Assets/Scenes/FinalGameScenes/DessertScene.unity
-    guid: bb031cb415e3ebb4996c0b0f44dadc22
-  - enabled: 1
     path: Assets/Scenes/FinalGameScenes/ForestScene.unity
     guid: 8a4e16c74e2bfe54ca89ed0a7f6e4d08
+  - enabled: 1
+    path: Assets/Scenes/FinalGameScenes/DessertScene.unity
+    guid: bb031cb415e3ebb4996c0b0f44dadc22
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
