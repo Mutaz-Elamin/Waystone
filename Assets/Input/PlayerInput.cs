@@ -37,6 +37,42 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Heavy Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc97151c-75b4-474f-8311-d9c856f4a09f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Defend"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc557a7d-e9e2-4dd5-bf26-bdb2890eb75c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a2f50c7-1608-4efd-86c8-e86acb07874c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Light Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""9a866852-6ebe-451c-92fc-d2b9d55bbcda"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""9685deda-92c2-4a7d-b6e1-b472bba8df1e"",
@@ -291,6 +327,50 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92c923ca-9450-4152-96cc-d53a1e033df6"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Light Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e9ae90bc-8c8f-4c27-90ce-bcd5693ecafe"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Heavy Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""86da68ec-bcac-4806-af4d-e5dea502ba31"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""725e4e7d-7f71-4b1e-af05-58f0576c4630"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Defend"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -516,6 +596,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // OnFoot
         m_OnFoot = asset.FindActionMap("OnFoot", throwIfNotFound: true);
         m_OnFoot_Movement = m_OnFoot.FindAction("Movement", throwIfNotFound: true);
+        m_OnFoot_HeavyAttack = m_OnFoot.FindAction("Heavy Attack", throwIfNotFound: true);
+        m_OnFoot_Defend = m_OnFoot.FindAction("Defend", throwIfNotFound: true);
+        m_OnFoot_ToggleWeapon = m_OnFoot.FindAction("ToggleWeapon", throwIfNotFound: true);
+        m_OnFoot_LightAttack = m_OnFoot.FindAction("Light Attack", throwIfNotFound: true);
         m_OnFoot_Jump = m_OnFoot.FindAction("Jump", throwIfNotFound: true);
         m_OnFoot_Sprint = m_OnFoot.FindAction("Sprint ", throwIfNotFound: true);
         m_OnFoot_Look = m_OnFoot.FindAction("Look", throwIfNotFound: true);
@@ -597,6 +681,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_OnFoot;
     private List<IOnFootActions> m_OnFootActionsCallbackInterfaces = new List<IOnFootActions>();
     private readonly InputAction m_OnFoot_Movement;
+    private readonly InputAction m_OnFoot_HeavyAttack;
+    private readonly InputAction m_OnFoot_Defend;
+    private readonly InputAction m_OnFoot_ToggleWeapon;
+    private readonly InputAction m_OnFoot_LightAttack;
     private readonly InputAction m_OnFoot_Jump;
     private readonly InputAction m_OnFoot_Sprint;
     private readonly InputAction m_OnFoot_Look;
@@ -607,6 +695,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         private @PlayerInput m_Wrapper;
         public OnFootActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_OnFoot_Movement;
+        public InputAction @HeavyAttack => m_Wrapper.m_OnFoot_HeavyAttack;
+        public InputAction @Defend => m_Wrapper.m_OnFoot_Defend;
+        public InputAction @ToggleWeapon => m_Wrapper.m_OnFoot_ToggleWeapon;
+        public InputAction @LightAttack => m_Wrapper.m_OnFoot_LightAttack;
         public InputAction @Jump => m_Wrapper.m_OnFoot_Jump;
         public InputAction @Sprint => m_Wrapper.m_OnFoot_Sprint;
         public InputAction @Look => m_Wrapper.m_OnFoot_Look;
@@ -624,6 +716,18 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @HeavyAttack.started += instance.OnHeavyAttack;
+            @HeavyAttack.performed += instance.OnHeavyAttack;
+            @HeavyAttack.canceled += instance.OnHeavyAttack;
+            @Defend.started += instance.OnDefend;
+            @Defend.performed += instance.OnDefend;
+            @Defend.canceled += instance.OnDefend;
+            @ToggleWeapon.started += instance.OnToggleWeapon;
+            @ToggleWeapon.performed += instance.OnToggleWeapon;
+            @ToggleWeapon.canceled += instance.OnToggleWeapon;
+            @LightAttack.started += instance.OnLightAttack;
+            @LightAttack.performed += instance.OnLightAttack;
+            @LightAttack.canceled += instance.OnLightAttack;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
@@ -646,6 +750,18 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @HeavyAttack.started -= instance.OnHeavyAttack;
+            @HeavyAttack.performed -= instance.OnHeavyAttack;
+            @HeavyAttack.canceled -= instance.OnHeavyAttack;
+            @Defend.started -= instance.OnDefend;
+            @Defend.performed -= instance.OnDefend;
+            @Defend.canceled -= instance.OnDefend;
+            @ToggleWeapon.started -= instance.OnToggleWeapon;
+            @ToggleWeapon.performed -= instance.OnToggleWeapon;
+            @ToggleWeapon.canceled -= instance.OnToggleWeapon;
+            @LightAttack.started -= instance.OnLightAttack;
+            @LightAttack.performed -= instance.OnLightAttack;
+            @LightAttack.canceled -= instance.OnLightAttack;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
@@ -837,6 +953,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     public interface IOnFootActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnHeavyAttack(InputAction.CallbackContext context);
+        void OnDefend(InputAction.CallbackContext context);
+        void OnToggleWeapon(InputAction.CallbackContext context);
+        void OnLightAttack(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);

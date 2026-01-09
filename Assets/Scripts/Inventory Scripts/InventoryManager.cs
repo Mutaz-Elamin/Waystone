@@ -21,7 +21,7 @@ public class InventoryManager : MonoBehaviour
     public bool IsOpen = false;
     private SlotClass movingSlot;
     private SlotClass tempSlot;
-    private SlotClass originalSlot; 
+    private SlotClass originalSlot;
     bool isMovingItem = false;
 
     [SerializeField] private SlotClass[] startingItems;
@@ -29,20 +29,20 @@ public class InventoryManager : MonoBehaviour
     private SlotClass[] hotbarItems;
 
 
-    private GameObject[] slots ;
-    private GameObject[] hotbarSlots ;
+    private GameObject[] slots;
+    private GameObject[] hotbarSlots;
     private SlotClass sourceSlot;
-    
-    [SerializeField] private GameObject armorSlotUI; 
+
+    [SerializeField] private GameObject armorSlotUI;
     private SlotClass armorSlot = new SlotClass();
     [SerializeField] private Sprite emptyArmorIcon;
 
-    private Armor equippedArmor; 
+    private Armor equippedArmor;
 
 
     void Start()
     {
-        
+
 
 
 
@@ -50,7 +50,7 @@ public class InventoryManager : MonoBehaviour
         items = new SlotClass[slots.Length];
         hotbarSlots = new GameObject[hotbarslotHolder.transform.childCount];
         armorSlot = new SlotClass();
-        
+
 
 
 
@@ -98,7 +98,7 @@ public class InventoryManager : MonoBehaviour
         });
 
         RefreshUI();
-        
+
 
 
     }
@@ -119,7 +119,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
                 }
-                    
+
 
             }
             catch
@@ -180,13 +180,13 @@ public class InventoryManager : MonoBehaviour
                 icon.enabled = true;
                 icon.sprite = armorSlot.GetItem().itemIcon;
 
-              
+
             }
             else
             {
                 icon.sprite = emptyArmorIcon;
-                
-               
+
+
             }
         }
         catch
@@ -204,9 +204,10 @@ public class InventoryManager : MonoBehaviour
         //check if inventory contains item
 
         SlotClass slot = Contains(item);
-        if (slot != null && slot.GetItem().isStackable) {
+        if (slot != null && slot.GetItem().isStackable)
+        {
             slot.AddQuantity(1);
-                }
+        }
         else
         {
             for (int i = 0; i < hotbarItems.Length; i++)
@@ -219,15 +220,15 @@ public class InventoryManager : MonoBehaviour
                 }
             }
             for (int i = 0; i < items.Length; i++)
+            {
+                if (items[i].GetItem() == null)
                 {
-                    if (items[i].GetItem() == null)
-                    {
-                        items[i].AddItem(item, quantity);
+                    items[i].AddItem(item, quantity);
                     RefreshUI();
                     return true;
                 }
-                }
             }
+        }
 
         RefreshUI();
         return true;
@@ -346,11 +347,11 @@ public class InventoryManager : MonoBehaviour
         var slotRef = GetClosestSlotRef();
         if (slotRef == null) return false;
 
-        sourceSlot = slotRef.Value.slot;        
+        sourceSlot = slotRef.Value.slot;
         if (sourceSlot.GetItem() == null) return false;
 
-        movingSlot = new SlotClass(sourceSlot);   
-        sourceSlot.Clear();                       
+        movingSlot = new SlotClass(sourceSlot);
+        sourceSlot.Clear();
         isMovingItem = true;
 
         RefreshUI();
@@ -366,7 +367,7 @@ public class InventoryManager : MonoBehaviour
     {
         var slotRef = GetClosestSlotRef();
 
-      
+
         if (slotRef == null)
         {
             sourceSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
@@ -378,7 +379,7 @@ public class InventoryManager : MonoBehaviour
 
         SlotClass targetSlot = slotRef.Value.slot;
 
-      
+
         if (targetSlot == sourceSlot)
         {
             sourceSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
@@ -387,11 +388,11 @@ public class InventoryManager : MonoBehaviour
             RefreshUI();
             return true;
         }
-        
+
         if (slotRef.Value.type == SlotType.Armor)
         {
             // drop onto the armor slot.
-            
+
             if (!IsArmor(movingSlot.GetItem()))
             {
                 // reject -> return to source slot
@@ -402,16 +403,16 @@ public class InventoryManager : MonoBehaviour
                 return false;
             }
 
-         
+
         }
         else
         {
-     
+
 
             bool sourceWasArmor = (sourceSlot == armorSlot); // if you have armorSlot variable
             if (sourceWasArmor)
             {
-             
+
                 if (targetSlot.GetItem() != null && !IsArmor(targetSlot.GetItem()))
                 {
                     // reject -> return armor back to armor slot
@@ -441,7 +442,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     OnArmorChanged();
                 }
-                
+
                 //  REAL swap: target gets moving, source gets target's old
                 tempSlot = new SlotClass(targetSlot);
 
@@ -453,7 +454,7 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
-          
+
             targetSlot.AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
             movingSlot.Clear();
         }
@@ -511,6 +512,19 @@ public class InventoryManager : MonoBehaviour
         BuildPlacer placer = GetComponent<BuildPlacer>();
         if (placer != null)
             placer.Equip(selected);
+        if (selected is WeaponItems)
+        {
+            selected.Equip(gameObject);
+        }
+        else
+        {
+            // unequip weapon
+            var weaponsManager = GetComponent<WeaponsManager>();
+            if (weaponsManager != null)
+                weaponsManager.RemoveCurrentWeapon();
+
+        }
+
     }
     public void UseSelectedHotbarItem()
     {
@@ -553,7 +567,7 @@ public class InventoryManager : MonoBehaviour
     {
         int remaining = quantity;
 
-        
+
         for (int i = 0; i < hotbarItems.Length && remaining > 0; i++)
         {
             if (hotbarItems[i].GetItem() != item) continue;
@@ -602,9 +616,9 @@ public class InventoryManager : MonoBehaviour
         }
         return true;
     }
-    [SerializeField] private CraftingMenu craftingMenu;   
+    [SerializeField] private CraftingMenu craftingMenu;
 
-    
+
     public void OpenInventoryAndCrafting(CraftingMenu.StationType stationType)
     {
         IsOpen = true;
@@ -634,7 +648,7 @@ public class InventoryManager : MonoBehaviour
         int dropQty = Mathf.Clamp(qty, 1, slot.GetQuantity());
 
         // Spawn pickup in world
-        Vector3 pos =  transform.position + transform.forward * 1.5f;
+        Vector3 pos = transform.position + transform.forward * 1.5f;
 
         GameObject go = Instantiate(worldPickupPrefab, pos, Quaternion.identity);
 
@@ -648,8 +662,13 @@ public class InventoryManager : MonoBehaviour
 
         // Remove from that specific slot (NOT global Remove(item, qty))
         slot.RemoveQuantity(dropQty);
-        if (slot.GetQuantity() <= 0) slot.Clear();
-
+        if (slot.GetQuantity() <= 0)
+        {
+            slot.Clear();
+            var weaponsManager = GetComponent<WeaponsManager>();
+            if (weaponsManager != null)
+                weaponsManager.RemoveCurrentWeapon();
+        }
         RefreshUI();
     }
 
@@ -676,13 +695,14 @@ public class InventoryManager : MonoBehaviour
 
         RefreshArmorSlotUI();
     }
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
