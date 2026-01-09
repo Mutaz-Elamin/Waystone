@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 1862669719269725080}
   - component: {fileID: 5887744371781159470}
   - component: {fileID: 1558151435542185281}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -176,7 +176,8 @@ GameObject:
   - component: {fileID: 746439861317771933}
   - component: {fileID: 2963246254356947803}
   - component: {fileID: 9194971662165738949}
-  m_Layer: 0
+  - component: {fileID: 5953091934502627342}
+  m_Layer: 15
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -615,6 +616,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5953091934502627342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4667984914492440204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644fdfb56812e0d419edb97f77ecc765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  maxStamina: 100
+  maxHunger: 100
+  hungerLoseSpeed: 0.5
+  staminaRegenSpeed: 10
 --- !u!1001 &216055355346137825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -627,9 +645,21 @@ PrefabInstance:
       propertyPath: enemiesOnHit
       value: 
       objectReference: {fileID: 7091378288570054514}
+    - target: {fileID: 2712645994387685708, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6748839985568464376, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
       propertyPath: m_Name
       value: SlimeSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884670967486755781, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: fe771b79c8ced8c41bd4e19ab7c7f70b, type: 3}
       propertyPath: m_IsActive
@@ -779,6 +809,10 @@ PrefabInstance:
       value: StoneClub
       objectReference: {fileID: 0}
     - target: {fileID: 447548920584704168, guid: 31e177e1023d25f48921703f74423a49, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 447548920584704168, guid: 31e177e1023d25f48921703f74423a49, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -826,6 +860,10 @@ PrefabInstance:
       propertyPath: sfx
       value: 
       objectReference: {fileID: 2963246254356947803}
+    - target: {fileID: 6779350673903484249, guid: 31e177e1023d25f48921703f74423a49, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -844,9 +882,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2647904484768004876}
     m_Modifications:
+    - target: {fileID: 2712645994387685708, guid: ba89f12c34e8dea4bafb9733733a87b7, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6748839985568464376, guid: ba89f12c34e8dea4bafb9733733a87b7, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: ba89f12c34e8dea4bafb9733733a87b7, type: 3}
       propertyPath: m_Name
       value: SteelSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884670967486755781, guid: ba89f12c34e8dea4bafb9733733a87b7, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: ba89f12c34e8dea4bafb9733733a87b7, type: 3}
       propertyPath: m_IsActive
@@ -1182,9 +1232,21 @@ PrefabInstance:
       propertyPath: enemiesOnHit
       value: 
       objectReference: {fileID: 4710384025086385180}
+    - target: {fileID: 2712645994387685708, guid: 97e1045fb6a6443458748c362ce1d267, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6748839985568464376, guid: 97e1045fb6a6443458748c362ce1d267, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: 97e1045fb6a6443458748c362ce1d267, type: 3}
       propertyPath: m_Name
       value: StoneSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884670967486755781, guid: 97e1045fb6a6443458748c362ce1d267, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: 97e1045fb6a6443458748c362ce1d267, type: 3}
       propertyPath: m_IsActive
@@ -1857,9 +1919,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2647904484768004876}
     m_Modifications:
+    - target: {fileID: 2712645994387685708, guid: 963736304b427964d849ddddc601751e, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6748839985568464376, guid: 963736304b427964d849ddddc601751e, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: 963736304b427964d849ddddc601751e, type: 3}
       propertyPath: m_Name
       value: ObsidianSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884670967486755781, guid: 963736304b427964d849ddddc601751e, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: 963736304b427964d849ddddc601751e, type: 3}
       propertyPath: m_IsActive
@@ -2086,9 +2160,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2647904484768004876}
     m_Modifications:
+    - target: {fileID: 2712645994387685708, guid: 2a07df685530d364988b330ea4f6754c, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6748839985568464376, guid: 2a07df685530d364988b330ea4f6754c, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: 2a07df685530d364988b330ea4f6754c, type: 3}
       propertyPath: m_Name
       value: BronzeSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884670967486755781, guid: 2a07df685530d364988b330ea4f6754c, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: 2a07df685530d364988b330ea4f6754c, type: 3}
       propertyPath: m_IsActive
@@ -2223,6 +2309,10 @@ PrefabInstance:
       value: IceClub
       objectReference: {fileID: 0}
     - target: {fileID: 447548920584704168, guid: 540bbdbbb821cab4cac8b6f628b35ff6, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 447548920584704168, guid: 540bbdbbb821cab4cac8b6f628b35ff6, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -2265,6 +2355,10 @@ PrefabInstance:
     - target: {fileID: 747165056832209848, guid: 540bbdbbb821cab4cac8b6f628b35ff6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 1.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6779350673903484249, guid: 540bbdbbb821cab4cac8b6f628b35ff6, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2350,9 +2444,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2647904484768004876}
     m_Modifications:
+    - target: {fileID: 2712645994387685708, guid: ce63da448140351478d598d30b8ce103, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6748839985568464376, guid: ce63da448140351478d598d30b8ce103, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: ce63da448140351478d598d30b8ce103, type: 3}
       propertyPath: m_Name
       value: GoldSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 6884670967486755781, guid: ce63da448140351478d598d30b8ce103, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6884670967486755781, guid: ce63da448140351478d598d30b8ce103, type: 3}
       propertyPath: m_IsActive

@@ -112,6 +112,12 @@ public class EnemyNPC : GeneralNPC
     {
         if (!CanMove()) return;
 
+        bool inRange = Physics.CheckSphere(transform.position, startChaseRange, playerLayer);
+        if (inRange)
+        {
+            currentMode = Mode.Chasing;
+            return;
+        }
         if (!desPointSet)
         {
             SearchDesPoint();
@@ -127,6 +133,7 @@ public class EnemyNPC : GeneralNPC
             if (distance.magnitude < 1.5f)
             {
                 desPointSet = false;
+                lastWalkTime = Time.time;
             }
         }
     }
@@ -158,7 +165,6 @@ public class EnemyNPC : GeneralNPC
     protected virtual void ChasingMovementScript()
 
     {
-        if (!CanMove()) return;
         SelectAttack();
         bool inRange = Physics.CheckSphere(transform.position, stopChaseRange, playerLayer);
         if (!inRange)
