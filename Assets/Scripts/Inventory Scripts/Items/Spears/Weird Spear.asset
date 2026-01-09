@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
+  m_Name: Weird Spear
+  m_EditorClassIdentifier: 
+  itemName: Weird Spear
+  itemIcon: {fileID: 21300000, guid: 9e7f14ad5722898488373407670a5443, type: 3}
+  isStackable: 1
+  weaponPrefab: {fileID: 4886971969442270434, guid: ea816cc2247c97f46aa1a1481af948f8, type: 3}

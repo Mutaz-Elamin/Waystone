@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
+  m_Name: Steel Axe
+  m_EditorClassIdentifier: 
+  itemName: Steel Axe
+  itemIcon: {fileID: 21300000, guid: 35953a12d83e98f4988bed65ffeb2e7f, type: 3}
+  isStackable: 0
+  weaponPrefab: {fileID: 7032525697885226930, guid: f69ef6ca785d22346b3b1eb647526e89, type: 3}

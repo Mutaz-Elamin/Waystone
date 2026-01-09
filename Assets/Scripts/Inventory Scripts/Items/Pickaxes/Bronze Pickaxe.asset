@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
   m_Name: Bronze Pickaxe
   m_EditorClassIdentifier: 
-  itemName: 
-  itemIcon: {fileID: 0}
-  isStackable: 1
-  weaponPrefab: {fileID: 0}
+  itemName: Bronze Pickaxe
+  itemIcon: {fileID: 21300000, guid: 0fe8a295d5067684ca76bc6accc17212, type: 3}
+  isStackable: 0
+  weaponPrefab: {fileID: 7032525697885226930, guid: d8de84d633e9ec44bb3986836538b1fe, type: 3}

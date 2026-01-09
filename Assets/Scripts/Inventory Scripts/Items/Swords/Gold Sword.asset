@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e32cb3d9b201f42a8dadec423cdbe5, type: 3}
   m_Name: Gold Sword
   m_EditorClassIdentifier: 
-  itemName: 
-  itemIcon: {fileID: 0}
-  isStackable: 1
-  weaponPrefab: {fileID: 0}
+  itemName: Gold Sword
+  itemIcon: {fileID: 21300000, guid: d2f1a7e2ec2b43f40b7a8d1946c0a5d9, type: 3}
+  isStackable: 0
+  weaponPrefab: {fileID: 6884670967486755781, guid: ce63da448140351478d598d30b8ce103, type: 3}
